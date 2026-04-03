@@ -1,0 +1,45 @@
+export const notificationListData = [
+    {
+        id: 'e55adc24-1803-4ffd-b653-09be273f8df5',
+        target: 'Credit balance low',
+        description: 'Your balance is below #50,000. Consider topping up.',
+        date: '2 minutes ago',
+        image: 'thumb-2.jpg',
+        type: 0,
+        location: '',
+        locationLabel: '',
+        status: '',
+        readed: true,
+    },
+    {
+        id: 'b06ca3f5-8fb0-4979-a016-30dfe63e8fd6',
+        target: 'New API Model available',
+        description: 'GPT-4.5 is now available in the playground.',
+        date: '10 minutes ago',
+        image: 'thumb-3.jpg',
+        type: 0,
+        location: '',
+        locationLabel: '',
+        status: '',
+        readed: false,
+    },
+    {
+        id: 'f644235d-dffc-4f17-883f-1ada117ff2c9',
+        target: 'Usage report ready.',
+        description: 'Your monthly usage report is ready to download.',
+        date: '3 hours ago',
+        image: '',
+        type: 1,
+        location: '',
+        locationLabel: '',
+        status: '',
+        readed: false,
+    },
+]
+
+export const notificationSettingsData = {
+    desktop: true,
+    unreadMessageBadge: false,
+    email: ['newsAndUpdate', 'tipsAndTutorial'],
+    notifymeAbout: 'mentionsOnly',
+}

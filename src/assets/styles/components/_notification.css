@@ -1,0 +1,5 @@
+@layer components {
+  .notification {
+    @apply relative mb-3;
+  }
+}

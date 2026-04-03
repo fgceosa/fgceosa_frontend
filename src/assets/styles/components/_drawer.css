@@ -1,0 +1,47 @@
+@layer components {
+  .drawer-content {
+    @apply bg-white dark:bg-gray-800 shadow-xl absolute flex flex-col;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.vertical {
+      @apply h-full;
+    }
+
+    &.horizontal {
+      @apply w-full;
+    }
+  }
+
+  .drawer-header {
+    @apply flex items-center justify-between py-4 px-6 border-b border-gray-200 dark:border-gray-700;
+  }
+
+  .drawer-body {
+    @apply p-6 h-full overflow-y-auto;
+  }
+
+  .drawer-footer {
+    @apply flex items-center justify-between py-4 px-6 border-t border-gray-200 dark:border-gray-700;
+  }
+
+  .drawer-open {
+    &.drawer-lock-scroll {
+      @apply overflow-hidden;
+    }
+  }
+
+  .drawer-overlay {
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    @apply bg-black/50 inset-0 fixed z-40;
+  }
+
+  .drawer-overlay-after-open {
+    opacity: 1;
+  }
+
+  .drawer-overlay-before-close {
+    opacity: 0;
+  }
+
+}

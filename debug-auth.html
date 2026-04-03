@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Debug Tool</title>
+    <style>
+        body {
+            font-family: 'Monaco', monospace;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .section {
+            background: #252526;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #3e3e42;
+        }
+        h2 {
+            color: #4ec9b0;
+            margin-top: 0;
+        }
+        pre {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid #3e3e42;
+        }
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1177bb;
+        }
+        .success { color: #4ec9b0; }
+        .error { color: #f48771; }
+        .warning { color: #dcdcaa; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Qorebit Auth Debug Tool</h1>
+    
+    <div class="section">
+        <h2>1. Check Stored Tokens</h2>
+        <button onclick="checkTokens()">Check Tokens</button>
+        <pre id="tokenOutput">Click button to check...</pre>
+    </div>
+
+    <div class="section">
+        <h2>2. Test Dashboard API</h2>
+        <button onclick="testDashboardAPI()">Test Dashboard Endpoint</button>
+        <pre id="apiOutput">Click button to test...</pre>
+    </div>
+
+    <div class="section">
+        <h2>3. Clear Tokens (Logout)</h2>
+        <button onclick="clearTokens()">Clear All Tokens</button>
+        <pre id="clearOutput">Click button to clear...</pre>
+    </div>
+
+    <div class="section">
+        <h2>4. Manual Token Entry (For Testing)</h2>
+        <input type="text" id="manualToken" placeholder="Paste your token here" style="width: 100%; padding: 10px; background: #1e1e1e; color: #d4d4d4; border: 1px solid #3e3e42; border-radius: 4px;">
+        <button onclick="setManualToken()">Set Token</button>
+        <pre id="manualOutput">Enter token and click button...</pre>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000/api/v1';
+
+        function checkTokens() {
+            const sessionToken = sessionStorage.getItem('accessToken');
+            const localToken = localStorage.getItem('accessToken');
+            
+            let output = '📦 Token Storage Status:\n\n';
+            
+            if (sessionToken) {
+                output += `<span class="success">✅ SessionStorage Token Found</span>\n`;
+                output += `   Length: ${sessionToken.length} chars\n`;
+                output += `   Preview: ${sessionToken.substring(0, 30)}...\n\n`;
+            } else {
+                output += `<span class="error">❌ No SessionStorage Token</span>\n\n`;
+            }
+            
+            if (localToken) {
+                output += `<span class="success">✅ LocalStorage Token Found</span>\n`;
+                output += `   Length: ${localToken.length} chars\n`;
+                output += `   Preview: ${localToken.substring(0, 30)}...\n\n`;
+            } else {
+                output += `<span class="error">❌ No LocalStorage Token</span>\n\n`;
+            }
+            
+            if (!sessionToken && !localToken) {
+                output += `\n<span class="warning">⚠️  You are not logged in!</span>\n`;
+                output += `<span class="warning">   Please log in to the app first at:</span>\n`;
+                output += `   http://localhost:3000/sign-in\n`;
+            }
+            
+            document.getElementById('tokenOutput').innerHTML = output;
+        }
+
+        async function testDashboardAPI() {
+            const token = sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
+            
+            if (!token) {
+                document.getElementById('apiOutput').innerHTML = '<span class="error">❌ No token found. Please log in first.</span>';
+                return;
+            }
+            
+            document.getElementById('apiOutput').innerHTML = '🔄 Testing API...';
+            
+            try {
+                const response = await fetch(`${API_URL}/dashboard`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                let output = `📡 API Test Results:\n\n`;
+                output += `Status: ${response.status} ${response.statusText}\n\n`;
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    output += `<span class="success">✅ API Request Successful!</span>\n\n`;
+                    output += `Response Data:\n`;
+                    output += JSON.stringify(data, null, 2);
+                } else {
+                    const errorData = await response.text();
+                    output += `<span class="error">❌ API Request Failed</span>\n\n`;
+                    output += `Error: ${errorData}\n\n`;
+                    
+                    if (response.status === 401) {
+                        output += `<span class="warning">⚠️  Token may be expired or invalid.</span>\n`;
+                        output += `<span class="warning">   Try logging out and logging in again.</span>\n`;
+                    }
+                }
+                
+                document.getElementById('apiOutput').innerHTML = output;
+            } catch (error) {
+                document.getElementById('apiOutput').innerHTML = `<span class="error">❌ Network Error:\n${error.message}</span>`;
+            }
+        }
+
+        function clearTokens() {
+            sessionStorage.removeItem('accessToken');
+            localStorage.removeItem('accessToken');
+            
+            document.getElementById('clearOutput').innerHTML = '<span class="success">✅ All tokens cleared!\nPlease log in again.</span>';
+        }
+
+        function setManualToken() {
+            const token = document.getElementById('manualToken').value.trim();
+            
+            if (!token) {
+                document.getElementById('manualOutput').innerHTML = '<span class="error">❌ Please enter a token</span>';
+                return;
+            }
+            
+            localStorage.setItem('accessToken', token);
+            document.getElementById('manualOutput').innerHTML = `<span class="success">✅ Token saved to localStorage!\nToken length: ${token.length} chars</span>`;
+        }
+
+        // Auto-check on load
+        window.onload = checkTokens;
+    </script>
+</body>
+</html>

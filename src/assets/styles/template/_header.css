@@ -1,0 +1,27 @@
+@layer components {
+  .header {
+    @apply flex z-[31] sticky top-0 w-full print:hidden
+      bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl
+      border-b border-gray-200/50 dark:border-gray-800/50;
+  }
+  
+  .header-wrapper {
+    @apply flex relative items-center justify-between p-0 px-6 w-full;
+  }
+  
+  .header-action {
+    @apply flex items-center gap-6; /* Increased spacing as requested */
+  }
+  
+  .header-action-item {
+    @apply cursor-pointer p-2 rounded-xl transition-all duration-300;
+  }
+  
+  .header-action-item-hoverable {
+    @apply hover:bg-gray-100/80 
+      dark:hover:bg-gray-800/80
+      hover:text-gray-900 
+      dark:hover:text-gray-100
+      active:scale-95;
+  }  
+}

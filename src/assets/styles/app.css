@@ -1,0 +1,126 @@
+@import './tailwind/index.css';
+@import './components/index.css';
+@import './template/index.css';
+@import './others/index.css';
+@import './vendors/index.css';
+
+
+/* Premium Chat Styles */
+.prose-content {
+  @apply text-[15px] leading-7 text-gray-100;
+}
+
+.prose-content h1 {
+  @apply text-2xl font-semibold text-white mt-6 mb-3;
+}
+
+.prose-content h2 {
+  @apply text-xl font-semibold text-white mt-6 mb-3;
+}
+
+.prose-content h3 {
+  @apply text-lg font-semibold text-white mt-6 mb-3;
+}
+
+.prose-content p {
+  @apply mb-3 last:mb-0;
+}
+
+.prose-content ul {
+  @apply my-3 ml-6 space-y-2 list-disc;
+}
+
+.prose-content ol {
+  @apply my-3 ml-6 space-y-2 list-decimal;
+}
+
+.prose-content li {
+  @apply text-gray-200;
+}
+
+.prose-content blockquote {
+  @apply border-l-4 border-indigo-500 pl-4 italic text-gray-300 my-3;
+}
+
+.prose-content a {
+  @apply text-indigo-400 underline hover:text-indigo-300 transition-colors;
+}
+
+.prose-content strong {
+  @apply font-semibold text-white;
+}
+
+.prose-content em {
+  @apply italic text-gray-300;
+}
+
+/* Ensure code blocks don't create extra spacing */
+.prose-content>*:first-child {
+  @apply mt-0;
+}
+
+.prose-content>*:last-child {
+  @apply mb-0;
+}
+
+/* Prevent double margins */
+.prose-content pre {
+  @apply my-0;
+}
+
+/* Smooth scrollbar */
+.chat-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(75 85 99);
+  border-radius: 3px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(107 114 128);
+}
+
+/* Code block scrollbars */
+.not-prose>div::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.not-prose>div::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.not-prose>div::-webkit-scrollbar-thumb {
+  background: rgba(92, 99, 112, 0.8);
+  border-radius: 4px;
+}
+
+.not-prose>div::-webkit-scrollbar-thumb:hover {
+  background: rgba(92, 99, 112, 1);
+}
+
+/* Firefox scrollbar styling */
+.not-prose>div {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(92, 99, 112, 0.8) rgba(0, 0, 0, 0.2);
+}
+
+/* Hide number input spinners */
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.no-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

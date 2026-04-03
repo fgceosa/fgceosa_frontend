@@ -1,0 +1,73 @@
+export const analyticsData = [
+    {
+        id: 'activeProviders',
+        title: 'Active Providers',
+        value: 4,
+        label: 'All operational',
+    },
+    {
+        id: 'totalRequests',
+        title: 'Total Requests',
+        value: '3.1M',
+        label: 'This month',
+    },
+    {
+        id: 'providerCosts',
+        title: 'Provider Costs',
+        value: '₦1.86M',
+        label: 'Monthly spend',
+    },
+    {
+        id: 'avgUptime',
+        title: 'Avg Uptime',
+        value: '99.4%',
+        label: 'Last 30 days',
+    },
+]
+
+export const providers = [
+    {
+        id: 'openai',
+        name: 'OpenAI',
+        status: 'Connected',
+        health: 'Healthy',
+        models: ['GPT-4', 'GPT-3.5', 'DALL-E'],
+        requests: '1.2M',
+        cost: '₦840,000',
+        uptime: 99.8,
+        markup: '15%',
+    },
+    {
+        id: 'anthropic',
+        name: 'Anthropic',
+        status: 'Connected',
+        health: 'Healthy',
+        models: ['Claude-3', 'Claude-2'],
+        requests: '680K',
+        cost: '₦520,000',
+        uptime: 99.9,
+        markup: '12%',
+    },
+    {
+        id: 'cohere',
+        name: 'Cohere',
+        status: 'Connected',
+        health: 'Warning',
+        models: ['Command', 'Embed'],
+        requests: '340K',
+        cost: '₦180,000',
+        uptime: 98.5,
+        markup: '10%',
+    },
+    {
+        id: 'openrouter',
+        name: 'OpenRouter',
+        status: 'Connected',
+        health: 'Healthy',
+        models: ['Llama-2', 'Mixtral', 'CodeLlama'],
+        requests: '890K',
+        cost: '₦320,000',
+        uptime: 99.5,
+        markup: '8%',
+    },
+]
