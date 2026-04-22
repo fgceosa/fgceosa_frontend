@@ -1,7 +1,7 @@
 
 import { useState } from 'react'
 import { Dialog, Input, Button, Notification, toast } from '@/components/ui'
-import { Shield, Lock, X, Sparkles } from 'lucide-react'
+import { Shield } from 'lucide-react'
 import { useAppDispatch } from '@/store'
 import { createPermission, fetchPermissions } from '@/store/slices/rolesPermissions/rolesPermissionsThunk'
 
@@ -20,8 +20,8 @@ export default function CreatePermissionModal({ isOpen, onClose }: CreatePermiss
         e.preventDefault()
         if (!name.trim()) {
             toast.push(
-                <Notification type="danger" title="Validation Error">
-                    Permission name is required
+                <Notification type="danger" title="Required">
+                    Permission name is required.
                 </Notification>
             )
             return
@@ -32,7 +32,7 @@ export default function CreatePermissionModal({ isOpen, onClose }: CreatePermiss
             await dispatch(createPermission({ name, description })).unwrap()
             toast.push(
                 <Notification type="success" title="Permission Created">
-                    Rule has been successfully added to the catalog.
+                    Permission has been created successfully.
                 </Notification>
             )
             dispatch(fetchPermissions())
@@ -41,7 +41,7 @@ export default function CreatePermissionModal({ isOpen, onClose }: CreatePermiss
             setDescription('')
         } catch (error: any) {
             toast.push(
-                <Notification type="danger" title="Creation Failed">
+                <Notification type="danger" title="Failed">
                     {error || 'Failed to create permission'}
                 </Notification>
             )
@@ -54,103 +54,76 @@ export default function CreatePermissionModal({ isOpen, onClose }: CreatePermiss
         <Dialog
             isOpen={isOpen}
             onClose={onClose}
-            className="sm:max-w-[500px] !p-0 overflow-hidden bg-white dark:bg-gray-900 border-none rounded-[2.5rem] shadow-2xl"
+            width={480}
+            className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden shadow-2xl"
+            contentClassName="p-0 border-none"
         >
-            <div className="relative">
-                {/* Premium Background Blurs */}
-                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent dark:from-primary/20 dark:via-primary/10 dark:to-transparent" />
+            <div className="p-8 sm:p-10">
+                {/* Header */}
+                <div className="mb-8 flex items-center gap-4">
+                    <div className="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-2xl flex items-center justify-center border border-red-100 dark:border-red-900/30">
+                        <Shield className="w-6 h-6 text-[#8B0000]" />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">New Permission</h2>
+                        <p className="text-xs font-bold text-gray-400 mt-1">Add a new permission to the system</p>
+                    </div>
+                </div>
 
-                <div className="relative p-8">
-                    {/* Header */}
-                    <div className="flex items-center justify-between mb-8">
-                        <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 rounded-2xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 flex items-center justify-center text-primary transition-transform hover:rotate-6">
-                                <Shield className="w-7 h-7" />
-                            </div>
-                            <div>
-                                <h1 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
-                                    New Permission
-                                </h1>
-                                <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mt-1">
-                                    Define System Rule
-                                </p>
-                            </div>
-                        </div>
-                        <button
-                            onClick={onClose}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors text-gray-400"
-                        >
-                            <X size={20} />
-                        </button>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-500 ml-1">Permission Name</label>
+                        <Input
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="e.g. member:manage"
+                            className="h-12 border-gray-200 dark:border-gray-700 rounded-xl font-bold"
+                        />
+                        <p className="text-[11px] text-gray-400 font-medium ml-1">
+                            Use format: <span className="font-bold text-[#8B0000]">scope:action</span>
+                        </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-8">
-                        <div className="space-y-6">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">
-                                    Permission Name
-                                </label>
-                                <Input
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="e.g. workspace:manage"
-                                    className="h-14 bg-gray-50/50 dark:bg-gray-800/50 border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-primary/20 focus:border-primary text-gray-900 dark:text-white font-bold"
-                                />
-                                <p className="text-[10px] text-gray-400 font-medium px-1">
-                                    Use colon format: <span className="font-bold text-primary">category:action</span>
-                                </p>
-                            </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-500 ml-1">Description</label>
+                        <Input
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="What does this permission allow?"
+                            className="h-12 border-gray-200 dark:border-gray-700 rounded-xl font-bold"
+                        />
+                    </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">
-                                    Definition
-                                </label>
-                                <Input
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Describe what this allows..."
-                                    className="h-14 bg-gray-50/50 dark:bg-gray-800/50 border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-primary/20 focus:border-primary text-gray-900 dark:text-white font-bold"
-                                />
-                            </div>
+                    {/* Preview */}
+                    {name && (
+                        <div className="p-4 bg-gray-50 dark:bg-gray-800/30 rounded-xl border border-gray-100 dark:border-gray-800 animate-in fade-in duration-300">
+                            <p className="text-xs font-bold text-gray-400">Category</p>
+                            <p className="text-sm font-black text-[#8B0000] mt-1">
+                                {name.includes(':') ? name.split(':')[0].replace(/_/g, ' ') : 'General'}
+                            </p>
                         </div>
+                    )}
 
-                        {/* Sensitivity Preview */}
-                        {name && (
-                            <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-2xl border border-primary/10 flex items-start gap-3">
-                                <div className="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-                                    <Sparkles className="w-4 h-4 text-primary" />
-                                </div>
-                                <div>
-                                    <p className="text-[11px] font-bold text-gray-600 dark:text-gray-300">
-                                        System will categorize this under:
-                                    </p>
-                                    <p className="text-sm font-black text-primary uppercase tracking-tight mt-0.5">
-                                        {name.includes(':') ? name.split(':')[0].replace(/_/g, ' ') : 'General'}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="flex gap-4 pt-4">
-                            <Button
-                                type="button"
-                                variant="plain"
-                                onClick={onClose}
-                                className="flex-1 h-14 font-black uppercase tracking-widest text-[10px] text-gray-500 hover:text-gray-900 dark:hover:text-white"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                variant="solid"
-                                disabled={isSaving || !name.trim()}
-                                className="flex-2 h-14 px-10 bg-primary hover:bg-primary-deep text-white font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:scale-100 shrink-0"
-                            >
-                                {isSaving ? 'Creating...' : 'Create Rule'}
-                            </Button>
-                        </div>
-                    </form>
-                </div>
+                    <div className="flex gap-4 pt-2">
+                        <Button
+                            type="button"
+                            variant="plain"
+                            onClick={onClose}
+                            className="flex-1 h-12 rounded-2xl font-black text-gray-400 border-none hover:bg-gray-50 dark:hover:bg-gray-800"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            variant="solid"
+                            disabled={isSaving || !name.trim()}
+                            loading={isSaving}
+                            className="flex-[1.5] h-12 bg-[#8B0000] hover:bg-[#700000] text-white font-black rounded-2xl shadow-lg border-none disabled:opacity-50"
+                        >
+                            Create Permission
+                        </Button>
+                    </div>
+                </form>
             </div>
         </Dialog>
     )

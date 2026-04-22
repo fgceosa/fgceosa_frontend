@@ -25,7 +25,7 @@ export default function RolesHeader({ onCreateRole, onCreatePermission, activeTa
                     </h1>
                 </div>
                 <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 lg:pl-14 font-medium max-w-2xl leading-relaxed">
-                    Manage HQ admin roles and rules for organizations, billing, and system settings.
+                    Manage admin roles and control what each role can access.
                 </p>
             </div>
 

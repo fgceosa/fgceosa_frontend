@@ -2,7 +2,7 @@ import Spinner from '@/components/ui/Spinner'
 import classNames from 'classnames'
 import type { CommonProps } from '@/@types/common'
 import type { ElementType, ReactNode } from 'react'
-import QorebitLoading from './QorebitLoading'
+import FGCEOSALoading from './FGCEOSALoading'
 
 interface BaseLoadingProps extends CommonProps {
     asElement?: ElementType
@@ -12,7 +12,7 @@ interface BaseLoadingProps extends CommonProps {
 }
 
 interface LoadingProps extends BaseLoadingProps {
-    type?: 'default' | 'cover' | 'qorebit'
+    type?: 'default' | 'cover' | 'association' | 'qorebit'
 }
 
 const DefaultLoading = (props: BaseLoadingProps) => {
@@ -95,8 +95,9 @@ const Loading = ({
                     {...rest}
                 />
             )
+        case 'association':
         case 'qorebit':
-            return loading ? <QorebitLoading /> : <>{rest.children}</>
+            return loading ? <FGCEOSALoading /> : <>{rest.children}</>
         default:
             return (
                 <DefaultLoading

@@ -10,7 +10,8 @@ import {
     Shield,
     Calendar,
     Globe,
-    ExternalLink
+    ExternalLink,
+    Wallet
 } from 'lucide-react'
 import type { UserMember } from '@/app/(protected-pages)/admin/users/types'
 import dayjs from 'dayjs'
@@ -27,7 +28,7 @@ const InfoRow = ({ icon: Icon, label, value, isMonospace = false }: { icon: any,
             <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg group-hover:bg-primary/5 transition-colors">
                 <Icon className="h-3.5 w-3.5 text-gray-400 group-hover:text-primary transition-colors" />
             </div>
-            <span className="text-[10px] font-black text-gray-400 tracking-widest">{label}</span>
+            <span className="text-sm font-bold text-gray-900 dark:text-gray-100 tracking-tight">{label}</span>
         </div>
         <span className={classNames(
             "text-sm font-bold text-gray-900 dark:text-white tracking-tight sm:text-right overflow-hidden text-ellipsis",
@@ -118,33 +119,83 @@ const UserDetailsProfile = ({ data: rawData, layout = 'detailed' }: UserDetailsP
     }
 
     return (
-        <Card className="p-6 md:p-10 bg-white dark:bg-gray-900 rounded-[2rem] md:rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/40 dark:shadow-none font-sans">
-            <div className="mb-10">
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-1">Profile Information</h3>
-                <p className="text-xs font-bold text-gray-400 tracking-widest leading-none">Personal details and contact</p>
+        <Card className="p-0 bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/40 dark:shadow-none overflow-hidden font-sans">
+            {/* Header section similar to user-settings */}
+            <div className="p-8 pb-0">
+                <div className="flex items-center gap-5 border-b border-gray-100 dark:border-gray-800 pb-8">
+                    <div className="p-4 rounded-2xl border" style={{ backgroundColor: 'rgba(139, 0, 0, 0.05)', borderColor: 'rgba(139, 0, 0, 0.1)' }}>
+                        <User className="h-7 w-7" style={{ color: '#8B0000' }} />
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-1">Profile Information</h3>
+                        <p className="text-base text-gray-500 dark:text-gray-400 font-medium">Detailed personal and alumni records</p>
+                    </div>
+                </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                <div className="space-y-1">
-                    <h4 className="text-[10px] font-black text-primary tracking-[0.3em] mb-4">Identification</h4>
-                    <InfoRow icon={User} label="First Name" value={data.firstName} />
-                    <InfoRow icon={User} label="Last Name" value={data.lastName} />
-                    <InfoRow icon={Hash} label="Username" value={data.username || 'N/A'} />
-                </div>
 
-                <div className="space-y-1">
-                    <h4 className="text-[10px] font-black text-primary tracking-[0.3em] mb-4">Contact</h4>
-                    <InfoRow icon={Mail} label="Email Address" value={data.email} />
-                    <InfoRow icon={Phone} label="Phone Number" value={data.phone || 'Not Specified'} />
+            <div className="p-8 pt-10 space-y-16">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12">
+                    
+                    {/* Identification */}
+                    <div className="space-y-8">
+                        <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-800 pb-3">
+                            <div className="p-1.5 rounded-lg bg-gray-50 dark:bg-gray-800">
+                                <User className="w-4 h-4 text-gray-400" />
+                            </div>
+                            <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">Identification</h4>
+                        </div>
+                        <div className="space-y-0.5">
+                            <InfoRow icon={User} label="First Name" value={data.firstName} />
+                            <InfoRow icon={User} label="Last Name" value={data.lastName} />
+                            <InfoRow icon={User} label="Gender" value={data.gender} />
+                            <InfoRow icon={Hash} label="Username" value={data.username} isMonospace />
+                        </div>
+                    </div>
 
-                </div>
+                    {/* Contact Detail */}
+                    <div className="space-y-8">
+                        <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-800 pb-3">
+                            <div className="p-1.5 rounded-lg bg-gray-50 dark:bg-gray-800">
+                                <Mail className="w-4 h-4 text-gray-400" />
+                            </div>
+                            <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">Contact Detail</h4>
+                        </div>
+                        <div className="space-y-0.5">
+                            <InfoRow icon={Mail} label="Email Address" value={data.email} />
+                            <InfoRow icon={Mail} label="Alt Email" value={data.alternateEmail} />
+                            <InfoRow icon={Phone} label="Phone Number" value={data.phoneNumber || data.phone} />
+                        </div>
+                    </div>
 
-                <div className="space-y-1 md:col-span-2">
-                    <h4 className="text-[10px] font-black text-primary tracking-[0.3em] mb-4 sm:mt-4">Address</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
-                        <InfoRow icon={MapPin} label="Street Address" value={data.address || 'Not Specified'} />
-                        <InfoRow icon={MapPin} label="City / State" value={data.city || 'Not Specified'} />
-                        <InfoRow icon={Hash} label="Zip / Postal" value={data.postcode || 'Not Specified'} />
-                        <InfoRow icon={Globe} label="Country" value={data.country || 'Not Specified'} />
+                    {/* Alumni Heritage */}
+                    <div className="space-y-8">
+                        <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-800 pb-3">
+                            <div className="p-1.5 rounded-lg bg-gray-50 dark:bg-gray-800">
+                                <Building2 className="w-4 h-4 text-gray-400" />
+                            </div>
+                            <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">Alumni Heritage</h4>
+                        </div>
+                        <div className="space-y-0.5">
+                            <InfoRow icon={Calendar} label="FGCE Set" value={data.fgceSet} />
+                            <InfoRow icon={Building2} label="FGCE House" value={data.fgceHouse} />
+                            <InfoRow icon={Shield} label="Membership" value={data.role || 'Member'} />
+                        </div>
+                    </div>
+
+                    {/* Residency & Status */}
+                    <div className="space-y-8">
+                        <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-800 pb-3">
+                            <div className="p-1.5 rounded-lg bg-gray-50 dark:bg-gray-800">
+                                <MapPin className="w-4 h-4 text-gray-400" />
+                            </div>
+                            <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider">Residency & Status</h4>
+                        </div>
+                        <div className="space-y-0.5">
+                            <InfoRow icon={MapPin} label="Street Address" value={data.address} />
+                            <InfoRow icon={MapPin} label="City / State" value={data.city} />
+                            <InfoRow icon={Globe} label="Country" value={data.country} />
+                            <InfoRow icon={Wallet} label="Dues Status" value={(data.dues || 'unpaid').toUpperCase()} />
+                        </div>
                     </div>
                 </div>
             </div>

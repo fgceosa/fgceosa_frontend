@@ -20,7 +20,9 @@ const AxiosResponseIntrceptorErrorCallback = (error: any) => {
                       config?.url?.includes('ai/v1/health') ||
                       config?.url?.includes('user/credits') ||
                       config?.url?.includes('dashboard/metrics') ||
-                      config?.url?.includes('usage/stats')
+                      config?.url?.includes('usage/stats') ||
+                      config?.url?.includes('dashboard/admin-stats') ||
+                      config?.url?.includes('dashboard/member-summary')
 
     if (response) {
         if (response.status === 401) {
@@ -32,6 +34,18 @@ const AxiosResponseIntrceptorErrorCallback = (error: any) => {
         if (response.status === 403 && (response.data as any)?.detail === 'Could not validate credentials') {
             console.error('🛡️ Identity mismatch or invalid token. Logging out for safety.')
             forceLogout()
+        }
+
+        // Silent fail for 404s on polling/soft-fail URLs
+        if (response.status === 404 && isPolling) {
+            console.warn(`🔍 Soft-fail endpoint naturally 404'd: ${config?.url}`)
+            return
+        }
+
+        // Suppress console noise for expected 400s (e.g. duplicate event registration)
+        // These are handled gracefully in the UI layer
+        if (response.status === 400 && config?.url?.includes('/register')) {
+            return Promise.reject(error)
         }
     }
 

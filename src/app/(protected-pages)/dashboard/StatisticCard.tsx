@@ -68,7 +68,6 @@ export const StatisticCard = (props: StatisticCardProps) => {
                     </div>
                     {active && (
                         <div className="flex items-center gap-1.5 mt-0.5 relative z-10">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                             <span className="text-[10px] font-black text-gray-400 dark:text-gray-500">
                                 Active
                             </span>

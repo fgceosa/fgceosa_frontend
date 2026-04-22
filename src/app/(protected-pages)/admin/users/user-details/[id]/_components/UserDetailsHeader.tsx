@@ -28,7 +28,9 @@ const getAvatarUrl = (avatarPath: string | null | undefined): string => {
     if (avatarPath.startsWith('http') || avatarPath.startsWith('https')) {
         return avatarPath
     }
-    return `${config.apiUrl}${avatarPath}`
+    const baseUrl = config.apiUrl.replace(/\/api\/v1\/?$/, '')
+    const safePath = avatarPath.startsWith('/') ? avatarPath : `/${avatarPath}`
+    return `${baseUrl}${safePath}`
 }
 
 const UserDetailsHeader = ({ data }: UserDetailsHeaderProps) => {
@@ -79,9 +81,9 @@ const UserDetailsHeader = ({ data }: UserDetailsHeaderProps) => {
                         variant="plain"
                         size="sm"
                         onClick={handleBack}
-                        className="h-9 w-9 p-0 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+                        className="h-9 w-9 p-0 flex items-center justify-center rounded-xl bg-primary text-white border-none hover:bg-primary/90 shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
                     >
-                        <ArrowLeft className="h-4 w-4" />
+                        <ArrowLeft className="h-4 w-4 text-white" />
                     </Button>
                     <div className="flex items-center gap-2">
                         <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Users</span>
@@ -98,16 +100,16 @@ const UserDetailsHeader = ({ data }: UserDetailsHeaderProps) => {
                                 <img
                                     src={getAvatarUrl(data.avatar)}
                                     alt="Profile"
-                                    className="w-16 md:w-20 h-16 md:h-20 bg-gray-100 rounded-[22px] md:rounded-[26px] object-cover shadow-xl ring-4 ring-blue-50 dark:ring-blue-900/20"
+                                    className="w-16 md:w-20 h-16 md:h-20 bg-gray-100 rounded-[22px] md:rounded-[26px] object-cover shadow-xl ring-4 ring-primary/10 dark:ring-primary/20"
                                 />
                             ) : (
-                                <div className="w-16 md:w-20 h-16 md:h-20 bg-primary rounded-[22px] md:rounded-[26px] flex items-center justify-center shadow-xl ring-4 ring-blue-50 dark:ring-blue-900/20 overflow-hidden text-white font-black text-xl md:text-2xl">
+                                <div className="w-16 md:w-20 h-16 md:h-20 bg-primary rounded-[22px] md:rounded-[26px] flex items-center justify-center shadow-xl ring-4 ring-primary/10 dark:ring-primary/20 overflow-hidden text-white font-black text-xl md:text-2xl">
                                     {data.name ? data.name.charAt(0).toUpperCase() : (data.firstName ? data.firstName.charAt(0).toUpperCase() : 'U')}
                                 </div>
                             )}
                             <div className={classNames(
                                 "absolute -bottom-1 -right-1 w-7 h-7 border-4 border-white dark:border-gray-900 rounded-full flex items-center justify-center shadow-lg transition-colors",
-                                data.status === 'active' ? "bg-green-500" : "bg-amber-500"
+                                data.status === 'active' ? "bg-emerald-500" : "bg-amber-500"
                             )} title={data.status || 'Active'}>
                                 <ShieldCheck className="h-3.5 w-3.5 text-white" />
                             </div>
@@ -118,8 +120,8 @@ const UserDetailsHeader = ({ data }: UserDetailsHeaderProps) => {
                                 <h1 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                                     {data.name || `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'User'}
                                 </h1>
-                                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800/30 text-[9px] font-black tracking-widest whitespace-nowrap">
-                                    {data.role || 'User'}
+                                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/5 text-primary border border-primary/20 text-[9px] font-black tracking-widest whitespace-nowrap uppercase">
+                                    {data.role || 'Member'}
                                 </div>
                             </div>
 
@@ -143,27 +145,27 @@ const UserDetailsHeader = ({ data }: UserDetailsHeaderProps) => {
                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
                         {data.status === 'active' ? (
                             <Popconfirm
-                                title="Are you sure you want to deactivate this user? They will lose access to all platform features until reactivated."
+                                title="Are you sure you want to deactivate this member? They will lose access to all platform features until reactivated."
                                 onConfirm={handleStatusChange}
                                 okColorClass="bg-rose-600 hover:bg-rose-700"
                                 confirmText="Deactivate"
                             >
                                 <Button
                                     variant="plain"
-                                    className="h-12 w-full sm:w-auto px-6 border border-gray-200 dark:border-gray-700 rounded-2xl font-black tracking-widest text-[10px] text-gray-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100 dark:hover:bg-rose-900/10 transition-all"
+                                    className="h-12 w-full sm:w-auto px-6 border border-gray-200 dark:border-gray-700 rounded-2xl font-black  text-[10px] text-gray-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100 dark:hover:bg-rose-900/10 transition-all"
                                     loading={loading}
                                 >
-                                    Deactivate User
+                                    Deactivate Member
                                 </Button>
                             </Popconfirm>
                         ) : (
                             <Button
                                 variant="plain"
-                                className="h-12 w-full sm:w-auto px-6 border border-emerald-200 dark:border-emerald-700 rounded-2xl font-black tracking-widest text-[10px] text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 dark:hover:bg-emerald-900/10 transition-all"
+                                className="h-12 w-full sm:w-auto px-6 border border-emerald-200 dark:border-emerald-700 rounded-2xl font-black  text-[10px] text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 dark:hover:bg-emerald-900/10 transition-all"
                                 onClick={handleStatusChange}
                                 loading={loading}
                             >
-                                Activate User
+                                Activate Member
                             </Button>
                         )}
 

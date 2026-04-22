@@ -100,33 +100,40 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
     }
 
     return (
-        <Dialog contentClassName="pb-0 px-0" {...rest}>
-            <div className="px-6 pb-6 pt-2 flex">
-                <div>
-                    <StatusIcon status={type} />
-                </div>
-                <div className="ml-4 rtl:mr-4">
-                    <h5 className="mb-2">{title}</h5>
-                    {children}
-                </div>
-            </div>
-            <div className="px-6 py-3 bg-gray-100 dark:bg-gray-700 rounded-bl-2xl rounded-br-2xl">
-                <div className="flex justify-end items-center gap-2">
-                    <Button
-                        size="sm"
-                        onClick={handleCancel}
-                        {...cancelButtonProps}
-                    >
-                        {cancelText}
-                    </Button>
-                    <Button
-                        size="sm"
-                        variant="solid"
-                        onClick={handleConfirm}
-                        {...confirmButtonProps}
-                    >
-                        {confirmText}
-                    </Button>
+        <Dialog 
+            className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden shadow-2xl" 
+            contentClassName="p-0 border-none"
+            {...rest}
+        >
+            <div className="p-8 sm:p-10">
+                <div className="flex flex-col items-center text-center">
+                    <div className="mb-6">
+                        <StatusIcon status={type} />
+                    </div>
+                    <div className="space-y-2 mb-8">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight capitalize">{title}</h3>
+                        <div className="text-[13px] font-bold text-gray-500 leading-relaxed px-4">
+                            {children}
+                        </div>
+                    </div>
+
+                    <div className="flex gap-4 w-full">
+                        <Button
+                            className="flex-1 h-12 rounded-2xl font-bold capitalize text-gray-500 border-none hover:bg-gray-50 dark:hover:bg-gray-800"
+                            onClick={handleCancel}
+                            {...cancelButtonProps}
+                        >
+                            {cancelText}
+                        </Button>
+                        <Button
+                            variant="solid"
+                            className={`flex-[1.5] h-12 rounded-2xl font-bold capitalize text-white border-none shadow-lg ${type === 'danger' ? 'bg-[#8B0000] hover:bg-[#700000]' : 'bg-gray-900 dark:bg-white dark:text-gray-900'}`}
+                            onClick={handleConfirm}
+                            {...confirmButtonProps}
+                        >
+                            {confirmText}
+                        </Button>
+                    </div>
                 </div>
             </div>
         </Dialog>

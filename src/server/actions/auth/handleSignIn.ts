@@ -27,23 +27,16 @@ export const onSignInWithCredentials = async (
         // Map the basic role to proper UserRole format
         const userWithAuthority = {
             authority: user.authority?.map((role: string) => {
-                // Map basic roles to proper UserRole types
-                switch (role) {
+                // Map roles to simplified UserRole types
+                switch (role.toLowerCase()) {
+                    case 'super_admin':
+                        return 'super_admin' as const
                     case 'admin':
-                        return 'platform_admin' as const
-                    case 'platform_super_admin':
-                        return 'platform_super_admin' as const
-                    case 'org_super_admin':
-                        return 'org_super_admin' as const
-                    case 'org_admin':
-                        return 'org_admin' as const
-                    case 'staff':
-                        return 'staff' as const
-                    case 'user':
+                        return 'admin' as const
                     default:
-                        return 'user' as const
+                        return 'member' as const
                 }
-            }) || ['user' as const]
+            }) || ['member' as const]
         }
         const redirectUrl = getRoleBasedRedirectUrl(userWithAuthority, callbackUrl)
 

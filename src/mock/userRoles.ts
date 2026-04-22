@@ -1,8 +1,8 @@
 export const defaultRoles = [
     {
-        id: 'super-admin',
+        id: 'super_admin',
         name: 'Super Admin',
-        description: 'Has unrestricted access to all system features.',
+        description: 'Total control over the entire platform, including global settings and financial oversight.',
         isCustom: false,
         permissions: {
             manageUsers: true,
@@ -18,7 +18,7 @@ export const defaultRoles = [
     {
         id: 'admin',
         name: 'Admin',
-        description: 'Manages teams, billing and operations.',
+        description: 'Manage users, view analytics, and handle standard administrative tasks.',
         isCustom: false,
         permissions: {
             manageUsers: true,
@@ -32,57 +32,9 @@ export const defaultRoles = [
         },
     },
     {
-        id: 'manager',
-        name: 'Manager',
-        description: 'Oversees workflow and analytics.',
-        isCustom: false,
-        permissions: {
-            manageUsers: true,
-            manageRoles: false,
-            manageSettings: false,
-            viewAnalytics: true,
-            manageBilling: false,
-            manageCredits: true,
-            deleteContent: false,
-            exportData: true,
-        },
-    },
-    {
-        id: 'analyst',
-        name: 'Analyst',
-        description: 'Reads and exports analytics.',
-        isCustom: false,
-        permissions: {
-            manageUsers: false,
-            manageRoles: false,
-            manageSettings: false,
-            viewAnalytics: true,
-            manageBilling: false,
-            manageCredits: false,
-            deleteContent: false,
-            exportData: true,
-        },
-    },
-    {
-        id: 'support',
-        name: 'Support Staff',
-        description: 'Handles operational tickets and customer issues.',
-        isCustom: false,
-        permissions: {
-            manageUsers: false,
-            manageRoles: false,
-            manageSettings: false,
-            viewAnalytics: false,
-            manageBilling: false,
-            manageCredits: true,
-            deleteContent: false,
-            exportData: false,
-        },
-    },
-    {
-        id: 'viewer',
-        name: 'Read Only',
-        description: 'Can only view system data.',
+        id: 'member',
+        name: 'Member',
+        description: 'Standard access to platform features and personal profile.',
         isCustom: false,
         permissions: {
             manageUsers: false,

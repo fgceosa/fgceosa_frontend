@@ -1,7 +1,7 @@
 'use client'
 
-import { Dialog, Button } from '@/components/ui'
-import { AlertCircle } from 'lucide-react'
+import { Dialog, Button, Avatar } from '@/components/ui'
+import { HiOutlineExclamation } from 'react-icons/hi'
 
 interface DeleteAvatarModalProps {
     isOpen: boolean
@@ -21,44 +21,48 @@ export default function DeleteAvatarModal({
             isOpen={isOpen}
             onClose={onClose}
             width={480}
+            className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden shadow-2xl"
+            contentClassName="p-0 border-none"
             closable={!isDeleting}
         >
-            <div className="bg-white dark:bg-neutral-900 rounded-xl w-full space-y-4">
-                {/* Alert Icon */}
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/20">
-                    <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
-                </div>
+            <div className="p-8 sm:p-10">
+                <div className="flex flex-col items-center text-center">
+                    <div className="mb-6">
+                        <Avatar
+                            className="text-red-600 bg-red-100 dark:text-red-100"
+                            shape="circle"
+                            size={56}
+                        >
+                            <span className="text-2xl">
+                                <HiOutlineExclamation />
+                            </span>
+                        </Avatar>
+                    </div>
+                    <div className="space-y-2 mb-8">
+                        <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Delete Picture</h3>
+                        <div className="text-[13px] font-bold text-gray-500 leading-relaxed px-4">
+                            Are you sure you want to remove your profile picture? This will reset your avatar to your initials.
+                        </div>
+                    </div>
 
-                {/* Title and Message */}
-                <div className="space-y-2">
-                    <h3 className="text-xl font-semibold">Remove Profile Picture</h3>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Are you sure you want to remove your profile picture?
-                        You can upload a new one anytime.
-                    </p>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-end gap-2 mt-6">
-                    <Button
-                        variant="default"
-                        size="sm"
-                        onClick={onClose}
-                        disabled={isDeleting}
-                    >
-                        Cancel
-                    </Button>
-
-                    <Button
-                        variant="solid"
-                        size="sm"
-                        onClick={onConfirm}
-                        disabled={isDeleting}
-                        loading={isDeleting}
-                        className="bg-red-600 hover:bg-red-700"
-                    >
-                        {isDeleting ? 'Removing...' : 'Remove Picture'}
-                    </Button>
+                    <div className="flex gap-4 w-full">
+                        <Button
+                            className="flex-1 h-12 rounded-2xl font-black text-gray-400 border-none hover:bg-gray-50 dark:hover:bg-gray-800"
+                            onClick={onClose}
+                            disabled={isDeleting}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="solid"
+                            className="flex-[1.5] h-12 rounded-2xl font-black text-white border-none shadow-lg bg-[#8B0000] hover:bg-[#700000]"
+                            onClick={onConfirm}
+                            loading={isDeleting}
+                            disabled={isDeleting}
+                        >
+                            Delete Picture
+                        </Button>
+                    </div>
                 </div>
             </div>
         </Dialog>

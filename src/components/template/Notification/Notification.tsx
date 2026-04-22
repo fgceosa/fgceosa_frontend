@@ -53,15 +53,6 @@ const _Notification = ({ className }: { className?: string }) => {
         try {
             const resp = await apiGetNotifications({ limit: 50 })
             if (resp) {
-                // Trigger wallet refresh if there's a new credit-related notification
-                if (resp.unreadCount > unreadCount) {
-                    const hasNewCreditNotif = resp.data.some((n: any) =>
-                        !n.isRead && ['credit_received', 'topup_success', 'adjustment'].includes(n.type)
-                    )
-                    if (hasNewCreditNotif) {
-                        window.dispatchEvent(new Event('wallet-updated'))
-                    }
-                }
 
                 setNotificationList(resp.data || [])
                 setUnreadCount(resp.unreadCount || 0)

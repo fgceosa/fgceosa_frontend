@@ -21,32 +21,33 @@ import {
 import classNames from '@/utils/classNames'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import StatCard from '@/components/shared/StatCard'
 
 // Mock Data
 const referralStats = [
     {
         title: 'Total Referrals',
         value: '24',
-        change: '+12%',
-        icon: <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />,
-        bgClass: 'bg-blue-50 dark:bg-blue-900/20',
-        textClass: 'text-blue-600 dark:text-blue-400'
+        trend: { value: '12%', isPositive: true },
+        icon: <Users className="w-5 h-5" />,
+        color: 'blue' as const,
+        subtext: 'Registered through your link'
     },
     {
         title: 'Active Users',
         value: '18',
-        change: '+8%',
-        icon: <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />,
-        bgClass: 'bg-green-50 dark:bg-green-900/20',
-        textClass: 'text-green-600 dark:text-green-400'
+        trend: { value: '8%', isPositive: true },
+        icon: <CheckCircle2 className="w-5 h-5" />,
+        color: 'emerald' as const,
+        subtext: 'Currently utilizing the platform'
     },
     {
         title: 'Total Earned',
         value: '1,250 AI Credits',
-        change: '+24%',
-        icon: <Zap className="w-5 h-5 text-purple-600 dark:text-purple-400" />,
-        bgClass: 'bg-purple-50 dark:bg-purple-900/20',
-        textClass: 'text-purple-600 dark:text-purple-400'
+        trend: { value: '24%', isPositive: true },
+        icon: <Zap className="w-5 h-5" />,
+        color: 'indigo' as const,
+        subtext: 'Accumulated from commissions'
     }
 ]
 
@@ -212,23 +213,11 @@ export default function ReferralProgramPage() {
             {/* Stats Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 {referralStats.map((stat, index) => (
-                    <Card key={index} className="p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none transition-all duration-300 group cursor-default bg-white dark:bg-gray-900">
-                        <div className="flex justify-between items-start mb-4">
-                            <div className={classNames("w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-6", stat.bgClass)}>
-                                {stat.icon}
-                            </div>
-                            <span className={classNames(
-                                "px-2.5 py-1 rounded-full text-xs font-bold",
-                                stat.change.startsWith('+') ? 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400' : 'bg-red-50 text-red-600'
-                            )}>
-                                {stat.change}
-                            </span>
-                        </div>
-                        <div>
-                            <p className="text-xs font-bold text-gray-400 mb-1 group-hover:text-primary transition-colors">{stat.title}</p>
-                            <h3 className="text-2xl font-black text-gray-900 dark:text-white">{stat.value}</h3>
-                        </div>
-                    </Card>
+                    <StatCard 
+                        key={index}
+                        {...stat}
+                        isFirst={index === 0}
+                    />
                 ))}
             </div>
 

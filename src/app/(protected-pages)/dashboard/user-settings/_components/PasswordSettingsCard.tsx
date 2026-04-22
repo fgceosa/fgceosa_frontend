@@ -131,8 +131,8 @@ export default function PasswordSettingsCard() {
             {/* Header */}
             <div className="p-5 sm:p-8 border-b border-gray-100 dark:border-gray-800">
                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-primary/5 rounded-2xl border border-primary/10">
-                        <Lock className="h-6 w-6 text-primary" />
+                    <div className="p-3 rounded-2xl border" style={{ backgroundColor: 'rgba(139, 0, 0, 0.05)', borderColor: 'rgba(139, 0, 0, 0.1)' }}>
+                        <Lock className="h-6 w-6" style={{ color: '#8B0000' }} />
                     </div>
                     <div>
                         <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Security & Password</h3>
@@ -156,7 +156,7 @@ export default function PasswordSettingsCard() {
                                 <Input
                                     id="currentPassword"
                                     type={showPasswords.current ? 'text' : 'password'}
-                                    className="h-14 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all text-base"
+                                    className="h-14 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#8B0000]/20 transition-all text-base"
                                     value={formData.currentPassword}
                                     onChange={(e) => handleInputChange('currentPassword', e.target.value)}
                                     placeholder="••••••••"
@@ -184,7 +184,7 @@ export default function PasswordSettingsCard() {
                                 <Input
                                     id="newPassword"
                                     type={showPasswords.new ? 'text' : 'password'}
-                                    className="h-14 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all text-base"
+                                    className="h-14 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#8B0000]/20 transition-all text-base"
                                     value={formData.newPassword}
                                     onChange={(e) => handleInputChange('newPassword', e.target.value)}
                                     placeholder="••••••••"
@@ -209,7 +209,7 @@ export default function PasswordSettingsCard() {
                                 <Input
                                     id="confirmPassword"
                                     type={showPasswords.confirm ? 'text' : 'password'}
-                                    className="h-14 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 transition-all text-base"
+                                    className="h-14 bg-gray-50 dark:bg-gray-800 border-none rounded-xl focus:ring-2 focus:ring-[#8B0000]/20 transition-all text-base"
                                     value={formData.confirmPassword}
                                     onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                                     placeholder="••••••••"
@@ -280,7 +280,8 @@ export default function PasswordSettingsCard() {
 
                         <div className="pt-4">
                             <Button
-                                className="w-full bg-primary hover:bg-primary-deep text-white font-bold h-14 px-10 rounded-xl shadow-xl shadow-primary/25 disabled:shadow-none transition-all flex items-center justify-center gap-2"
+                                className="w-full text-white font-bold h-14 px-10 rounded-xl shadow-xl disabled:shadow-none transition-all flex items-center justify-center gap-2 hover:opacity-90"
+                                style={{ backgroundColor: '#8B0000', boxShadow: '0 20px 25px -5px rgba(139, 0, 0, 0.25)' }}
                                 variant="solid"
                                 type="submit"
                                 loading={isLoading}

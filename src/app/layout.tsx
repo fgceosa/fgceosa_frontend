@@ -55,7 +55,7 @@ export default async function RootLayout({
         >
             <body className={`${inter.variable} font-sans overflow-x-hidden w-full m-0 p-0`} suppressHydrationWarning>
                 <NextTopLoader
-                    color="#0055BA"
+                    color="#8B0000"
                     initialPosition={0.08}
                     crawlSpeed={200}
                     height={4}
@@ -63,7 +63,7 @@ export default async function RootLayout({
                     showSpinner={false}
                     easing="ease"
                     speed={200}
-                    shadow="0 0 10px #0055BA,0 0 5px #0055BA"
+                    shadow="0 0 10px #8B0000,0 0 5px #8B0000"
                 />
                 <ReduxProvider>
                     <InitializeStore

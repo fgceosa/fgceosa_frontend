@@ -59,64 +59,64 @@
   }
 
   .picker-panel {
-    @apply shadow-xl dark:shadow-2xl bg-white dark:bg-gray-900 rounded-2xl p-4 dark:border-2 dark:border-gray-700;
+    @apply shadow-[0_25px_50px_-12px_rgba(139,0,0,0.15)] bg-white dark:bg-gray-900 rounded-[2.5rem] p-6 border border-gray-100 dark:border-gray-800;
   }
 
   .picker-view {
-    @apply min-w-[280px] w-full flex gap-6;
+    @apply min-w-[300px] w-full flex gap-8;
   }
 
   .picker-table {
-    @apply border-separate border-spacing-y-1.5 w-full;
+    @apply border-separate border-spacing-y-2 w-full;
   }
 
   .picker-header-arrow {
-    @apply cursor-pointer flex items-center px-2 text-lg rtl:rotate-180 select-none h-10;
+    @apply cursor-pointer flex items-center px-2 text-primary rtl:rotate-180 select-none h-10 hover:scale-110 transition-transform;
   }
 
   .picker-direction-button {
-    @apply text-2xl rounded-full h-10 w-10 flex items-center justify-center hover:text-gray-800 hover:dark:text-gray-100 hover:bg-gray-100 hover:dark:bg-gray-700;
+    @apply text-xl rounded-xl h-9 w-9 flex items-center justify-center hover:text-white hover:bg-primary transition-all duration-300;
   }
 
   .picker-header-label {
-    @apply cursor-pointer mx-0.5 select-none text-gray-900 dark:text-gray-100 text-lg font-semibold;
+    @apply cursor-pointer mx-1 select-none text-gray-900 dark:text-gray-100 text-sm font-black uppercase tracking-[0.1em] hover:text-primary transition-colors;
   }
 
   .year-table,
   .month-table {
-    @apply grid grid-cols-3 gap-4;
+    @apply grid grid-cols-3 gap-5 p-2;
   }
 
   .date-picker-cell {
-    @apply text-center w-10 h-10 p-0;
+    @apply text-center w-9 h-9 p-0;
   }
 
   .date-picker-cell-selected {
-    @apply text-gray-100;
+    @apply text-white bg-primary rounded-lg shadow-[0_4px_12px_rgba(139,0,0,0.3)] transition-all;
   }
 
   .date-picker-cell-selected-start {
-    @apply relative rounded-full before:content-[''] before:absolute before:bg-primary-subtle before:w-full before:h-full before:left-0 before:top-0 ltr:before:rounded-tl-full ltr:before:rounded-bl-full rtl:before:rounded-tr-full rtl:before:rounded-br-full;
+    @apply relative rounded-lg before:content-[''] before:absolute before:bg-primary-subtle before:w-full before:h-full before:left-0 before:top-0 ltr:before:rounded-l-lg rtl:before:rounded-r-lg;
   }
 
   .date-picker-cell-selected-end {
-    @apply relative rounded-full before:content-[''] before:absolute before:bg-primary-subtle before:w-full before:h-full before:left-0 before:top-0 ltr:before:rounded-tr-full ltr:before:rounded-br-full rtl:before:rounded-tl-full rtl:before:rounded-bl-full;
+    @apply relative rounded-lg before:content-[''] before:absolute before:bg-primary-subtle before:w-full before:h-full before:left-0 before:top-0 ltr:before:rounded-r-lg rtl:before:rounded-l-lg;
   }
 
   .date-picker-cell-inrange-today {
-    @apply relative rounded-full before:content-[''] before:absolute before:bg-primary-subtle before:w-full before:h-full before:left-0 before:top-0;
+    @apply relative rounded-lg before:content-[''] before:absolute before:bg-primary-subtle before:w-full before:h-full before:left-0 before:top-0;
   }
 
   .date-picker-cell-content {
-    @apply h-full w-full;
+    @apply h-full w-full flex items-center justify-center rounded-lg text-[11px] font-bold outline-none focus:outline-none focus:ring-0 focus-visible:outline-none transition-all;
   }
 
   .date-picker-cell-current-month {
-    @apply text-gray-700 dark:text-gray-400;
+    @apply text-gray-700 dark:text-gray-300;
   }
 
   .date-picker-cell-hoverable {
-    @apply hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-gray-300;
+    @apply hover:bg-primary/5 hover:text-primary dark:hover:bg-primary/10 transition-colors;
   }
 
   .date-picker-cell-disabled {

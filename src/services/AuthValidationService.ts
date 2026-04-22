@@ -16,7 +16,7 @@ export const validateUserCredentials = async (values: SignInCredential) => {
         formData.append('password', password)
 
         const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-        const apiUrl = `${rawApiUrl.replace(/\/$/, '')}/api/v1`
+        const apiUrl = `${rawApiUrl.replace(/\/$/, '').replace(/\/api\/v1$/, '')}/api/v1`
 
         const response = await fetch(`${apiUrl}/login/access-token?ts=${Date.now()}`, {
             method: 'POST',
@@ -65,7 +65,7 @@ export const validateUserCredentials = async (values: SignInCredential) => {
                 avatar: tokenData.user.avatar || '',
                 authority: (tokenData.user.authority && tokenData.user.authority.length > 0)
                     ? tokenData.user.authority
-                    : ['user'], // Use RBAC roles from backend, fallback to 'user'
+                    : ['member'], // Use RBAC roles from backend, fallback to 'member'
                 permissions: tokenData.user.permissions || [], // Include granular permissions
                 tagNumber: tokenData.user.tag_number || tokenData.user.tagNumber, // Include Qorebit tag
                 accessToken: tokenData.access_token, // Store the JWT token
@@ -136,7 +136,7 @@ export const validateSocialLogin = async (data: {
                 userName: tokenData.user.userName,
                 email: tokenData.user.email,
                 avatar: tokenData.user.avatar || '',
-                authority: tokenData.user.authority || ['user'],
+                authority: tokenData.user.authority || ['member'],
                 permissions: tokenData.user.permissions || [],
                 tagNumber: tokenData.user.tag_number || tokenData.user.tagNumber,
                 accessToken: tokenData.access_token,

@@ -5,10 +5,10 @@
 @layer theme {
 	:root {
 		--neutral: #ffffff;
-		--primary: #0055BA;
-		--primary-deep: #003d87;
-		--primary-mild: #3374d1;
-		--primary-subtle: #0055BA1a;
+		--primary: #8B0000;
+		--primary-deep: #660000;
+		--primary-mild: #A52A2A;
+		--primary-subtle: #8B00001a;
 		--error: #ff6a55;
 		--error-subtle: #ff6a551a;
 		--success: #10b981;
@@ -32,10 +32,10 @@
 
 	.dark {
 		--neutral: #ffffff;
-		--primary: #0055BA;
-		--primary-deep: #003d87;
-		--primary-mild: #3374d1;
-		--primary-subtle: #0055BA1a;
+		--primary: #8B0000;
+		--primary-deep: #660000;
+		--primary-mild: #A52A2A;
+		--primary-subtle: #8B00001a;
 		--error: #ff6a55;
 		--error-subtle: #ff6a551a; 
 		--success: #10b981;

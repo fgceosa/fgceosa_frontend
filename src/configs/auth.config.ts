@@ -127,7 +127,7 @@ export default {
                         } else {
                             // Fallback if backend sync fails
                             const userEmail = user && 'email' in user ? (user as { email?: string | null }).email : null
-                            const isAdmin = userEmail === 'admin@example.com'
+                            const isAdmin = userEmail === 'admin@fgceosa.org'
                             token.authority = isAdmin ? ['admin'] : ['user']
                         }
                     } catch (error) {
@@ -153,7 +153,7 @@ export default {
                     image: token.picture || session.user?.image,
                     authority: (token.authority && (token.authority as string[]).length > 0)
                         ? (token.authority as string[])
-                        : ['user'], // Default to user if no authority
+                        : ['member'], // Default to member if no authority
                     permissions: token.permissions || [], // Include granular permissions
                     tag_number: token.tag_number, // Include Qorebit tag in session
                 },

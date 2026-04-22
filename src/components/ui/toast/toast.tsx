@@ -3,6 +3,8 @@ import { PLACEMENT } from '../utils/constants'
 import type { ToastProps, ToastWrapperProps } from './ToastWrapper'
 import { NotificationPlacement } from '../@types/placement'
 import type { ReactNode } from 'react'
+import React from 'react'
+import Notification from '../Notification'
 
 export const toastDefaultProps = {
     placement: PLACEMENT.TOP_END,
@@ -19,6 +21,10 @@ export interface Toast {
     ): string | undefined | Promise<string | undefined>
     remove(key: string): void
     removeAll(): void
+    success(message: ReactNode, options?: ToastProps): void
+    error(message: ReactNode, options?: ToastProps): void
+    info(message: ReactNode, options?: ToastProps): void
+    warning(message: ReactNode, options?: ToastProps): void
 }
 
 const defaultWrapperId = 'default'
@@ -79,6 +85,42 @@ toast.remove = (key) => {
 
 toast.removeAll = () => {
     wrappers.forEach((elm) => elm.current.removeAll())
+}
+
+toast.success = (message, options) => {
+    toast.push(
+        <Notification type="success" title="Success" closable>
+            {message}
+        </Notification>,
+        options
+    )
+}
+
+toast.error = (message, options) => {
+    toast.push(
+        <Notification type="danger" title="Error" closable>
+            {message}
+        </Notification>,
+        options
+    )
+}
+
+toast.info = (message, options) => {
+    toast.push(
+        <Notification type="info" title="Information" closable>
+            {message}
+        </Notification>,
+        options
+    )
+}
+
+toast.warning = (message, options) => {
+    toast.push(
+        <Notification type="warning" title="Warning" closable>
+            {message}
+        </Notification>,
+        options
+    )
 }
 
 export default toast

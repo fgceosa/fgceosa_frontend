@@ -11,17 +11,30 @@ import type {
     ChangePasswordRequest,
 } from '@/app/(protected-pages)/dashboard/user-settings/types'
 import { SLICE_BASE_NAME } from './constants'
+import { config } from '@/configs/env'
 
 /**
  * Helper to normalize user profile data from backend
  */
 const normalizeProfile = (data: any) => {
     if (!data) return null
+    
+    // Normalize avatar URL
+    let avatar = data.avatar
+    if (avatar && !avatar.startsWith('http')) {
+        const baseUrl = (config.apiUrl || 'http://localhost:8000').replace(/\/$/, '').replace(/\/api\/v1$/, '')
+        avatar = `${baseUrl}${avatar.startsWith('/') ? '' : '/'}${avatar}`
+    }
+
     return {
         ...data,
+        avatar,
         firstName: data.firstName || data.first_name,
         lastName: data.lastName || data.last_name,
-        organizationName: data.organizationName || data.organization_name,
+        alternativeEmail: data.alternativeEmail || data.alternative_email,
+        fgceSet: data.fgceSet || data.fgce_set,
+        fgceHouse: data.fgceHouse || data.fgce_house,
+        platformName: data.platformName || data.platform_name,
         accountType: data.accountType || data.account_type,
         createdAt: data.createdAt || data.created_at,
         updatedAt: data.updatedAt || data.updated_at,

@@ -2,16 +2,16 @@ import ApiService from './ApiService'
 
 import type { NotificationsResponse, NotificationRemote } from '@/@types/notifications'
 
-export async function apiGetNotifications(params?: { skip?: number, limit?: number, unread_only?: boolean }) {
+export async function apiGetNotifications(params?: { skip?: number, limit?: number, unread_only?: boolean }): Promise<NotificationsResponse> {
     return ApiService.fetchDataWithAxios<NotificationsResponse>({
         url: 'notifications',
         method: 'get',
-        params
+        params,
     })
 }
 
 export async function apiMarkNotificationRead(id: string) {
-    return ApiService.fetchDataWithAxios<NotificationRemote>({
+    return ApiService.fetchDataWithAxios<{ id: string }>({
         url: `notifications/${id}/read`,
         method: 'patch',
     })

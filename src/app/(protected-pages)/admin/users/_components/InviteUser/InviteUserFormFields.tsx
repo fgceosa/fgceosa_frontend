@@ -25,7 +25,7 @@ export default function InviteUserFormFields({ formMethods, onSubmit }: InviteUs
                 >
                     <div className="flex items-center gap-2 pl-1 mb-2">
                         <User className="w-3.5 h-3.5 text-primary" />
-                        <label className="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest">Full Name</label>
+                        <label className="text-[11px] font-black text-gray-900 dark:text-white capitalize">Full Name</label>
                     </div>
                     <Controller
                         name="name"
@@ -49,7 +49,7 @@ export default function InviteUserFormFields({ formMethods, onSubmit }: InviteUs
                 >
                     <div className="flex items-center gap-2 pl-1 mb-2">
                         <Mail className="w-3.5 h-3.5 text-primary" />
-                        <label className="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest">Email Address</label>
+                        <label className="text-[11px] font-black text-gray-900 dark:text-white capitalize">Email Address</label>
                     </div>
                     <Controller
                         name="email"
@@ -73,7 +73,7 @@ export default function InviteUserFormFields({ formMethods, onSubmit }: InviteUs
                 >
                     <div className="flex items-center gap-2 pl-1 mb-2">
                         <Shield className="w-3.5 h-3.5 text-primary" />
-                        <label className="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-widest">Role</label>
+                        <label className="text-[11px] font-black text-gray-900 dark:text-white capitalize">Role</label>
                     </div>
                     <Controller
                         name="role"

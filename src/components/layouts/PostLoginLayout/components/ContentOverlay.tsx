@@ -11,7 +11,7 @@ import { LAYOUT_CONTENT_OVERLAY } from '@/constants/theme.constant'
 import type { CommonProps } from '@/@types/common'
 import type { FooterPageContainerType } from '@/components/template/Footer'
 import Notification from '@/components/template/Notification'
-import Wallet from '@/components/template/Wallet'
+import MemberID from '@/components/template/MemberID'
 
 const ContentOverlay = ({ children }: CommonProps) => {
     const { isSticky } = useScrollTop()
@@ -110,7 +110,7 @@ const ContentOverlay = ({ children }: CommonProps) => {
                         }
                         headerEnd={
                             <>
-                                <Wallet className="md:hidden" />
+                                <MemberID className="hidden md:block" />
                                 <Notification />
                                 <UserProfileDropdown hoverable={false} />
                             </>

@@ -27,14 +27,14 @@ export default function PermissionItem({ permission, onToggle, disabled }: Permi
             <div className="flex-1 pr-6 relative z-10">
                 <div className="flex items-center gap-2.5 mb-1.5">
                     <p className={classNames(
-                        "text-[13px] font-black uppercase tracking-tight",
+                        "text-[13px] font-bold",
                         permission.enabled ? "text-primary" : "text-gray-900 dark:text-gray-100"
                     )}>
                         {permission.name}
                     </p>
                     {permission.isSensitive && (
                         <div className="flex items-center gap-1 px-2 py-0.5 bg-rose-50 dark:bg-rose-950/30 rounded-md border border-rose-100/50 dark:border-rose-900/30">
-                            <span className="text-[8px] font-black text-rose-500 uppercase tracking-widest">Sensitive</span>
+                            <span className="text-[9px] font-bold text-rose-500">Sensitive</span>
                         </div>
                     )}
                 </div>
@@ -43,7 +43,7 @@ export default function PermissionItem({ permission, onToggle, disabled }: Permi
                 {permission.isSensitive && permission.enabled && (
                     <div className="mt-3 flex items-center gap-2 px-3 py-2 bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100/30 dark:border-rose-900/20 rounded-xl">
                         <ShieldAlert className="w-3.5 h-3.5 text-rose-500" />
-                        <span className="text-[9px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wide">Allows sensitive platform changes</span>
+                        <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400">Allows sensitive changes</span>
                     </div>
                 )}
             </div>

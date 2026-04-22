@@ -62,7 +62,7 @@ export default function RolesToolbar({
                                     className="h-10 px-4 gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
                                 >
                                     <ListFilter className="w-4 h-4" />
-                                    <span className="text-[10px] uppercase font-black tracking-widest">
+                                    <span className="text-xs font-bold">
                                         {FILTER_OPTIONS.find(o => o.value === filter)?.label || 'Filter'}
                                     </span>
                                 </Button>
@@ -89,7 +89,7 @@ export default function RolesToolbar({
                                     size="sm"
                                     className="h-10 px-4 gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
                                 >
-                                    <span className="text-[10px] uppercase font-black tracking-widest">Sort</span>
+                                    <span className="text-xs font-bold">Sort</span>
                                     <ArrowUpDown className="w-3 h-3" />
                                 </Button>
                             }

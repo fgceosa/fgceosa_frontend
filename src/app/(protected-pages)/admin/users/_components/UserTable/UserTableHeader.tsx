@@ -1,12 +1,11 @@
-import { Checkbox } from '@/components/ui'
+import React from 'react'
 
 const COLUMNS = [
-    { label: 'User', align: 'left' },
-    { label: 'Organization', align: 'left' },
+    { label: 'Member', align: 'left' },
     { label: 'Role', align: 'left' },
-    { label: 'Last Active', align: 'left' },
-    { label: 'Credits', align: 'right' },
-    { label: 'Spending', align: 'right' },
+    { label: 'FGCE Set', align: 'left' },
+    { label: 'Status', align: 'left' },
+    { label: 'Dues', align: 'left' },
     { label: 'Actions', align: 'center' },
 ] as const
 
@@ -20,7 +19,7 @@ export default function UserTableHeader({ onSelectAll, isAllSelected }: UserTabl
         <thead className="bg-gray-50/50 dark:bg-gray-950/50 border-b border-gray-100 dark:border-gray-800">
             <tr>
                 <th className="pl-8 py-5 text-left w-10">
-                    <Checkbox checked={isAllSelected} onChange={onSelectAll} />
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">#</span>
                 </th>
                 {COLUMNS.map((col) => (
                     <th

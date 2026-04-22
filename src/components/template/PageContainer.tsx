@@ -150,8 +150,9 @@ const PageContainer = (props: PageContainerProps) => {
                 <div
                     className={classNames(
                         defaultClass,
-                        pageBackgroundType === 'plain' &&
-                        'bg-white dark:bg-gray-900',
+                        pageBackgroundType === 'plain' 
+                            ? 'bg-white dark:bg-gray-900' 
+                            : 'bg-[#f5f5f5] dark:bg-gray-900',
                     )}
                 >
                     <main className="flex-1">

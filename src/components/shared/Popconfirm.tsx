@@ -105,7 +105,7 @@ const Popconfirm = ({
                                 <div className="flex justify-end gap-2">
                                     <Button
                                         size="xs"
-                                        className="h-8 px-3 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-gray-900 dark:hover:text-white border-transparent bg-transparent hover:bg-gray-50 dark:hover:bg-gray-700"
+                                        className="h-8 px-3 text-[10px] font-black capitalize  text-gray-400 hover:text-gray-900 dark:hover:text-white border-transparent bg-transparent hover:bg-gray-50 dark:hover:bg-gray-700"
                                         onClick={handleCancel}
                                     >
                                         {cancelText}
@@ -113,7 +113,7 @@ const Popconfirm = ({
                                     <Button
                                         size="xs"
                                         variant={okVariant}
-                                        className={classNames("h-8 px-3 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-rose-500/20", okColorClass)}
+                                        className={classNames("h-8 px-3 text-[10px] font-black capitalize  text-white shadow-lg shadow-rose-500/20", okColorClass)}
                                         onClick={handleConfirm}
                                     >
                                         {confirmText}

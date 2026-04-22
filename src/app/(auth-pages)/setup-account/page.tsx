@@ -109,10 +109,10 @@ export default function SetupAccountPage() {
                 </div>
                 <div>
                     <span className="text-xs font-bold text-blue-700 dark:text-blue-500 block">
-                        Welcome to Your Organization
+                        Welcome to Your Platform
                     </span>
                     <p className="text-[10px] font-bold text-blue-600/70 leading-relaxed mt-1">
-                        You&apos;ve been set up as the organization administrator. Complete your account setup to access your dashboard.
+                        You&apos;ve been set up as the platform administrator. Complete your account setup to access your dashboard.
                     </p>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 {
-  "name": "qorebit",
-  "version": "1.2.1",
+  "name": "fgceosa",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

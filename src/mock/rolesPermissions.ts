@@ -3,13 +3,13 @@ import { Role, PermissionGroup } from '@/app/(protected-pages)/admin/roles-permi
 const defaultPermissionGroups: PermissionGroup[] = [
     {
         id: 'pg-org',
-        category: 'Organization Management',
+        category: 'Platform Management',
         permissions: [
-            { id: 'p1', name: 'Create Organization', description: 'Create new organization workspaces', enabled: false },
-            { id: 'p2', name: 'Edit Organization', description: 'Modify existing organization details', enabled: false },
-            { id: 'p3', name: 'Delete Organization', description: 'Permanently remove organizations from platform', enabled: false, isSensitive: true },
-            { id: 'p3.1', name: 'Suspend Organization', description: 'Restrict access for specific institutions', enabled: false, isSensitive: true },
-            { id: 'p3.2', name: 'Organization Settings', description: 'Manage global organization policy settings', enabled: false },
+            { id: 'p1', name: 'Create Platform', description: 'Create new platform workspaces', enabled: false },
+            { id: 'p2', name: 'Edit Platform', description: 'Modify existing platform details', enabled: false },
+            { id: 'p3', name: 'Delete Platform', description: 'Permanently remove platforms from platform', enabled: false, isSensitive: true },
+            { id: 'p3.1', name: 'Suspend Platform', description: 'Restrict access for specific institutions', enabled: false, isSensitive: true },
+            { id: 'p3.2', name: 'Platform Settings', description: 'Manage global platform policy settings', enabled: false },
         ]
     },
     {
@@ -37,7 +37,7 @@ const defaultPermissionGroups: PermissionGroup[] = [
         id: 'pg-credits',
         category: 'Credits',
         permissions: [
-            { id: 'p7', name: 'Allocate Credits', description: 'Distribute credits to organizations', enabled: false, isSensitive: true },
+            { id: 'p7', name: 'Allocate Credits', description: 'Distribute credits to platforms', enabled: false, isSensitive: true },
             { id: 'p8', name: 'Treasury Access', description: 'Manage platform credit treasury', enabled: false, isSensitive: true },
             { id: 'p8.1', name: 'View Liquidity', description: 'Monitor platform-wide credit liquidity', enabled: false },
         ]
@@ -83,8 +83,8 @@ const defaultPermissionGroups: PermissionGroup[] = [
 
 export const mockRoles: Role[] = [
     {
-        id: 'role-owner',
-        name: 'Platform Owner',
+        id: 'super_admin',
+        name: 'Super Admin',
         description: 'Complete oversight and ultimate authority across all platform systems and governance.',
         userCount: 1,
         icon: 'crown',
@@ -96,9 +96,9 @@ export const mockRoles: Role[] = [
         }))
     },
     {
-        id: 'role-admin',
-        name: 'Platform Admin',
-        description: 'Day-to-day platform management and organization setup.',
+        id: 'admin',
+        name: 'Admin',
+        description: 'Day-to-day platform management and user administration.',
         userCount: 3,
         icon: 'shield',
         isSystem: true,
@@ -112,66 +112,18 @@ export const mockRoles: Role[] = [
         }))
     },
     {
-        id: 'role-billing',
-        name: 'Billing & Revenue Admin',
-        description: 'Focused on financial operations, revenue tracking, and credit treasury management.',
-        userCount: 2,
-        icon: 'creditCard',
-        isSystem: false,
-        type: 'Custom',
-        permissions: defaultPermissionGroups.map(pg => ({
-            ...pg,
-            permissions: pg.permissions.map(p => ({
-                ...p,
-                enabled: ['Billing & Revenue', 'Credits'].includes(pg.category)
-            }))
-        }))
-    },
-    {
-        id: 'role-ops',
-        name: 'Operations Admin',
-        description: 'Responsible for organization support, onboarding, and workspace management.',
-        userCount: 5,
+        id: 'member',
+        name: 'Member',
+        description: 'Standard access to platform tools, community features and personal profile.',
+        userCount: 154,
         icon: 'users',
-        isSystem: false,
-        type: 'Organization',
-        permissions: defaultPermissionGroups.map(pg => ({
-            ...pg,
-            permissions: pg.permissions.map(p => ({
-                ...p,
-                enabled: pg.category === 'Organization Management' || p.name.includes('View') || pg.category === 'Users & Access'
-            }))
-        }))
-    },
-    {
-        id: 'role-ai',
-        name: 'AI / Copilot Admin',
-        description: 'Manages platform AI models, copilot configurations, and usage analytics.',
-        userCount: 4,
-        icon: 'bot',
-        isSystem: false,
+        isSystem: true,
         type: 'Custom',
         permissions: defaultPermissionGroups.map(pg => ({
             ...pg,
             permissions: pg.permissions.map(p => ({
                 ...p,
-                enabled: ['Copilots', 'Model Library', 'Analytics'].includes(pg.category)
-            }))
-        }))
-    },
-    {
-        id: 'role-support',
-        name: 'Support Admin',
-        description: 'Read-only access to help desk and user troubleshooting data.',
-        userCount: 8,
-        icon: 'eye',
-        isSystem: false,
-        type: 'Custom',
-        permissions: defaultPermissionGroups.map(pg => ({
-            ...pg,
-            permissions: pg.permissions.map(p => ({
-                ...p,
-                enabled: p.name.includes('View') || p.name.includes('Log') || p.name === 'Copilot Analytics'
+                enabled: pg.category === 'Analytics' && p.name.includes('View')
             }))
         }))
     }

@@ -21,12 +21,21 @@ export type SignUpResponse = {
 }
 
 export type SignUpCredential = {
-    userName: string
+    firstName: string
+    lastName: string
+    nickname?: string
     email: string
+    alternativeEmail?: string
+    phoneNumber?: string
+    gender: string
     password: string
-    accountType: 'individual' | 'organization'
-    organizationName?: string
+    confirmPassword?: string
+    fgceSet: string
+    fgceHouse: string
+    city: string
+    country: string
     acceptTerms: boolean
+    accountType?: 'individual' | 'platform'
     invitationToken?: string
 }
 

@@ -62,12 +62,12 @@ export default function RoleCard({ role, onEdit, onDelete, onView, compact = fal
                                 {role.name}
                             </h3>
                             <div className="flex items-center gap-1.5 px-2 py-0.5 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-800/20 rounded-md shrink-0">
-                                {badgeType === 'System' || badgeType === 'Organization' ? (
+                                {badgeType === 'System' ? (
                                     <Shield className="w-2.5 h-2.5 text-amber-500" />
                                 ) : (
                                     <Lock className="w-2.5 h-2.5 text-amber-500" />
                                 )}
-                                <span className="text-[8px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-500">
+                                <span className="text-[9px] font-bold text-amber-600 dark:text-amber-500">
                                     {badgeType}
                                 </span>
                             </div>
@@ -81,7 +81,7 @@ export default function RoleCard({ role, onEdit, onDelete, onView, compact = fal
                 <div className="flex items-center gap-6 shrink-0">
                     <div className="flex items-center gap-2">
                         <Users className="w-4 h-4 text-gray-400" />
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        <span className="text-xs font-bold text-gray-400">
                             {role.userCount}
                         </span>
                     </div>
@@ -130,12 +130,12 @@ export default function RoleCard({ role, onEdit, onDelete, onView, compact = fal
                         <Icon className="w-6 h-6" />
                     </div>
                     <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-800/20 rounded-lg">
-                        {badgeType === 'System' || badgeType === 'Organization' ? (
+                        {badgeType === 'System' ? (
                             <Shield className="w-3 h-3 text-amber-500" />
                         ) : (
                             <Lock className="w-3 h-3 text-amber-500" />
                         )}
-                        <span className="text-[9px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-500 top-px relative">
+                        <span className="text-[9px] font-bold text-amber-600 dark:text-amber-500 top-px relative">
                             {badgeType}
                         </span>
                     </div>
@@ -155,20 +155,20 @@ export default function RoleCard({ role, onEdit, onDelete, onView, compact = fal
                     <Dropdown.Item eventKey="view" onClick={() => onView(role)}>
                         <div className="flex items-center gap-2">
                             <Eye className="w-4 h-4" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">View Permissions</span>
+                            <span className="text-xs font-bold">View</span>
                         </div>
                     </Dropdown.Item>
                     <Dropdown.Item eventKey="edit" onClick={() => onEdit(role)}>
                         <div className="flex items-center gap-2">
                             <Edit className="w-4 h-4" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Edit Role</span>
+                            <span className="text-xs font-bold">Edit</span>
                         </div>
                     </Dropdown.Item>
                     {role.type !== 'System' && !role.isSystem && (
                         <Dropdown.Item eventKey="delete" onClick={() => onDelete(role)}>
                             <div className="flex items-center gap-2 text-red-600">
                                 <Trash2 className="w-4 h-4" />
-                                <span className="text-[10px] font-black uppercase tracking-widest">Delete Role</span>
+                                <span className="text-xs font-bold">Delete</span>
                             </div>
                         </Dropdown.Item>
                     )}
@@ -191,16 +191,16 @@ export default function RoleCard({ role, onEdit, onDelete, onView, compact = fal
                     <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-400">
                         <Users className="w-4 h-4" />
                     </div>
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                    <span className="text-xs font-bold text-gray-400">
                         {role.userCount} Users
                     </span>
                 </div>
 
                 <button
                     onClick={() => onView(role)}
-                    className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline"
+                    className="text-xs font-bold text-primary hover:underline"
                 >
-                    View Permissions
+                    View Details
                 </button>
             </div>
         </Card>

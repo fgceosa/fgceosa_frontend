@@ -7,7 +7,7 @@ import {
     PiBagSimpleDuotone,
 } from 'react-icons/pi'
 import type { JSX } from 'react'
-import { Home, FolderKanban, Building2, Bot, Users, Shield, FileText } from 'lucide-react'
+import { Home, FolderKanban, Building2, Bot, Users, Shield, FileText, Calendar, User } from 'lucide-react'
 import { TbCurrencyNaira, TbSettingsCode } from 'react-icons/tb'
 import { LuKey } from 'react-icons/lu'
 import { IoBusiness } from 'react-icons/io5'
@@ -41,10 +41,12 @@ const navigationIcon: NavigationIcons = {
     sharedCredits: <FaRegCreditCard />,
     billing: <GiTakeMyMoney />,
     workspace: <Building2 />,
-    copilotHub: <Bot />,
+    copilotHub: < Bot />,
     shield: <Shield />,
     security: <Shield />,
-    audit: <FileText />
+    audit: <FileText />,
+    calendar: <Calendar />,
+    userProfile: <User />
 }
 
 export default navigationIcon

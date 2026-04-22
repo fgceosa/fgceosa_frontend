@@ -12,7 +12,7 @@ import type { Session as NextAuthSession } from 'next-auth'
 import type { Theme, LayoutType } from '@/@types/theme'
 import type { NavigationTree } from '@/@types/navigation'
 import type { User as AuthUser } from '@/@types/auth'
-import { fetchMyOrganization } from '@/store/slices/organization/organizationThunk'
+import { config } from '@/configs/env'
 
 interface InitializeStoreProps {
     children: ReactNode
@@ -92,22 +92,19 @@ const InitializeStore = ({
 
         if (session?.user) {
             const sUser = session.user as any
+            let avatar = sUser.image || sUser.picture || sUser.avatar || ''
+            if (avatar && !avatar.startsWith('http')) {
+                const baseUrl = (config.apiUrl || 'http://localhost:8000').replace(/\/$/, '').replace(/\/api\/v1$/, '')
+                avatar = `${baseUrl}${avatar.startsWith('/') ? '' : '/'}${avatar}`
+            }
             dispatch(setUser({
-                avatar: sUser.image || sUser.picture || sUser.avatar || '',
+                avatar,
                 userName: sUser.name || sUser.userName || '',
                 email: sUser.email || '',
-                authority: sUser.authority || ['user'],
+                authority: sUser.authority || ['member'],
                 permissions: sUser.permissions || []
             }))
 
-            // Proactively fetch organization details for global context
-            const authorities = sUser.authority || []
-            const hasOrgRole = authorities.some((a: string) => a.startsWith('org_'))
-            const isPlatformAdmin = authorities.includes('platform_super_admin') || authorities.includes('platform_admin')
-
-            if (hasOrgRole || isPlatformAdmin) {
-                dispatch(fetchMyOrganization())
-            }
         } else {
             dispatch(setUser({
                 avatar: '',

@@ -78,7 +78,7 @@ export default function UserManagementTabs() {
                         <div className="w-full sm:w-44">
                             <Select
                                 size="md"
-                                placeholder="User Role"
+                                placeholder="Member Role"
                                 isSearchable={false}
                                 menuPosition="fixed"
                                 value={[
@@ -117,7 +117,7 @@ export default function UserManagementTabs() {
                         <div className="hidden sm:flex px-4 py-2 bg-primary/5 rounded-xl border border-primary/10 shrink-0 items-center gap-2">
                             <Users size={14} className="text-primary" />
                             <span className="text-[10px] font-black text-primary whitespace-nowrap">
-                                {total || 0} Total
+                                {total || 0} Total Members
                             </span>
                         </div>
 

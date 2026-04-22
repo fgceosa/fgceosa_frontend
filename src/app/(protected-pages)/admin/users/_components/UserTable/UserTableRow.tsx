@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Eye, Mail, Ban, CheckCircle, Trash2, Globe, Key, MoreVertical, UserCog, Zap, ShieldCheck } from 'lucide-react'
+import { Eye, Mail, Ban, CheckCircle, Trash2, Globe, Key, MoreVertical, UserCog, ShieldCheck } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAppDispatch } from '@/store/hook'
 import { toast, Notification, Checkbox, Dropdown, Button } from '@/components/ui'
@@ -16,10 +16,9 @@ interface UserTableRowProps {
     isSelected?: boolean
     onSelect?: (id: string) => void
     onAssignRole?: (user: UserMember) => void
-    onAllocateCredits?: (user: UserMember) => void
 }
 
-export default function UserTableRow({ user, isSelected, onSelect, onAssignRole, onAllocateCredits }: UserTableRowProps) {
+export default function UserTableRow({ user, isSelected, onSelect, onAssignRole }: UserTableRowProps) {
     const router = useRouter()
     const dispatch = useAppDispatch()
     const [isDeleteOpen, setIsDeleteOpen] = useState(false)
@@ -27,10 +26,10 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole,
     const [isDeleting, setIsDeleting] = useState(false)
     const [isVerifying, setIsVerifying] = useState(false)
 
-    const isPlatformAdmin = useHasAuthority(['platform_super_admin', 'platform_admin'])
-    const isPlatformSuperAdmin = useHasAuthority(['platform_super_admin'])
+    const isPlatformAdmin = useHasAuthority(['super_admin', 'admin'])
+    const isPlatformSuperAdmin = useHasAuthority(['super_admin'])
 
-    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.name || 'User'
+    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.name || 'Member'
 
     // Protection for Super Admins
     const isProtected = user.role === 'Admin' || user.email === 'admin@qorebit.com'
@@ -76,7 +75,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole,
             const newStatus = isActive ? 'disabled' : 'active'
             const newActive = !isActive
             await dispatch(updateUser({ id: user.id, data: { status: newStatus, is_active: newActive } as any })).unwrap()
-            handleActionSuccess(`User ${isActive ? 'disabled' : 'enabled'} successfully`)
+            handleActionSuccess(`Member ${isActive ? 'disabled' : 'enabled'} successfully`)
         } catch (error) {
             toast.push(<Notification type="danger" title="Error">Action failed</Notification>)
         }
@@ -89,7 +88,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole,
         setIsDeleting(true)
         try {
             await dispatch(deleteUser({ id: user.id, force: forceAttempt })).unwrap()
-            handleActionSuccess(`User ${user.email} removed from system`)
+            handleActionSuccess(`Member ${user.email} removed from system`)
             setIsDeleteOpen(false)
             setMustForce(false)
             setDependencyError(null)
@@ -122,7 +121,9 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole,
             >
                 {/* Checkbox */}
                 <td className="pl-8 py-5" onClick={(e) => e.stopPropagation()}>
-                    <Checkbox checked={isSelected} onChange={() => onSelect?.(user.id)} />
+                    <div className="w-5 h-5 flex items-center justify-center">
+                        <div className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
+                    </div>
                 </td>
 
                 {/* User Info (Name + Email) */}
@@ -149,13 +150,6 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole,
                     </div>
                 </td>
 
-                {/* Organization */}
-                <td className="px-8 py-5">
-                    <div className="font-medium text-gray-500 dark:text-gray-400 text-sm">
-                        {user.organization?.name || '-'}
-                    </div>
-                </td>
-
                 {/* Current Role(s) */}
                 <td className="px-8 py-5">
                     <div className="flex flex-wrap gap-2">
@@ -167,32 +161,37 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole,
                     </div>
                 </td>
 
-                {/* Last Active */}
+                {/* FGCE Set */}
                 <td className="px-8 py-5">
-                    <div className="text-[10px] font-bold text-gray-600 dark:text-gray-400 uppercase leading-relaxed max-w-[100px] whitespace-normal">
-                        {formatExactTime(user.lastOnline)}
+                    <div className="font-black text-gray-900 dark:text-gray-100 text-[11px] uppercase tracking-wider">
+                        {user.fgceSet || 'N/A'}
                     </div>
                 </td>
 
-                {/* Credits */}
-                <td className="px-8 py-5 text-right">
-                    <div className="flex flex-col items-end">
-                        <span className="font-black text-primary text-sm flex items-center gap-1" title="User Balance">
-                            {formatCredits(user.credits)}
+                {/* Account Status Badge */}
+                <td className="px-8 py-5 text-left">
+                    <div className="flex flex-wrap gap-2">
+                        <span className={`inline-flex py-1 px-2.5 rounded-lg text-[10px] uppercase font-black tracking-wide border ${user.status === 'active'
+                                ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-800 text-emerald-600'
+                                : user.status === 'pending'
+                                    ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-800 text-amber-600'
+                                    : 'bg-rose-50 dark:bg-rose-900/10 border-rose-100 dark:border-rose-800 text-rose-600'
+                            }`}>
+                            {user.status || 'inactive'}
                         </span>
-                        {user.orgCredits !== undefined && user.orgCredits > 0 && (
-                            <span className="text-[10px] text-gray-400 font-medium mt-0.5" title="Organization Balance">
-                                Org: {formatCredits(user.orgCredits)}
-                            </span>
-                        )}
                     </div>
                 </td>
 
-                {/* Spending */}
-                <td className="px-8 py-5 text-right">
-                    <div className="flex flex-col items-end">
-                        <span className="font-black text-gray-900 dark:text-white text-xs">
-                            {formatCurrency(user.totalSpending)}
+                {/* Dues Status Badge */}
+                <td className="px-8 py-5 text-left">
+                    <div className="flex flex-wrap gap-2">
+                        <span className={`inline-flex py-1 px-2.5 rounded-lg text-[10px] uppercase font-black tracking-wide border ${user.dues === 'paid'
+                                ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-800 text-emerald-600'
+                                : user.dues === 'overdue'
+                                    ? 'bg-rose-50 dark:bg-rose-900/10 border-rose-100 dark:border-rose-800 text-rose-600'
+                                    : 'bg-gray-50 dark:bg-gray-800/10 border-gray-100 dark:border-gray-800 text-gray-600'
+                            }`}>
+                            {user.dues || 'unpaid'}
                         </span>
                     </div>
                 </td>
@@ -214,14 +213,6 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole,
                             </span>
                         </Dropdown.Item>
 
-                        {/* Allocate Credits */}
-                        {isPlatformAdmin && (
-                            <Dropdown.Item onClick={() => onAllocateCredits?.(user)}>
-                                <span className="flex items-center gap-2 text-primary font-black text-[11px] tracking-wider">
-                                    <Zap size={14} /> Allocate Credits
-                                </span>
-                            </Dropdown.Item>
-                        )}
 
                         {/* Update Identity Role */}
                         <Dropdown.Item onClick={() => onAssignRole?.(user)}>
@@ -253,7 +244,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole,
                             <Dropdown.Item onClick={handleToggleStatus} className={isActive ? "text-rose-500 hover:text-rose-600" : "text-emerald-500 hover:text-emerald-600"}>
                                 <span className="flex items-center gap-2">
                                     {isActive ? <Ban size={14} /> : <CheckCircle size={14} />}
-                                    {isActive ? "Deactivate User" : "Activate User"}
+                                    {isActive ? "Deactivate Member" : "Activate Member"}
                                 </span>
                             </Dropdown.Item>
                         )}
@@ -264,7 +255,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole,
                                 <Dropdown.Item variant="divider" />
                                 <Dropdown.Item onClick={() => setIsDeleteOpen(true)} className="text-rose-500 hover:text-rose-600">
                                     <span className="flex items-center gap-2">
-                                        <Trash2 size={14} /> Delete User
+                                        <Trash2 size={14} /> Delete Member
                                     </span>
                                 </Dropdown.Item>
                             </>

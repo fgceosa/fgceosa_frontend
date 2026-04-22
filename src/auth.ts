@@ -3,7 +3,7 @@ import appConfig from '@/configs/app.config'
 import authConfig from '@/configs/auth.config'
 
 const useSecureCookies = process.env.NODE_ENV === 'production'
-const cookiePrefix = 'qorebit'
+const cookiePrefix = 'fgceosa'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     pages: {

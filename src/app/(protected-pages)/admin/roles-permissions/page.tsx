@@ -23,11 +23,11 @@ const NoResults = ({ searchTerm, onClear }: { searchTerm: string; onClear: () =>
         <div className="w-16 h-16 rounded-3xl bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center text-gray-400 mb-4 border border-gray-100 dark:border-gray-800">
             <Search size={28} />
         </div>
-        <h3 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider">No matching results</h3>
+        <h3 className="text-sm font-black text-gray-900 dark:text-white">No matching results</h3>
         <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-1">Try adjusting your search for "{searchTerm}"</p>
         <Button
             variant="plain"
-            className="mt-4 text-primary font-black text-[10px] uppercase tracking-widest"
+            className="mt-4 text-primary font-black text-[10px] capitalize "
             onClick={onClear}
         >
             Clear Search
@@ -134,7 +134,7 @@ export default function RolesPermissionsPage() {
                             <Search size={18} />
                         </div>
                         <div>
-                            <h4 className="text-xs font-black text-red-900 dark:text-red-200 uppercase tracking-wider">Failed to Load Content</h4>
+                            <h4 className="text-xs font-black text-red-900 dark:text-red-200">Failed to Load</h4>
                             <p className="text-[10px] text-red-600/80 dark:text-red-400/80 font-bold mt-0.5">{rolesError}</p>
                         </div>
                     </div>

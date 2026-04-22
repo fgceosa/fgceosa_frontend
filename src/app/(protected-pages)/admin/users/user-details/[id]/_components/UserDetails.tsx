@@ -14,10 +14,7 @@ const UserDetails = ({ data }: UserDetailsProps) => {
         <div className="w-full py-8 px-4 sm:px-6 lg:px-10 space-y-8 animate-in fade-in duration-700">
             {/* Enterprise Header */}
             <UserDetailsHeader data={data} />
-
-            {/* Analytics Overview - Now at the Top */}
-            <UserDetailsAnalytics data={data} />
-
+            
             <div className="flex flex-col gap-8">
                 {/* Full Width Sections */}
                 <UserDetailsProfile data={data} layout="detailed" />

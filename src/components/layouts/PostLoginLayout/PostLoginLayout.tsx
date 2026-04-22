@@ -15,7 +15,6 @@ import TopBarClassic from './components/TopBarClassic'
 import ContentOverlay from './components/ContentOverlay'
 import Blank from './components/Blank'
 import PageContainer from '@/components/template/PageContainer'
-import RoleSync from '@/components/shared/RoleSync'
 import queryRoute from '@/utils/queryRoute'
 import useTheme from '@/utils/hooks/useTheme'
 import { usePathname } from 'next/navigation'
@@ -56,7 +55,6 @@ const PostLoginLayout = ({ children }: CommonProps) => {
         <Layout
             layoutType={route?.meta?.layout ? route?.meta?.layout : layoutType}
         >
-            <RoleSync />
             <PageContainer {...route?.meta}>{children}</PageContainer>
         </Layout>
     )

@@ -116,12 +116,17 @@ export type UserMember = {
     tagNumber?: string
     timezone?: string
     createdAt?: string | number
-    organization?: {
+    platform?: {
         id: string
         name: string
     }
     roles?: string[]
     isVerified?: boolean
+    fgceSet?: string
+    fgceHouse?: string
+    gender?: string
+    alternateEmail?: string
+    dues?: 'paid' | 'unpaid' | 'overdue' | string
 }
 
 /**

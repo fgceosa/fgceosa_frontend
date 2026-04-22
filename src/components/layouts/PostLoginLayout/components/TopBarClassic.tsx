@@ -8,7 +8,7 @@ import LayoutBase from '@/components//template/LayoutBase'
 import { LAYOUT_TOP_BAR_CLASSIC } from '@/constants/theme.constant'
 import type { CommonProps } from '@/@types/common'
 import Notification from '@/components/template/Notification'
-import Wallet from '@/components/template/Wallet'
+import MemberID from '@/components/template/MemberID'
 
 const TopBarClassic = ({ children }: CommonProps) => {
     return (
@@ -29,7 +29,7 @@ const TopBarClassic = ({ children }: CommonProps) => {
                         }
                         headerEnd={
                             <>
-                                <Wallet className="md:hidden" />
+                                <MemberID className="hidden md:block" />
                                 <Notification />
                                 <UserProfileDropdown hoverable={false} />
                             </>

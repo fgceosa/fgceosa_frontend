@@ -44,12 +44,12 @@ export default function QuickActionsCard(props: QuickActionsCardProps) {
     const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false)
 
     const userAuthority = useAppSelector((state) => state.auth.user.authority) || []
-    const isOrgAdmin = userAuthority.includes('org_admin') ||
-        userAuthority.includes('org_super_admin') ||
-        userAuthority.includes('platform_super_admin') ||
-        userAuthority.includes('platform_admin')
+    const isOrgAdmin = userAuthority.includes('admin') ||
+        userAuthority.includes('admin') ||
+        userAuthority.includes('super_admin') ||
+        userAuthority.includes('admin')
 
-    const isOrgMember = userAuthority.includes('org_member')
+    const isOrgMember = userAuthority.includes('member')
     const canCreateCopilot = (isOrgAdmin || userAuthority.includes('user')) && !isOrgMember
 
     const actions = [
@@ -82,7 +82,6 @@ export default function QuickActionsCard(props: QuickActionsCardProps) {
                     <div className="flex flex-col gap-1">
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             Quick Actions
-                            <span className="w-2 h-2 rounded-full bg-[#0055BA] animate-pulse" />
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                             Common tasks to get you started

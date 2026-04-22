@@ -11,7 +11,7 @@ import type {
  */
 export async function apiGetUserProfile() {
     return ApiService.fetchDataWithAxios<UserProfile>({
-        url: '/users/me',
+        url: 'users/me',
         method: 'get',
     })
 }
@@ -21,7 +21,7 @@ export async function apiGetUserProfile() {
  */
 export async function apiUpdateUserProfile(data: UpdateProfileRequest) {
     return ApiService.fetchDataWithAxios<UserProfile>({
-        url: '/users/me',
+        url: 'users/me',
         method: 'patch',
         data: data as Record<string, unknown>,
     })
@@ -32,7 +32,7 @@ export async function apiUpdateUserProfile(data: UpdateProfileRequest) {
  */
 export async function apiChangePassword(data: ChangePasswordRequest) {
     return ApiService.fetchDataWithAxios<{ message: string }>({
-        url: '/users/me/password',
+        url: 'users/me/password',
         method: 'patch',
         data: {
             current_password: data.currentPassword,
@@ -49,7 +49,7 @@ export async function apiUploadAvatar(file: File) {
     formData.append('file', file)
 
     return ApiService.fetchDataWithAxios<UserProfile>({
-        url: '/users/me/avatar',
+        url: 'users/me/avatar',
         method: 'post',
         data: formData as unknown as Record<string, unknown>,
         headers: {
@@ -63,7 +63,8 @@ export async function apiUploadAvatar(file: File) {
  */
 export async function apiDeleteAvatar() {
     return ApiService.fetchDataWithAxios<UserProfile>({
-        url: '/users/me/avatar',
+        url: 'users/me/avatar',
         method: 'delete',
     })
 }
+

@@ -9,8 +9,7 @@ import LayoutBase from '@/components//template/LayoutBase'
 import { LAYOUT_COLLAPSIBLE_SIDE } from '@/constants/theme.constant'
 import type { CommonProps } from '@/@types/common'
 import Notification from '@/components/template/Notification'
-import Wallet from '@/components/template/Wallet'
-import QorebitTag from '@/components/template/QorebitTag'
+import MemberID from '@/components/template/MemberID'
 
 const CollapsibleSide = ({ children }: CommonProps) => {
     return (
@@ -31,8 +30,7 @@ const CollapsibleSide = ({ children }: CommonProps) => {
                         }
                         headerEnd={
                             <>
-                                <QorebitTag />
-                                <Wallet className="md:hidden" />
+                                <MemberID className="hidden md:block" />
                                 <Notification />
                                 <UserProfileDropdown hoverable={false} />
                             </>

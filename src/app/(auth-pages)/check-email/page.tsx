@@ -66,7 +66,7 @@ const CheckEmailPage = () => {
                             variant="plain"
                             loading={resending}
                             onClick={handleResend}
-                            className="text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-primary"
+                            className="text-xs font-bold capitalize  text-gray-400 hover:text-primary"
                         >
                             Didn't receive email? Resend link
                         </Button>

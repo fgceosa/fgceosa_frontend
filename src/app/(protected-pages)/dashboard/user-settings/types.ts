@@ -5,17 +5,17 @@ export interface UserProfile {
     email: string
     firstName: string | null
     lastName: string | null
-    name: string | null
-    username: string | null
+    nickname: string | null
+    gender: string | null
+    fgceSet: string | null
+    fgceHouse: string | null
+    alternativeEmail: string | null
     phone: string | null
-    address: string | null
     city: string | null
-    state: string | null
     country: string | null
-    postcode: string | null
     avatar: string | null
     accountType: string | null
-    organizationName: string | null
+    platformName: string | null
     createdAt: string
     updatedAt: string
 }
@@ -23,13 +23,17 @@ export interface UserProfile {
 export interface UpdateProfileRequest {
     firstName?: string
     lastName?: string
-    username?: string
+    nickname?: string
+    password?: string
+    confirmPassword?: string
     phone?: string
-    address?: string
+    gender?: string
+    email?: string
+    alternativeEmail?: string
+    fgceSet?: string
+    fgceHouse?: string
     city?: string
-    state?: string
     country?: string
-    postcode?: string
 }
 
 export interface ChangePasswordRequest {
@@ -44,14 +48,17 @@ export interface UploadAvatarResponse {
 export interface ProfileValidationErrors {
     firstName?: string
     lastName?: string
-    email?: string
-    username?: string
+    nickname?: string
+    password?: string
+    confirmPassword?: string
     phone?: string
-    address?: string
+    gender?: string
+    email?: string
+    alternativeEmail?: string
+    fgceSet?: string
+    fgceHouse?: string
     city?: string
-    state?: string
     country?: string
-    postcode?: string
 }
 
 export interface PasswordValidationErrors {

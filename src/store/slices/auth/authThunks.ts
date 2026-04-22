@@ -10,13 +10,21 @@ interface SignInCredentials {
 }
 
 interface SignUpCredentials {
-    userName: string
+    firstName: string
+    lastName: string
+    nickname?: string
     email: string
+    alternativeEmail?: string
+    phoneNumber?: string
+    gender: string
     password: string
-    confirmPassword: string
-    accountType: 'individual' | 'organization'
-    organizationName?: string
+    confirmPassword?: string
+    fgceSet: string
+    fgceHouse: string
+    city: string
+    country: string
     acceptTerms: boolean
+    accountType?: 'individual' | 'platform'
     invitationToken?: string
 }
 
@@ -65,12 +73,20 @@ export const signInAsync = createAsyncThunk<
                 (error instanceof Error && error.message.includes('NEXT_REDIRECT')) ||
                 (error && typeof error === 'object' && 'digest' in error && String(error.digest).includes('NEXT_REDIRECT'))
             ) {
-                // In Next.js 15, SerializedError (from throw) loses the .digest or full message.
-                // By returning it as rejectWithValue, we preserve the sentinel string for the client.
                 const sentinel = (error && typeof error === 'object' && 'digest' in error)
                     ? String(error.digest)
                     : error.message || 'NEXT_REDIRECT'
-                return rejectWithValue(sentinel)
+                
+                // Extract the URL from the Next.js 15 redirect string
+                const parts = sentinel.split(';')
+                const url = parts.find(p => p.startsWith('/') || p.startsWith('http')) 
+                    || parts[parts.length - 1] 
+                    || '/'
+
+                return { 
+                    session: null,
+                    redirect: url 
+                } as any
             }
 
             const errorMessage = (error as any)?.response?.data?.detail

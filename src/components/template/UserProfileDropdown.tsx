@@ -32,8 +32,8 @@ const getAvatarUrl = (avatarPath: string | null | undefined): string | null => {
     if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')) {
         return avatarPath
     }
-    const apiUrl = config.apiUrl || ''
-    return `${apiUrl}${avatarPath}`
+    const baseUrl = (config.apiUrl || 'http://localhost:8000').replace(/\/$/, '').replace(/\/api\/v1$/, '')
+    return `${baseUrl}${avatarPath.startsWith('/') ? '' : '/'}${avatarPath}`
 }
 
 const _UserDropdown = () => {
@@ -46,21 +46,13 @@ const _UserDropdown = () => {
         dispatch(fetchUserProfile())
     }, [dispatch])
 
-    const auth = (session?.user as User)?.authority || []
-    const profileSettingsPath = auth.includes('platform_super_admin')
-        ? '/admin/platform-settings?tab=account'
-        : '/dashboard/user-settings'
+    const profileSettingsPath = '/dashboard/user-settings'
 
     const dropdownItemList: DropdownList[] = [
         {
             label: 'Profile Setting',
             path: profileSettingsPath,
             icon: <PiGearDuotone />,
-        },
-        {
-            label: 'Help Center',
-            path: '/dashboard/help-center',
-            icon: <PiPulseDuotone />, // Reusing icon for help center
         },
     ]
 
@@ -77,8 +69,8 @@ const _UserDropdown = () => {
 
     const userName = (userProfile?.firstName && userProfile?.lastName)
         ? `${userProfile.firstName} ${userProfile.lastName}`
-        : (userProfile?.accountType === 'organization' && userProfile?.organizationName)
-            ? userProfile.organizationName
+        : (userProfile?.accountType === 'platform' && userProfile?.platformName)
+            ? userProfile.platformName
             : (userProfile?.username)
                 ? userProfile.username
                 : sessionName || (profileEmail || sessionEmail)?.split('@')[0] || 'User'
@@ -111,10 +103,10 @@ const _UserDropdown = () => {
             placement="bottom-end"
         >
             <Dropdown.Item variant="header" className="p-0">
-                <div className="relative overflow-hidden p-6 bg-gradient-to-br from-[#0055BA] to-blue-700">
+                <div className="relative overflow-hidden p-6 bg-gradient-to-br from-[#800000] via-[#8B0000] to-[#500000]">
                     {/* Background Pattern */}
                     <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
-                    <div className="absolute bottom-0 left-0 -ml-4 -mb-4 w-20 h-20 bg-blue-400/20 rounded-full blur-xl" />
+                    <div className="absolute bottom-0 left-0 -ml-4 -mb-4 w-20 h-20 bg-red-400/20 rounded-full blur-xl" />
 
                     <div className="relative flex items-center gap-4">
                         <Avatar
@@ -126,7 +118,7 @@ const _UserDropdown = () => {
                             <h4 className="text-base font-bold text-white mb-0.5">
                                 {userName}
                             </h4>
-                            <p className="text-xs text-blue-100 font-medium opacity-90 truncate max-w-[140px]">
+                            <p className="text-xs text-red-100 font-medium opacity-90 truncate max-w-[140px]">
                                 {userEmail}
                             </p>
                         </div>
@@ -145,7 +137,7 @@ const _UserDropdown = () => {
                             className="flex items-center gap-3 w-full px-4 py-3"
                             href={item.path}
                         >
-                            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-400 group-hover:bg-[#0055BA]/10 group-hover:text-[#0055BA] transition-all">
+                            <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-400 group-hover:bg-[#8B0000]/10 group-hover:text-[#8B0000] transition-all">
                                 <span className="text-xl">{item.icon}</span>
                             </span>
                             <span className="text-sm font-bold text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">

@@ -96,7 +96,6 @@ export default function ModelDonutChart() {
                     <div>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             Model Usage
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse hidden sm:block" />
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                             How you use different models
@@ -167,7 +166,7 @@ export default function ModelDonutChart() {
                             
                             <div className="flex items-center gap-4 min-w-0 z-10">
                                 <span
-                                    className="w-3 h-3 rounded-full flex-shrink-0 shadow-md border-2 border-white dark:border-gray-800 transition-transform duration-300 group-hover/item:scale-125 group-hover/item:animate-pulse"
+                                    className="w-3 h-3 rounded-full flex-shrink-0 shadow-md border-2 border-white dark:border-gray-800 transition-transform duration-300"
                                     style={{ backgroundColor: m.color }}
                                 />
                                 <div className="flex flex-col min-w-0">
@@ -215,9 +214,6 @@ export default function ModelDonutChart() {
                 <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black text-gray-400">Efficiency metrics</span>
                     <div className="flex gap-1">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="w-1.5 h-1.5 rounded-full bg-emerald-500/20" />
-                        ))}
                     </div>
                 </div>
             </div>

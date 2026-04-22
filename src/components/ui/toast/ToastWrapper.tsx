@@ -142,7 +142,8 @@ const ToastWrapper = (props: ToastWrapperProps) => {
                 {cloneElement(
                     item.node as DetailedReactHTMLElement<any, HTMLElement>,
                     {
-                        ...toastProps,
+                        ...rest,
+                        ...(typeof item.node?.type !== 'string' ? { triggerByToast: true } : {}),
                         ref,
                         onClose: chainedFunction(
                             item.node?.props?.onClose,

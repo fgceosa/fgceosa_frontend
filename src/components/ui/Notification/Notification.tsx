@@ -108,7 +108,6 @@ const Notification = (props: NotificationProps) => {
                         className
                     )}
                     style={{ width: width, ...style }}
-                    {...rest}
                 >
                     {/* Left Accent Bar */}
                     <div className={classNames('absolute left-0 top-0 bottom-0 w-1.5', config.accent)} />

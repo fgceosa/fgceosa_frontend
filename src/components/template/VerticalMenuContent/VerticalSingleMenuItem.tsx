@@ -91,6 +91,7 @@ const DefaultItem = (props: DefaultItemProps) => {
         showTitle,
         indent,
         showIcon = true,
+        sideCollapsed,
         userAuthority,
         userPermissions,
         t,
@@ -104,18 +105,22 @@ const DefaultItem = (props: DefaultItemProps) => {
                 eventKey={nav.key}
                 dotIndent={indent}
                 className={classNames(
-                    'group transition-all duration-200 my-0.5 mx-1.5 relative overflow-hidden flex items-center',
+                    'group transition-all duration-300 my-2 mx-1 relative overflow-hidden flex items-center',
+                    sideCollapsed ? 'justify-center mx-1.5' : '',
                     currentKey === nav.key
-                        ? 'bg-blue-50 dark:bg-primary/10 text-primary font-semibold'
-                        : 'bg-transparent text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-blue-50/50 dark:hover:bg-primary/5'
+                        ? 'bg-white/10 text-white shadow-xl'
+                        : 'bg-transparent text-white hover:bg-white/5'
                 )}
                 style={{
-                    borderRadius: '0.75rem',
+                    borderRadius: '1rem',
                 }}
             >
                 <Link
                     href={nav.path}
-                    className="flex items-center gap-2.5 w-full px-3 py-2.5"
+                    className={classNames(
+                        "flex items-center w-full py-3",
+                        sideCollapsed ? "justify-center px-0" : "gap-3.5 px-4"
+                    )}
                     target={nav.isExternalLink ? '_blank' : ''}
                     onClick={() =>
                         onLinkClick?.({
@@ -129,8 +134,8 @@ const DefaultItem = (props: DefaultItemProps) => {
                         <div className={classNames(
                             "transition-all duration-300 flex items-center justify-center shrink-0",
                             currentKey === nav.key
-                                ? "text-primary scale-110"
-                                : "text-gray-400 group-hover:text-primary"
+                                ? "text-white scale-110"
+                                : "text-white/70 group-hover:text-white"
                         )}>
                             <VerticalMenuIcon
                                 icon={nav.icon}
@@ -140,13 +145,12 @@ const DefaultItem = (props: DefaultItemProps) => {
                         </div>
                     )}
                     {showTitle && (
-                        <span className="text-[13.5px] font-medium capitalize leading-tight">
+                        <span className={classNames(
+                            "text-[14px] leading-tight tracking-wide",
+                            currentKey === nav.key ? "font-black" : "font-bold"
+                        )}>
                             {t(nav.translateKey, nav.title)}
                         </span>
-                    )}
-
-                    {currentKey === nav.key && (
-                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-r-full shadow-[0_0_10px_rgba(0,85,186,0.2)]"></div>
                     )}
                 </Link>
             </MenuItem>

@@ -49,6 +49,7 @@ const TabNav = (props: TabNavProps) => {
             className={tabNavClass}
             role="tab"
             aria-selected={isSelected}
+            data-state={isSelected ? 'active' : 'inactive'}
             tabIndex={0}
             onClick={onTabNavClick}
             onKeyDown={onTabNavClick}

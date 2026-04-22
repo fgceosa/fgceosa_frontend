@@ -1,5 +1,5 @@
 
-import { Shield, Lock, Info, Briefcase, CreditCard, Bot, Settings, Users, Box, Activity } from 'lucide-react'
+import { Shield, Lock, Info, Briefcase, CreditCard, Bot, Settings, Users, Box, Activity, Bell, Calendar } from 'lucide-react'
 import { Card, Badge, Tooltip, Spinner } from '@/components/ui'
 import { useSelector } from 'react-redux'
 import { RootState, useAppDispatch } from '@/store'
@@ -9,13 +9,12 @@ import classNames from '@/utils/classNames'
 
 const getCategoryIcon = (category: string) => {
     const c = category.toLowerCase()
-    if (c.includes('organization') || c.includes('workspace')) return Briefcase
-    if (c.includes('billing') || c.includes('revenue') || c.includes('credit')) return CreditCard
-    if (c.includes('copilot') || c.includes('agent')) return Bot
-    if (c.includes('settings')) return Settings
-    if (c.includes('user') || c.includes('team') || c.includes('role')) return Users
-    if (c.includes('model')) return Box
+    if (c.includes('member') || c.includes('user') || c.includes('access')) return Users
+    if (c.includes('payment') || c.includes('dues')) return CreditCard
+    if (c.includes('announcement')) return Bell
+    if (c.includes('event')) return Calendar
     if (c.includes('analytics') || c.includes('dashboard')) return Activity
+    if (c.includes('system') || c.includes('settings')) return Settings
     return Shield
 }
 
@@ -41,7 +40,7 @@ export default function PermissionsTab({ searchTerm = '' }: { searchTerm?: strin
         return (
             <div className="flex flex-col items-center justify-center min-h-[40vh] space-y-4">
                 <Spinner size={32} />
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] animate-pulse">Syncing Permissions Catalog...</p>
+                <p className="text-xs font-bold text-gray-400 animate-pulse">Loading permissions...</p>
             </div>
         )
     }
@@ -66,8 +65,8 @@ export default function PermissionsTab({ searchTerm = '' }: { searchTerm?: strin
                                     <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
                                         {group.category}
                                     </h3>
-                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">
-                                        {group.permissions.length} Unified Permissions
+                                    <p className="text-xs text-gray-400 font-bold mt-1">
+                                        {group.permissions.length} permissions
                                     </p>
                                 </div>
                             </div>
@@ -94,7 +93,7 @@ export default function PermissionsTab({ searchTerm = '' }: { searchTerm?: strin
                                                 </p>
                                             </div>
                                             {permission.isSensitive && (
-                                                <Tooltip title="Elevated Privilege - Use with caution">
+                                                <Tooltip title="Sensitive permission">
                                                     <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100/50 dark:border-amber-700/30 text-amber-600 shadow-sm">
                                                         <Lock className="w-4 h-4" />
                                                     </div>
@@ -104,16 +103,16 @@ export default function PermissionsTab({ searchTerm = '' }: { searchTerm?: strin
 
                                         <div className="mt-auto pt-5 border-t border-gray-50 dark:border-gray-800 flex items-center justify-between">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[9px] font-mono font-bold text-gray-400 dark:text-gray-500 tracking-tighter uppercase">
-                                                    Ref:
+                                                <span className="text-[9px] font-mono font-bold text-gray-400 dark:text-gray-500">
+                                                    ID:
                                                 </span>
                                                 <span className="text-[10px] font-mono font-black text-gray-400 dark:text-gray-500">
                                                     {permission.id}
                                                 </span>
                                             </div>
                                             {permission.isSensitive && (
-                                                <span className="text-[9px] font-black text-amber-600/80 dark:text-amber-500/80 uppercase tracking-[0.2em]">
-                                                    High Access
+                                                <span className="text-[9px] font-bold text-amber-600/80 dark:text-amber-500/80">
+                                                    Sensitive
                                                 </span>
                                             )}
                                         </div>

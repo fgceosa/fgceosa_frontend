@@ -27,78 +27,74 @@ export default function DeleteUserDialog({
         <Dialog
             isOpen={isOpen}
             onClose={() => !isDeleting && onClose()}
-            width={440}
-            className="p-0 overflow-hidden"
+            width={480}
+            className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden shadow-2xl"
             closable={!isDeleting}
         >
-            <div className="p-6">
-                <div className="flex flex-col items-center text-center mb-6">
-                    <div className={`w-16 h-16 ${mustForce ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600'} dark:text-rose-400 rounded-full flex items-center justify-center mb-4`}>
-                        {mustForce ? <AlertTriangle className="w-8 h-8" /> : <Trash2 className="w-8 h-8" />}
+            <div className="p-8 sm:p-10">
+                <div className="flex flex-col items-center text-center">
+                    <div className={`w-20 h-20 ${mustForce ? 'bg-amber-50 dark:bg-amber-900/10 text-amber-600 border border-amber-100' : 'bg-red-50 dark:bg-red-900/10 text-[#8B0000] border border-red-100'} rounded-[2rem] flex items-center justify-center mb-8 shadow-inner`}>
+                        {mustForce ? <AlertTriangle className="w-10 h-10" /> : <Trash2 className="w-10 h-10" />}
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                        {mustForce ? 'Confirm Force Deletion' : 'Delete User'}
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
-                        {mustForce
-                            ? 'This user has active records (projects, transactions, etc.) linked to them. Do you want to continue?'
-                            : 'Are you sure you want to delete this user? This action cannot be undone.'}
-                    </p>
-                </div>
-
-                {/* User Card */}
-                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-6 border border-gray-100 dark:border-gray-800 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-600">
-                        {user.avatar ? (
-                            <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full object-cover" />
-                        ) : (
-                            <User className="w-6 h-6 text-gray-400" />
-                        )}
+                    
+                    <div className="space-y-2 mb-10">
+                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                            {mustForce ? 'Override Deletion' : 'Decommission Member'}
+                        </h2>
+                        <p className="text-[11px] font-black text-gray-400 tracking-[0.2em] uppercase">Security Level Authority Required</p>
                     </div>
-                    <div className="text-left overflow-hidden">
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">
-                            {user.name}
-                        </h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                            {user.email}
-                        </p>
+
+                    <div className="bg-gray-50/50 dark:bg-gray-800/20 rounded-[2rem] p-6 mb-10 border border-gray-100 dark:border-gray-800 flex items-center gap-5 shadow-inner w-full">
+                        <div className="w-14 h-14 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-600 shrink-0 overflow-hidden">
+                            {user.avatar ? (
+                                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                            ) : (
+                                <User className="w-7 h-7 text-gray-400" />
+                            )}
+                        </div>
+                        <div className="text-left overflow-hidden">
+                            <h4 className="font-black text-gray-900 dark:text-white text-sm uppercase tracking-tight truncate">
+                                {user.name}
+                            </h4>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest truncate mt-1">
+                                {user.email}
+                            </p>
+                        </div>
                     </div>
-                </div>
 
-                {/* Dependency Warning */}
-                {mustForce && dependencyError && (
-                    <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-800 rounded-lg p-3 mb-6">
-                        <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed text-left font-medium">
-                            {dependencyError}
-                        </p>
+                    {mustForce && dependencyError && (
+                        <div className="bg-amber-50/50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-800 rounded-2xl p-5 mb-10 shadow-inner">
+                            <p className="text-[11px] text-amber-700 dark:text-amber-400 font-black uppercase tracking-widest leading-relaxed">
+                                System Critical: {dependencyError}
+                            </p>
+                        </div>
+                    )}
+
+                    {!mustForce && (
+                        <div className="bg-red-50/30 dark:bg-red-900/10 border border-red-100 dark:border-red-800 rounded-2xl p-5 flex gap-4 items-start mb-10 shadow-inner">
+                            <AlertTriangle className="w-5 h-5 text-[#8B0000] shrink-0 mt-0.5" />
+                            <p className="text-[10px] text-red-700 dark:text-red-400 font-black uppercase tracking-widest leading-relaxed text-left">
+                                Final Warning: This action permanently revokes ecosystem resources and member data access.
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="flex gap-4 w-full">
+                        <button
+                            onClick={onClose}
+                            disabled={isDeleting}
+                            className="flex-1 h-14 rounded-2xl border-none text-[11px] font-black text-gray-400 dark:text-gray-500 capitalize tracking-[0.2em] hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-all font-mono"
+                        >
+                            Abort
+                        </button>
+                        <button
+                            onClick={() => onConfirm(mustForce)}
+                            disabled={isDeleting}
+                            className={`flex-[2] h-14 ${mustForce ? 'bg-amber-600 shadow-[0_12px_24px_-10px_rgba(217,119,6,0.5)]' : 'bg-[#8B0000] shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)]'} text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center border-none`}
+                        >
+                            {isDeleting ? 'Erasing...' : (mustForce ? 'Force Purge' : 'Commit Deletion')}
+                        </button>
                     </div>
-                )}
-
-                <div className={`bg-rose-50 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-800 rounded-lg p-3 flex gap-3 items-start mb-6 ${mustForce ? 'opacity-50' : ''}`}>
-                    <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-                    <p className="text-xs text-rose-700 dark:text-rose-300 leading-relaxed text-left">
-                        This will permanently remove the user and revoke their access to all workspaces and organization resources.
-                    </p>
-                </div>
-
-                <div className="flex gap-3 justify-center">
-                    <Button
-                        variant="plain"
-                        className="w-full"
-                        onClick={onClose}
-                        disabled={isDeleting}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        variant="solid"
-                        className={`w-full ${mustForce ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/20' : 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20'} text-white border-none shadow-lg`}
-                        onClick={() => onConfirm(mustForce)}
-                        loading={isDeleting}
-                        icon={mustForce ? <AlertTriangle className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
-                    >
-                        {mustForce ? 'Force Delete User' : 'Delete User'}
-                    </Button>
                 </div>
             </div>
         </Dialog>

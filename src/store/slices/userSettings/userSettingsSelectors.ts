@@ -88,12 +88,22 @@ export const selectProfileCompletionPercentage = createSelector(
             profile.firstName,
             profile.lastName,
             profile.phone,
-            profile.address,
-            profile.state,
+            profile.gender,
+            profile.nickname,
+            profile.alternativeEmail,
+            profile.fgceSet,
+            profile.fgceHouse,
+            profile.city,
+            profile.country,
             profile.avatar,
         ]
 
-        const filledFields = fields.filter(Boolean).length
+        const filledFields = fields.filter((field) => {
+            if (field === null || field === undefined) return false
+            if (typeof field === 'string') return field.trim() !== ''
+            return !!field
+        }).length
+        
         return Math.round((filledFields / fields.length) * 100)
     }
 )

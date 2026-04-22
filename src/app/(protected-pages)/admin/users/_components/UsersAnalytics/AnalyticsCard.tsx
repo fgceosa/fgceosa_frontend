@@ -42,11 +42,11 @@ export default function AnalyticsCard({
                         {icon}
                     </div>
                     <div>
-                        <div className="text-[10px] font-black text-gray-400 dark:text-gray-500 mb-1">
+                        <div className="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1.5">
                             {title}
                         </div>
                         <div className="flex items-baseline gap-2">
-                            <h4 className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">
+                            <h4 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">
                                 {value}
                             </h4>
                             {trend && (

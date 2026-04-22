@@ -1,6 +1,6 @@
 import appConfig from '@/configs/app.config'
 
-export type UserRole = 'platform_super_admin' | 'platform_admin' | 'org_super_admin' | 'org_admin' | 'org_member' | 'staff' | 'user'
+export type UserRole = 'super_admin' | 'admin' | 'member'
 
 export interface UserWithAuthority {
     authority: UserRole[]
@@ -30,7 +30,7 @@ export const getRoleBasedRedirectUrl = (
         return appConfig.unAuthenticatedEntryPath
     }
 
-    // Default fallback for authenticated users with no roles or explicitly 'user' role
+    // Default fallback for authenticated users with no roles or explicitly 'member' role
     const fallbackPath = appConfig.userEntryPath
 
     // If no authority array, fallback to user path
@@ -39,25 +39,12 @@ export const getRoleBasedRedirectUrl = (
     }
 
     // Check user roles in hierarchy order
-    if (user.authority.includes('platform_super_admin')) {
+    if (user.authority.includes('super_admin')) {
         return appConfig.adminEntryPath
     }
 
-    if (user.authority.includes('platform_admin')) {
-        return appConfig.platformAdminEntryPath
-    }
-
-    if (
-        user.authority.includes('org_super_admin') ||
-        user.authority.includes('org_admin') ||
-        user.authority.includes('org_member')
-    ) {
-        return '/organizations/dashboard'
-    }
-
-    // Regular users (staff, user)
-    if (user.authority.length > 0) {
-        return appConfig.userEntryPath
+    if (user.authority.includes('admin')) {
+        return appConfig.adminEntryPath
     }
 
     // Default fallback
@@ -75,13 +62,13 @@ export const hasRole = (user: UserSession | null, role: UserRole): boolean => {
 }
 
 /**
- * Checks if user has platform admin privileges
+ * Checks if user has admin privileges
  * @param user - User object with optional authority array
- * @returns Boolean indicating if user has platform admin privileges
+ * @returns Boolean indicating if user has admin privileges
  */
 export const isAdmin = (user: UserSession | null): boolean => {
     return user?.authority?.some(role =>
-        ['platform_super_admin', 'platform_admin'].includes(role)
+        ['super_admin', 'admin'].includes(role)
     ) ?? false
 }
 
@@ -95,12 +82,10 @@ export const isUser = (user: UserSession | null): boolean => {
 }
 
 /**
- * Checks if user has organization management privileges
+ * Checks if user has management privileges
  * @param user - User object with optional authority array
- * @returns Boolean indicating if user can manage organizations
+ * @returns Boolean indicating if user can manage content
  */
 export const isOrgAdmin = (user: UserSession | null): boolean => {
-    return user?.authority?.some(role =>
-        ['org_super_admin', 'org_admin', 'platform_super_admin', 'platform_admin'].includes(role)
-    ) ?? false
+    return isAdmin(user)
 }

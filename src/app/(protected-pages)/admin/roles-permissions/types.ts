@@ -20,7 +20,7 @@ export interface Role {
     permissions: PermissionGroup[]
     icon?: string
     isSystem?: boolean
-    type?: 'System' | 'Organization' | 'Custom'
+    type?: 'System' | 'Custom'
 }
 
-export type PermissionCategory = 'Workspace' | 'Billing' | 'Agents' | 'Settings' | 'Users' | 'Models'
+export type PermissionCategory = 'Members & Access' | 'Payments & Dues' | 'Announcements' | 'Events' | 'Analytics' | 'System Settings'

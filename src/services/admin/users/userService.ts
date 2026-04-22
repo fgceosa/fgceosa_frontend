@@ -7,12 +7,10 @@ import type {
 export interface UsersAnalytics {
     totalUsers: number
     activeUsers: number
+    pendingInvites: number
+    newMembers: number
     usersUsage: number
     usersUsagePeriod: string
-    sharedCredits: number
-    sharedCreditsChange: number
-    sharedCreditsChangePeriod: string
-    pendingInvites: number
     pendingInvitesStatus: string
     totalUsersTrend?: { value: string; isPositive: boolean }
     activeUsersTrend?: { value: string; isPositive: boolean }
@@ -164,6 +162,7 @@ function normalizeUser(raw: any): UserMember {
         firstName,
         lastName,
         email,
+        avatar: data.avatar || data.profile_picture || data.avatarUrl || data.avatar_url || depth.avatar || depth.profile_picture || depth.avatar_url || '',
         phoneNumber,
         address,
         postcode,
@@ -171,15 +170,16 @@ function normalizeUser(raw: any): UserMember {
         country,
         role: data.role || data.access_level || data.member_role || depth.role || depth.access_level || 'Member',
         status: data.status || data.account_status || data.user_status || (data.is_active || depth.is_active ? 'active' : 'inactive'),
-        credits: data.credits ?? data.ai_credits ?? data.balance ?? data.available_credits ?? depth.credits ?? depth.balance ?? 0,
-        totalSpending: data.totalSpending ?? data.total_spending ?? data.amount ?? data.total_expenditure ?? data.usage ?? depth.total_spending ?? depth.usage ?? 0,
-        botsCount: data.botsCount ?? 0,
-        projectsCount: data.projectsCount ?? 0,
         tag: data.tagNumber || data.tag || depth.tagNumber || '',
         tagNumber: data.tagNumber || depth.tagNumber || '',
         lastOnline: new Date(data.lastOnline ?? data.last_heartbeat ?? data.last_active ?? data.updated_at ?? depth.updated_at ?? depth.last_active ?? Date.now()).getTime(),
         createdAt: data.createdAt || data.created_at || depth.created_at || Date.now(),
         timezone: data.timezone || depth.timezone || '',
+        fgceSet: data.fgceSet || data.fgce_set || depth.fgceSet || depth.fgce_set || 'N/A',
+        fgceHouse: data.fgceHouse || data.fgce_house || depth.fgceHouse || depth.fgce_house || 'N/A',
+        gender: data.gender || depth.gender || 'Not Specified',
+        alternateEmail: data.alternateEmail || data.alternate_email || depth.alternateEmail || depth.alternate_email || '',
+        dues: data.duesStatus || data.dues_status || data.dues || depth.duesStatus || depth.dues_status || depth.dues || 'unpaid',
         // Ensure personalInfo structure exists and is populated
         personalInfo: {
             ...((data.personalInfo || depth.personalInfo || {})),
@@ -205,7 +205,7 @@ function normalizeUser(raw: any): UserMember {
  */
 export async function apiGetUsersAnalytics() {
     return ApiService.fetchDataWithAxios<UsersAnalytics>({
-        url: '/users/analytics',
+        url: 'users/analytics',
         method: 'get',
     })
 }
@@ -215,7 +215,7 @@ export async function apiGetUsersAnalytics() {
  */
 export async function apiGetUserDetails(id: string) {
     const response = await ApiService.fetchDataWithAxios<any>({
-        url: `/users/${id}`,
+        url: `users/${id}`,
         method: 'get',
     })
 
@@ -279,23 +279,6 @@ export async function apiUpdateUserIdentityRole(id: string, identityRole: string
         url: `/users/${id}/identity-role`,
         method: 'patch',
         data: { identityRole },
-    })
-}
-
-/**
- * Allocate user credits
- */
-export async function apiAllocateUserCredits(userId: string, data: {
-    adjustment_type: 'add' | 'deduct'
-    amount: number
-    reason_category: string
-    reason_description: string
-    notify_user: boolean
-}) {
-    return ApiService.fetchDataWithAxios<any>({
-        url: `/users/${userId}/credits/allocate`,
-        method: 'post',
-        data,
     })
 }
 

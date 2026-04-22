@@ -149,7 +149,8 @@ const usersSlice = createSlice({
                     totalUsers: payload.totalUsers ?? payload.total_users ?? payload.total_registry ?? payload.totalRegistry ?? 0,
                     activeUsers: payload.activeUsers ?? payload.active_users ?? payload.total_active ?? 0,
                     usersUsage: payload.usersUsage ?? payload.users_usage ?? payload.total_expenditure ?? payload.totalExpenditure ?? payload.total_spending ?? 0,
-                    pendingInvites: payload.pendingInvites ?? payload.pending_invites ?? payload.total_pending ?? 0
+                    pendingInvites: payload.pendingInvites ?? payload.pending_invites ?? payload.total_pending ?? 0,
+                    newMembers: payload.newMembers ?? payload.new_members ?? 0
                 }
                 state.lastFetched = Date.now()
             })

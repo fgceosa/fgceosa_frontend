@@ -1,5 +1,0 @@
-export { default } from './platformCopilotSlice'
-export * from './platformCopilotSlice'
-export * from './platformCopilotThunk'
-export * from './platformCopilotSelectors'
-export * from './constants'

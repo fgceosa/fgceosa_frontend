@@ -7,15 +7,18 @@ import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import appConfig from '@/configs/app.config'
 
 import { auth } from './auth'
-const useSecureCookies = process.env.NODE_ENV === 'production'
-const cookiePrefix = 'qorebit'
 
 const authRoutes = Object.entries(_authRoutes).map(([key]) => key)
 const publicRoutes = Object.entries(_publicRoutes).map(([key]) => key)
 
 const apiAuthPrefix = `${appConfig.apiPrefix}/auth`
 
-export default auth(async (req) => {
+/**
+ * NextAuth v5 Middleware wrapper
+ * We use a named export 'middleware' as well to satisfy specifically Turbopack and 
+ * certain Next.js environments that expect it.
+ */
+const middlewareFunc = auth(async (req) => {
     const { nextUrl } = req
     const isSignedIn = !!req.auth
 
@@ -40,29 +43,17 @@ export default auth(async (req) => {
         return
     }
 
-    // CRITICAL FIX: If the user just logged out (logout=true param) and is visiting
-    // an auth page (forgot-password, reset-password, etc.), allow it even if the
-    // session cookie hasn't been fully cleared yet on the server.
-    // This handles the production race condition where the HttpOnly cookie
-    // takes a moment to be invalidated after the server-side logout call.
     const isPostLogout = nextUrl.searchParams.get('logout') === 'true'
     if (isAuthRoute && isPostLogout) {
         return
     }
 
     const getRedirectUrl = (authority: string[]) => {
-        if (authority.includes('platform_super_admin')) {
+        if (authority.includes('super_admin') || authority.includes('admin')) {
             return appConfig.adminEntryPath
         }
-        if (authority.includes('platform_admin')) {
-            return appConfig.platformAdminEntryPath
-        }
-        if (
-            authority.includes('org_super_admin') ||
-            authority.includes('org_admin') ||
-            authority.includes('org_member')
-        ) {
-            return '/organizations/dashboard'
+        if (authority.includes('member')) {
+            return appConfig.userEntryPath
         }
         return appConfig.userEntryPath
     }
@@ -112,8 +103,7 @@ export default auth(async (req) => {
                 const redirectUrl = getRedirectUrl(userAuthority)
                 const currentPath = nextUrl.pathname
 
-                // Block redirect loops: If the calculated redirect is the current page,
-                // we've exhausted our options. Send them to the unauthenticated entry path.
+                // Block redirect loops
                 if (redirectUrl === currentPath) {
                     console.error('Redirect loop detected in middleware for path:', currentPath)
                     return Response.redirect(new URL(appConfig.unAuthenticatedEntryPath, nextUrl))
@@ -124,6 +114,11 @@ export default auth(async (req) => {
         }
     }
 })
+
+export default middlewareFunc
+
+// Named export to fix the Turbopack error
+export const middleware = middlewareFunc
 
 export const config = {
     matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api)(.*)'],

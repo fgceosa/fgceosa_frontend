@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
 
 const pageMeta: Metadata = {
-    title: 'Qorebit',
+    title: 'FGCEOSA',
     description:
-        'Qorebit Frontend Admin dashboard',
+        'FGCEOSA Alumni Management Platform',
     icons: {
         icon: '/img/logo/favicon.ico',
     },

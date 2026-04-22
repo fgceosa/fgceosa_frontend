@@ -51,7 +51,7 @@ export const mockRevenueData: RevenuePageData = {
             trend: 'up',
             type: 'positive'
         },
-        activeOrganizations: {
+        activePlatforms: {
             label: 'Active Orgs',
             amount: 142,
             change: 5.6,
@@ -82,11 +82,11 @@ export const mockRevenueData: RevenuePageData = {
         { id: 'llama3', model: 'Llama 3.1 405B', provider: 'Meta', revenue: 1920000, usage: 12.5, growth: -2.1 },
     ],
     recentTransactions: [
-        { id: 'tx-001', date: '2024-06-24 14:30', organization: 'TechFlow Solutions', amount: 450000, type: 'credit_purchase', status: 'Completed' },
-        { id: 'tx-002', date: '2024-06-24 11:15', organization: 'Nexus AI Research', amount: 125000, type: 'usage_billing', status: 'Completed' },
-        { id: 'tx-003', date: '2024-06-23 16:45', organization: 'Global Data Corp', amount: 850000, type: 'credit_purchase', status: 'Pending' },
-        { id: 'tx-004', date: '2024-06-23 09:20', organization: 'Vertex Systems', amount: 230000, type: 'usage_billing', status: 'Failed' },
-        { id: 'tx-005', date: '2024-06-22 15:10', organization: 'InnoSpark Labs', amount: 180000, type: 'credit_purchase', status: 'Completed' },
+        { id: 'tx-001', date: '2024-06-24 14:30', platform: 'TechFlow Solutions', amount: 450000, type: 'credit_purchase', status: 'Completed' },
+        { id: 'tx-002', date: '2024-06-24 11:15', platform: 'Nexus AI Research', amount: 125000, type: 'usage_billing', status: 'Completed' },
+        { id: 'tx-003', date: '2024-06-23 16:45', platform: 'Global Data Corp', amount: 850000, type: 'credit_purchase', status: 'Pending' },
+        { id: 'tx-004', date: '2024-06-23 09:20', platform: 'Vertex Systems', amount: 230000, type: 'usage_billing', status: 'Failed' },
+        { id: 'tx-005', date: '2024-06-22 15:10', platform: 'InnoSpark Labs', amount: 180000, type: 'credit_purchase', status: 'Completed' },
     ],
     revenueBySource: [
         { source: 'Credit Top-ups', amount: 9800000, percentage: 63.5 },
@@ -100,11 +100,11 @@ export const mockRevenueData: RevenuePageData = {
         { provider: 'Meta', creditsConsumed: 1700000, cost: 180000, revenue: 1920000, margin: 90.6 },
     ],
     topSpenders: [
-        { organization: 'TechFlow Solutions', spend: 4500000, creditsUsed: 5200000, lastActivity: '2024-06-24', status: 'Active' },
-        { organization: 'Global Data Corp', spend: 3200000, creditsUsed: 3800000, lastActivity: '2024-06-23', status: 'Active' },
-        { organization: 'Nexus AI Research', spend: 2800000, creditsUsed: 3100000, lastActivity: '2024-06-24', status: 'Active' },
-        { organization: 'Vertex Systems', spend: 1900000, creditsUsed: 2200000, lastActivity: '2024-06-23', status: 'At Risk' },
-        { organization: 'InnoSpark Labs', spend: 1500000, creditsUsed: 1700000, lastActivity: '2024-06-22', status: 'Active' },
+        { platform: 'TechFlow Solutions', spend: 4500000, creditsUsed: 5200000, lastActivity: '2024-06-24', status: 'Active' },
+        { platform: 'Global Data Corp', spend: 3200000, creditsUsed: 3800000, lastActivity: '2024-06-23', status: 'Active' },
+        { platform: 'Nexus AI Research', spend: 2800000, creditsUsed: 3100000, lastActivity: '2024-06-24', status: 'Active' },
+        { platform: 'Vertex Systems', spend: 1900000, creditsUsed: 2200000, lastActivity: '2024-06-23', status: 'At Risk' },
+        { platform: 'InnoSpark Labs', spend: 1500000, creditsUsed: 1700000, lastActivity: '2024-06-22', status: 'Active' },
     ],
     creditFlow: {
         issued: 50000000,

@@ -17,69 +17,80 @@ export function validateProfileForm(
 ): ProfileValidationErrors {
     const errors: ProfileValidationErrors = {}
 
-    // Username validation (optional)
-    if (data.username && data.username.trim()) {
-        if (data.username.length > 150) {
-            errors.username = 'Username must be less than 150 characters'
-        }
-        if (!/^[a-zA-Z0-9_-]+$/.test(data.username)) {
-            errors.username = 'Username can only contain letters, numbers, underscores, and hyphens'
-        }
+    // First name validation (required)
+    if (!data.firstName || !data.firstName.trim()) {
+        errors.firstName = 'First name is required'
+    } else if (data.firstName.length > 150) {
+        errors.firstName = 'First name must be less than 150 characters'
     }
 
-    // First name validation (optional)
-    if (data.firstName && data.firstName.trim()) {
-        if (data.firstName.length > 150) {
-            errors.firstName = 'First name must be less than 150 characters'
-        }
+    // Last name validation (required)
+    if (!data.lastName || !data.lastName.trim()) {
+        errors.lastName = 'Last name is required'
+    } else if (data.lastName.length > 150) {
+        errors.lastName = 'Last name must be less than 150 characters'
     }
 
-    // Last name validation (optional)
-    if (data.lastName && data.lastName.trim()) {
-        if (data.lastName.length > 150) {
-            errors.lastName = 'Last name must be less than 150 characters'
-        }
+    // Nickname validation (optional)
+    if (data.nickname && data.nickname.trim() && data.nickname.length > 150) {
+        errors.nickname = 'Nickname must be less than 150 characters'
     }
 
-    // Phone validation (optional)
-    if (data.phone && data.phone.trim()) {
-        if (data.phone.length > 50) {
-            errors.phone = 'Phone number must be less than 50 characters'
-        }
+    // Email validation (required)
+    if (!data.email || !data.email.trim()) {
+        errors.email = 'Email address is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+        errors.email = 'Invalid email address'
     }
 
-    // Address validation (optional)
-    if (data.address && data.address.trim()) {
-        if (data.address.length > 500) {
-            errors.address = 'Address must be less than 500 characters'
-        }
+    // Alternative Email validation (optional)
+    if (data.alternativeEmail && data.alternativeEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.alternativeEmail)) {
+        errors.alternativeEmail = 'Invalid alternative email address'
     }
 
-    // City validation (optional)
-    if (data.city && data.city.trim()) {
-        if (data.city.length > 255) {
-            errors.city = 'City must be less than 255 characters'
-        }
+    // Gender validation (required)
+    if (!data.gender || !data.gender.trim()) {
+        errors.gender = 'Gender is required'
     }
 
-    // State validation (optional)
-    if (data.state && data.state.trim()) {
-        if (data.state.length > 255) {
-            errors.state = 'State must be less than 255 characters'
-        }
+    // FGCE Set validation (required)
+    if (!data.fgceSet || !data.fgceSet.trim()) {
+        errors.fgceSet = 'FGCE Set is required'
     }
 
-    // Postcode validation (optional)
-    if (data.postcode && data.postcode.trim()) {
-        if (data.postcode.length > 50) {
-            errors.postcode = 'Postcode must be less than 50 characters'
-        }
+    // FGCE House validation (required)
+    if (!data.fgceHouse || !data.fgceHouse.trim()) {
+        errors.fgceHouse = 'FGCE House is required'
+    }
+
+    // City validation (required)
+    if (!data.city || !data.city.trim()) {
+        errors.city = 'City is required'
     }
 
     // Country validation (optional)
-    if (data.country && data.country.trim()) {
-        if (data.country.length > 255) {
-            errors.country = 'Country must be less than 255 characters'
+    if (data.country && data.country.trim() && data.country.length > 255) {
+        errors.country = 'Country must be less than 255 characters'
+    }
+
+    // Password validation (only if provided)
+    const hasPassword = data.password && data.password.trim()
+    const hasConfirmPassword = data.confirmPassword && data.confirmPassword.trim()
+
+    if (hasPassword || hasConfirmPassword) {
+        if (!hasPassword) {
+            errors.password = 'Password is required when confirming'
+        } else {
+            const passwordValidation = validatePassword(data.password!)
+            if (!passwordValidation.isValid) {
+                errors.password = passwordValidation.errors[0]
+            }
+        }
+
+        if (!hasConfirmPassword) {
+            errors.confirmPassword = 'Please confirm your password'
+        } else if (data.password !== data.confirmPassword) {
+            errors.confirmPassword = 'Passwords do not match'
         }
     }
 

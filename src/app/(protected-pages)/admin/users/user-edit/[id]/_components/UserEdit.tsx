@@ -167,21 +167,21 @@ const UserEdit = ({ data }: UserEditProps) => {
                 onFormSubmit={handleFormSubmit}
             >
                 <Container>
-                    <div className="flex items-center justify-between px-8 py-4 bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm mb-8">
+                    <div className="flex items-center justify-between px-8 py-5 bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm mb-12">
                         <Button
-                            className="bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white rounded-xl px-6"
+                            className="bg-gray-50/50 dark:bg-gray-800/10 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white rounded-2xl h-14 px-8 font-black text-[11px] capitalize tracking-[0.2em] transition-all border-none font-mono"
                             type="button"
                             variant="plain"
-                            icon={<TbArrowNarrowLeft />}
+                            icon={<TbArrowNarrowLeft className="w-5 h-5" />}
                             onClick={handleBack}
                         >
-                            Return to Registry
+                            Back To Registry
                         </Button>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-4">
                             <Button
-                                className="bg-rose-50 dark:bg-rose-900/20 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/40 border border-rose-100 dark:border-rose-800/20 rounded-xl px-6"
+                                className="bg-rose-50/50 dark:bg-rose-900/10 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/30 border border-rose-100 dark:border-rose-900/30 rounded-2xl h-14 px-8 font-black text-[11px] capitalize tracking-[0.2em] transition-all"
                                 type="button"
-                                icon={<TbTrash />}
+                                icon={<TbTrash className="w-5 h-5" />}
                                 onClick={handleDelete}
                             >
                                 Decommission
@@ -190,9 +190,9 @@ const UserEdit = ({ data }: UserEditProps) => {
                                 variant="solid"
                                 type="submit"
                                 loading={isSubmiting}
-                                className="bg-primary hover:bg-primary-deep text-white rounded-xl px-10 shadow-lg shadow-primary/20"
+                                className="bg-[#8B0000] hover:bg-[#700000] text-white rounded-2xl h-14 px-12 font-black text-[11px] capitalize tracking-[0.2em] shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)] transition-all hover:-translate-y-1 active:scale-95 border-none"
                             >
-                                Commit Changes
+                                Commit Modifications
                             </Button>
                         </div>
                     </div>

@@ -9,21 +9,18 @@ interface PermissionGroupListProps {
 }
 
 const categoryIcons: Record<string, React.ElementType> = {
-    'Organization Management': Globe,
-    'Users & Access': Users,
-    'Credits': CreditCard,
-    'Billing & Revenue': BarChart3,
-    'Copilots': Bot,
-    'Model Library': Database,
+    'Members & Access': Users,
+    'Payments & Dues': CreditCard,
+    'Announcements': Layout,
+    'Events': BarChart3,
     'Analytics': BarChart3,
     'System Settings': Settings,
-    // Fallbacks for older categories
+    // Fallbacks
+    'Users & Access': Users,
     Workspace: Layout,
     Billing: CreditCard,
-    Agents: Bot,
     Settings: Settings,
     Users: Users,
-    Models: Database
 }
 
 export default function PermissionGroupList({ permissions, onTogglePermission, disabled }: PermissionGroupListProps) {
@@ -31,7 +28,7 @@ export default function PermissionGroupList({ permissions, onTogglePermission, d
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-700">
             <div className="flex items-center gap-2 pl-1">
                 <ShieldCheck className="w-4 h-4 text-primary" />
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Permissions</label>
+                <label className="text-xs font-bold text-gray-400">Permissions</label>
             </div>
 
             <div className="space-y-12">
@@ -45,8 +42,8 @@ export default function PermissionGroupList({ permissions, onTogglePermission, d
                                         <CategoryIcon className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight leading-none">{group.category}</h4>
-                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.1em] mt-1.5">Manage {group.category.toLowerCase()} access</p>
+                                        <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-tight leading-none">{group.category}</h4>
+                                        <p className="text-xs font-medium text-gray-400 mt-1">{group.permissions.length} permissions</p>
                                     </div>
                                 </div>
                                 <div className="h-px flex-1 bg-gradient-to-r from-gray-100 via-gray-50/50 to-transparent dark:from-gray-800 dark:via-gray-800/20 ml-8 hidden sm:block"></div>

@@ -4,6 +4,7 @@ import classNames from '@/utils/classNames'
 import ScrollBar from '@/components/ui/ScrollBar'
 import Logo from '@/components/template/Logo'
 import VerticalMenuContent from '@/components/template/VerticalMenuContent'
+import VerticalMenuIcon from '@/components/template/VerticalMenuContent/VerticalMenuIcon'
 import useTheme from '@/utils/hooks/useTheme'
 import useCurrentSession from '@/utils/hooks/useCurrentSession'
 import useNavigation from '@/utils/hooks/useNavigation'
@@ -11,10 +12,11 @@ import type { User } from '@/@types/auth'
 import queryRoute from '@/utils/queryRoute'
 import appConfig from '@/configs/app.config'
 import { usePathname, useRouter } from 'next/navigation'
+import useSystemSettings from '@/utils/hooks/useSystemSettings'
 import Link from 'next/link'
-import { useUserAuthorities } from '@/utils/hooks/useAuthorization'
+import { useUserAuthorities, useHasPermission } from '@/utils/hooks/useAuthorization'
 import { getRoleBasedRedirectUrl, UserRole } from '@/utils/roleBasedRouting'
-import { useHasPermission } from '@/utils/hooks/useAuthorization'
+import { selectUserProfile } from '@/store/slices/userSettings/userSettingsSelectors'
 
 import {
     SIDE_NAV_WIDTH,
@@ -28,22 +30,9 @@ import { useState, useEffect } from 'react'
 import { BiCreditCard, BiLogOut, BiChevronDown, BiWalletAlt } from 'react-icons/bi'
 import { Plus } from 'lucide-react'
 import { Button, Dropdown } from '../ui'
-import TopUpModal from './Topup/TopUpModal'
-import Wallet from './Wallet'
 import Avatar from '@/components/ui/Avatar'
 import forceLogout from '@/utils/auth/forceLogout'
 import { useAppSelector, useAppDispatch } from '@/store'
-import {
-    selectWorkspaces,
-    selectCurrentWorkspace,
-} from '@/store/slices/workspace/workspaceSelectors'
-import { setCurrentWorkspace, fetchWorkspace } from '@/store/slices/workspace'
-import { fetchWorkspaces } from '@/store/slices/workspace/workspaceThunk'
-import { selectPlatformSettingsData, fetchPlatformSettings, fetchPublicPlatformSettings } from '@/store/slices/platformSettings'
-import { selectLastFetched, selectWorkspacesLoading } from '@/store/slices/workspace/workspaceSelectors'
-import { selectCurrentOrganizationId } from '@/store/slices/organization/organizationSelectors'
-import WorkspaceSwitcher from '@/app/(protected-pages)/workspace/_components/WorkspaceSwitcher'
-import CreateWorkspaceDialog from '@/app/(protected-pages)/workspace/_components/CreateWorkspaceDialog'
 
 type SideNavProps = {
     background?: boolean
@@ -85,59 +74,24 @@ const SideNav = ({
 
     // Redux State
     const dispatch = useAppDispatch()
-    const workspaces = useAppSelector(selectWorkspaces)
-    const currentWorkspace = useAppSelector(selectCurrentWorkspace)
-    const platformSettings = useAppSelector(selectPlatformSettingsData)
-    const lastFetched = useAppSelector(selectLastFetched)
-    const workspacesLoading = useAppSelector(selectWorkspacesLoading)
-    const organizationId = useAppSelector(selectCurrentOrganizationId)
     const combinedAuthorities = useUserAuthorities()
-    const canTopUp = useHasPermission('can_top_up_org_wallet') || combinedAuthorities.includes('user')
 
-    const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false)
-    const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] = useState(false)
 
-    // Fetch platform settings on mount if not available
-    // Use public endpoint for non-platform admins to avoid 403 errors
-    useEffect(() => {
-        if (!platformSettings) {
-            const auth = (session?.user as User)?.authority || []
-            const isPlatformAdmin = auth.includes('platform_super_admin') || auth.includes('platform_admin')
 
-            if (isPlatformAdmin) {
-                dispatch(fetchPlatformSettings())
-            } else {
-                dispatch(fetchPublicPlatformSettings())
-            }
-        }
-    }, [dispatch, platformSettings, session])
-
-    // Fetch workspaces if not available and user has org roles
-    // Fetch workspaces if not available and user has org roles
-    // Fetch workspaces if not available and user has org roles
-    // Fetch workspaces if not available and user has org roles
-    useEffect(() => {
-        if (session.user && (session.user as any).email && (!workspaces || workspaces.length === 0) && !lastFetched && !workspacesLoading) {
-            const hasOrgRole = combinedAuthorities.some(a => a.startsWith('org_'))
-            const isPlatformAdmin = combinedAuthorities.includes('platform_super_admin') || combinedAuthorities.includes('platform_admin')
-            if (hasOrgRole || isPlatformAdmin) {
-                dispatch(fetchWorkspaces())
-            }
-        }
-    }, [dispatch, session.user, workspaces, combinedAuthorities, lastFetched, workspacesLoading])
-
-    const role = () => {
-        if (combinedAuthorities.includes('platform_super_admin'))
-            return 'Platform Admin Dashboard'
-        if (combinedAuthorities.includes('admin') || combinedAuthorities.includes('org_admin') || combinedAuthorities.includes('org_super_admin')) return 'Admin Dashboard'
-        return 'User Dashboard'
+    const role = (): UserRole => {
+        if (combinedAuthorities.includes('super_admin')) return 'super_admin'
+        if (combinedAuthorities.includes('admin')) return 'admin'
+        return 'member'
     }
 
-    const platformName = platformSettings?.general.platformName || 'QOREBIT'
+    const { settings } = useSystemSettings()
+    const platformName = settings.associationName
 
     const user = session?.user as User
-    const userName = user?.userName || user?.email || 'User'
+    const userName = (user as any)?.name || user?.userName || 'User'
     const userEmail = user?.email || ''
+    const userProfile = useAppSelector(selectUserProfile)
+    const firstName = userProfile?.firstName || (session?.user as any)?.firstName || userName.split(' ')[0]
     const userInitials = userName
         .split(' ')
         .map((n: string) => n[0])
@@ -145,11 +99,17 @@ const SideNav = ({
         .toUpperCase()
         .slice(0, 2)
 
+    const getRoleLabel = (authorities: string[]) => {
+        if (authorities.includes('super_admin')) return 'Super Admin'
+        if (authorities.includes('admin')) return 'Admin'
+        return 'Member'
+    }
+
     const handleSignOut = () => {
         forceLogout()
     }
 
-    const isUserDashboard = role() === 'User Dashboard'
+    const isUserDashboard = role() === 'member'
 
     const [isMounted, setIsMounted] = useState(false)
     useEffect(() => {
@@ -160,47 +120,43 @@ const SideNav = ({
         <div
             style={sideNavCollapse ? sideNavCollapseStyle : sideNavStyle}
             className={classNames(
-                'side-nav hidden lg:flex flex-col border-r border-gray-200 dark:border-gray-700 sticky top-0 h-screen z-20',
+                'side-nav hidden lg:flex flex-col border-r border-gray-200 dark:border-gray-700 sticky top-0 h-screen z-20 overflow-hidden relative',
                 isMounted && 'transition-all duration-300',
-                background && 'bg-white dark:bg-gray-900',
                 !sideNavCollapse && 'side-nav-expand',
                 className,
             )}
         >
-            <div className="relative group">
+            {/* FGCEOSA Branded Background Overlay */}
+            <div 
+                className="absolute inset-0 z-[-1] pointer-events-none transition-opacity duration-700"
+                style={{
+                    background: `linear-gradient(180deg, rgba(139, 0, 0, 0.75) 0%, rgba(80, 0, 0, 0.85) 100%), url('/img/others/welcome-bg.png')`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    opacity: background ? 1 : 0
+                }}
+            />
+            <div className="relative z-20 bg-white border-b border-gray-100 dark:border-gray-800 transition-all duration-300">
                 <Link
                     href={getRoleBasedRedirectUrl({ authority: combinedAuthorities as UserRole[] })}
-                    className="flex items-center"
+                    className={classNames(
+                        "flex flex-col items-center justify-center transition-all duration-300",
+                        sideNavCollapse ? "pt-4 pb-4" : "pt-8 pb-6"
+                    )}
                     style={{
-                        height: HEADER_HEIGHT,
-                        padding: sideNavCollapse ? '0 16px' : '0 24px'
+                        padding: sideNavCollapse ? '10px 16px' : '24px 24px'
                     }}
                 >
                     <Logo
                         type={sideNavCollapse ? 'streamline' : 'full'}
-                        mode={mode || defaultMode}
-                        logoWidth={sideNavCollapse ? 32 : 120}
-                        logoHeight={sideNavCollapse ? 32 : 40}
+                        mode="dark"
+                        logoWidth={sideNavCollapse ? 36 : 160}
+                        logoHeight={sideNavCollapse ? 36 : 70}
+                        className="transition-transform duration-500 hover:scale-105"
                     />
                 </Link>
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent"></div>
             </div>
 
-            {/* Workspace Context Selector */}
-            {workspaces && !isUserDashboard && !combinedAuthorities.includes('platform_super_admin') && (
-                <div className={classNames(sideNavCollapse ? "px-2 pb-2" : "px-5 pb-6 pt-4")}>
-                    <WorkspaceSwitcher
-                        collapsed={sideNavCollapse}
-                        workspaces={workspaces}
-                        currentWorkspace={currentWorkspace}
-                        onWorkspaceChange={(ws) => {
-                            dispatch(setCurrentWorkspace(ws))
-                            dispatch(fetchWorkspace(ws.id))
-                        }}
-                        onCreateNew={(combinedAuthorities.includes('org_super_admin') || combinedAuthorities.includes('platform_super_admin')) ? () => setIsCreateWorkspaceOpen(true) : undefined}
-                    />
-                </div>
-            )}
 
             {/* Original Logo - Commented out as requested */}
             {/* <Link
@@ -231,53 +187,11 @@ const SideNav = ({
                 </div>
             </Link> */}
 
-            {/* Balance & Top Up Section - Premium Card */}
-            {!sideNavCollapse && (
-                <div className="px-5 py-6">
-                    <div className="relative group bg-blue-50/50 dark:bg-primary/5 rounded-[1.5rem] p-5 border border-blue-100/50 dark:border-primary/10 transition-all duration-300 hover:bg-blue-50 dark:hover:bg-primary/10">
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                                    <BiWalletAlt className="text-primary w-4 h-4" />
-                                </div>
-                                <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">
-                                    Balance
-                                </span>
-                            </div>
-
-                            <Wallet compact variant="default" showIcon={false} />
-
-                            {canTopUp && (
-                                <Button
-                                    variant="solid"
-                                    size="sm"
-                                    className="w-full h-12 bg-primary hover:bg-primary-deep text-white font-black text-[10px] rounded-2xl shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 group/btn"
-                                    onClick={() => setIsTopUpModalOpen(true)}
-                                >
-                                    <Plus className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                                    Top Up Credit
-                                </Button>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {sideNavCollapse && canTopUp && (
-                <div className="px-3 py-6 flex justify-center">
-                    <button
-                        className="w-12 h-12 bg-gradient-to-br from-[#0055BA] to-[#003d85] rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 text-white transition-all hover:scale-110 active:scale-95 group"
-                        onClick={() => setIsTopUpModalOpen(true)}
-                    >
-                        <BiCreditCard size={20} className="group-hover:rotate-12 transition-transform" />
-                    </button>
-                </div>
-            )}
 
 
 
             <div className="px-4 mb-2">
-                <div className="h-px bg-gray-100 dark:bg-gray-800/60"></div>
+                <div className="h-px bg-white/5"></div>
             </div>
 
             {/* Menu Content */}
@@ -294,45 +208,55 @@ const SideNav = ({
                 </ScrollBar>
             </div>
 
-            {/* User Profile Section */}
-            {/* User Profile Section - Enterprise Style */}
+            {/* User Profile Section - Compact Vertical Card */}
             {!sideNavCollapse && (
-                <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-900/30">
-                    <Dropdown
-                        placement="top-start"
-                        renderTitle={
-                            <div className="flex items-center gap-3 px-3 py-3 rounded-[1.5rem] hover:bg-white dark:hover:bg-gray-900 cursor-pointer transition-all duration-300 border border-transparent hover:border-gray-100 dark:hover:border-gray-800 hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none group">
-                                <Avatar className="bg-gradient-to-br from-primary to-primary-deep text-white shadow-md ring-2 ring-white dark:ring-gray-800">
-                                    {userInitials}
-                                </Avatar>
-                                <div className="flex-1 min-w-0">
-                                    <div className="text-[12px] font-bold tracking-tight text-gray-900 dark:text-gray-100 truncate">
-                                        {userName}
-                                    </div>
-                                    <div className="text-[10px] font-medium text-gray-400 dark:text-gray-500 truncate opacity-80">
-                                        {userEmail}
-                                    </div>
-                                </div>
-                                <BiChevronDown className="text-gray-400 group-hover:text-primary transition-colors" size={20} />
+                <div className="px-4 mb-6 mt-auto pt-4 flex-shrink-0 relative">
+                    {/* Top Demarcation Line */}
+                    <div className="h-px bg-white/10 mx-4 mb-4"></div>
+
+                    <div className="bg-black/20 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/5 shadow-xl transition-all hover:bg-black/30 group/profile">
+                        <div className="p-5 flex flex-col items-center text-center">
+                            {/* Avatar */}
+                            <Avatar 
+                                size={64} 
+                                className="bg-gradient-to-br from-white/30 to-white/10 text-white shadow-xl ring-3 ring-white/10 mb-3 transition-transform group-hover/profile:scale-105 duration-500 font-black text-lg"
+                                src={userProfile?.avatar ? `${userProfile.avatar}${userProfile.avatar.includes('?') ? '&' : '?'}v=${new Date(userProfile.updatedAt || Date.now()).getTime()}` : undefined}
+                            >
+                                {userInitials}
+                            </Avatar>
+
+                            {/* Name & Class */}
+                            <div className="space-y-1 mb-3 w-full">
+                                <h4 className="text-sm font-bold text-white tracking-tight leading-snug break-words whitespace-normal">
+                                    {firstName}
+                                </h4>
+                                <p className="text-white/70 font-medium text-xs">
+                                    Class of 2007
+                                </p>
                             </div>
-                        }
-                    >
-                        <Dropdown.Item
-                            eventKey="sign-out"
-                            onClick={handleSignOut}
-                            className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
-                        >
-                            <div className="flex items-center gap-3 px-1 py-1">
-                                <BiLogOut size={18} />
-                                <span className="text-[11px] font-bold">Sign out</span>
+
+                            {/* Role Badge */}
+                            <div className="px-4 py-1.5 bg-burgundy/80 rounded-xl border border-white/10 text-white text-[9px] font-black uppercase tracking-widest shadow-md">
+                                {getRoleLabel(combinedAuthorities)}
                             </div>
-                        </Dropdown.Item>
-                    </Dropdown>
+                        </div>
+
+                        {/* Logout */}
+                        <div className="border-t border-white/5">
+                            <button 
+                                onClick={handleSignOut}
+                                className="w-full flex items-center gap-3 px-6 py-3.5 hover:bg-white/5 text-white/70 hover:text-white transition-all group/logout"
+                            >
+                                <BiLogOut className="text-[18px] transition-transform group-hover/logout:-translate-x-1" />
+                                <span className="text-xs font-bold">Logout</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
 
             {sideNavCollapse && (
-                <div className="border-t border-gray-100 dark:border-gray-800 p-3 flex justify-center bg-gray-50/30 dark:bg-gray-900/30">
+                <div className="border-t border-white/5 p-3 flex justify-center bg-black/5">
                     <Dropdown
                         placement="top-start"
                         renderTitle={
@@ -357,17 +281,6 @@ const SideNav = ({
                 </div>
             )}
 
-            <TopUpModal
-                isOpen={isTopUpModalOpen}
-                onClose={() => setIsTopUpModalOpen(false)}
-                organizationId={organizationId || undefined}
-                workspaceId={combinedAuthorities.includes('org_super_admin') ? undefined : currentWorkspace?.id}
-            />
-
-            <CreateWorkspaceDialog
-                isOpen={isCreateWorkspaceOpen}
-                onClose={() => setIsCreateWorkspaceOpen(false)}
-            />
         </div>
     )
 }

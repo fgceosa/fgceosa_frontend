@@ -70,6 +70,7 @@ const SignInForm = (props: SignInFormProps) => {
             <Form onSubmit={handleSubmit(handleSignIn)} className="space-y-6">
                 <FormItem
                     label="Email"
+                    labelClass="font-bold text-gray-900"
                     invalid={Boolean(errors.email)}
                     errorMessage={errors.email?.message}
                 >
@@ -94,6 +95,7 @@ const SignInForm = (props: SignInFormProps) => {
                 </FormItem>
                 <FormItem
                     label="Password"
+                    labelClass="font-bold text-gray-900"
                     invalid={Boolean(errors.password)}
                     errorMessage={errors.password?.message}
                     className={classNames(
@@ -126,7 +128,7 @@ const SignInForm = (props: SignInFormProps) => {
                     loading={isSubmitting}
                     variant="solid"
                     type="submit"
-                    className="h-14 bg-primary hover:bg-primary-deep text-white font-bold text-sm rounded-[1.2rem] shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    className="h-14 bg-[#8B0000] hover:bg-[#660000] text-white font-bold text-sm rounded-[1.2rem] shadow-xl shadow-[#8B0000]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
                     {isSubmitting ? 'Signing in...' : 'Sign In'}
                 </Button>

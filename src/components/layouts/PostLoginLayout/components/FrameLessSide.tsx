@@ -97,7 +97,6 @@ const FrameLessSide = ({ children }: CommonProps) => {
                             }
                             headerEnd={
                                 <>
-                                    <Wallet className="md:hidden" />
                                     <Notification />
                                     <UserProfileDropdown hoverable={false} />
                                 </>

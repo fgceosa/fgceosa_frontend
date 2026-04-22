@@ -24,7 +24,6 @@ const StackedSide = ({ children }: CommonProps) => {
                         headerStart={<MobileNav />}
                         headerEnd={
                             <>
-                                <Wallet className="md:hidden" />
                                 <Notification />
                                 <UserProfileDropdown hoverable={false} />
                             </>

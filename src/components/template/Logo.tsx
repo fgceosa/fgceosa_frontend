@@ -1,7 +1,9 @@
+'use client'
+
 import classNames from 'classnames'
-import { APP_NAME } from '@/constants/app.constant'
 import Image from 'next/image'
 import type { CommonProps } from '@/@types/common'
+import useSystemSettings from '@/utils/hooks/useSystemSettings'
 
 interface LogoProps extends CommonProps {
     type?: 'full' | 'streamline'
@@ -16,7 +18,6 @@ const LOGO_SRC_PATH = '/img/logo/'
 const Logo = (props: LogoProps) => {
     const {
         type = 'full',
-        mode = 'light',
         className,
         imgClass,
         style,
@@ -24,69 +25,21 @@ const Logo = (props: LogoProps) => {
         logoHeight,
     } = props
 
-    //     const width = logoWidth || (type === 'full' ? 120 : 40)
-    // const height = logoHeight || (type === 'full' ? 40 : 40)
+    const { settings } = useSystemSettings()
 
-    const width = logoWidth || (type === 'full' ? 80 : 40)
-    const height = logoHeight || (type === 'full' ? 40 : 40)
-  
+    const width = logoWidth || (type === 'full' ? 140 : 50)
+    const height = logoHeight || (type === 'full' ? 60 : 50)
 
     return (
-        <div className={classNames('logo', className)} style={style}>
-            {mode === 'light' && (
-                <>
-                    <Image
-                        className={classNames(
-                            '',
-                            type === 'full' ? '' : 'hidden',
-                            imgClass,
-                        )}
-                        src={`${LOGO_SRC_PATH}Qorebit-Logo.svg`}
-                        alt={`${APP_NAME} logo`}
-                        width={width}
-                        height={height}
-                        priority
-                    />
-                    <Image
-                        className={classNames(
-                            '',
-                            type === 'streamline' ? '' : 'hidden',
-                            imgClass,
-                        )}
-                        src={`${LOGO_SRC_PATH}Qorebit-Logo.svg`}
-                        alt={`${APP_NAME} logo`}
-                        width={width}
-                        height={height}
-                        priority
-                    />
-                </>
-            )}
-            {mode === 'dark' && (
-                <>
-                    <Image
-                        className={classNames(
-                            type === 'full' ? '' : 'hidden',
-                            imgClass,
-                        )}
-                        src={`${LOGO_SRC_PATH}Qorebit-Logo.svg`}
-                        alt={`${APP_NAME} logo`}
-                        width={width}
-                        height={height}
-                        priority
-                    />
-                    <Image
-                        className={classNames(
-                            type === 'streamline' ? '' : 'hidden',
-                            imgClass,
-                        )}
-                        src={`${LOGO_SRC_PATH}Qorebit-Logo.svg`}
-                        alt={`${APP_NAME} logo`}
-                        width={width}
-                        height={height}
-                        priority
-                    />
-                </>
-            )}
+        <div className={classNames('logo flex items-center justify-center', className)} style={style}>
+            <Image
+                className={classNames('object-contain', imgClass)}
+                src={`${LOGO_SRC_PATH}fgceosa-logo.png`}
+                alt={`${settings.associationName} logo`}
+                width={width}
+                height={height}
+                priority
+            />
         </div>
     )
 }

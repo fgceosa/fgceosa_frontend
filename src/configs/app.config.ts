@@ -8,10 +8,10 @@ export type AppConfig = {
 }
 
 const appConfig: AppConfig = {
-    apiPrefix: `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').replace(/\/$/, '')}/api/v1/`,
-    authenticatedEntryPath: '/organizations/dashboard',
-    adminEntryPath: '/platform/dashboard',
-    platformAdminEntryPath: '/platform/dashboard',
+    apiPrefix: `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').replace(/\/$/, '').replace(/\/api\/v1$/, '')}/api/v1/`,
+    authenticatedEntryPath: '/dashboard',
+    adminEntryPath: '/admin/dashboard',
+    platformAdminEntryPath: '/admin/dashboard',
     userEntryPath: '/dashboard',
     unAuthenticatedEntryPath: '/sign-in',
 }
