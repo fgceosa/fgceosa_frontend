@@ -18,6 +18,14 @@ import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import useSystemSettings from '@/utils/hooks/useSystemSettings'
 
+import { 
+    apiInitializePayment, 
+    apiVerifyPayment 
+} from '@/services/PaymentService'
+import { useAppSelector } from '@/store/hook'
+
+declare const PaystackPop: any;
+
 interface PaymentModalProps {
     isOpen: boolean
     onClose: () => void
@@ -31,9 +39,11 @@ type PaymentStep = 'summary' | 'method' | 'paystack' | 'bank' | 'processing' | '
 
 const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onViewInvoice }: PaymentModalProps) => {
     const { settings } = useSystemSettings()
+    const { user } = useAppSelector((state) => state.auth.session.session) || {}
     const [step, setStep] = useState<PaymentStep>('summary')
     const [isCopied, setIsCopied] = useState(false)
     const [selectedMethod, setSelectedMethod] = useState<'paystack' | 'bank'>('paystack')
+    const [loading, setLoading] = useState(false)
 
     const bankDetails = {
         bankName: settings.bank_name || 'Providus Bank',
@@ -67,12 +77,72 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
         }
     }
 
-    const simulatePaystack = () => {
-        setStep('processing')
-        setTimeout(() => {
-            setStep('success')
-            onSuccess?.()
-        }, 3000)
+    const handlePaystackCheckout = async () => {
+        if (!user?.email) {
+            toast.push(
+                <Notification title="Error" type="danger">
+                    User email not found. Please relogin.
+                </Notification>
+            )
+            return
+        }
+
+        setLoading(true)
+        try {
+            // 1. Initialize payment on backend
+            const initResponse = await apiInitializePayment({
+                amount: amount,
+                description: unpaidDues.length > 0 
+                    ? `Dues: ${unpaidDues.map(d => d.title).join(', ')}`
+                    : 'Annual Dues Payment',
+                callback_url: window.location.href
+            })
+
+            if (initResponse.status !== 'success') {
+                throw new Error('Could not initialize payment')
+            }
+
+            // 2. Open Paystack Popup
+            if (typeof PaystackPop === 'undefined') {
+                throw new Error('Paystack library not loaded. Please refresh the page.')
+            }
+            const paystack = new PaystackPop();
+            paystack.newTransaction({
+                key: settings.paystack_public_key || process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
+                email: user.email,
+                amount: amount * 100, // Paystack expects kobo
+                ref: initResponse.transaction_reference,
+                onSuccess: async (transaction: any) => {
+                    setStep('processing')
+                    try {
+                        // 3. Verify on backend
+                        await apiVerifyPayment(transaction.reference)
+                        setStep('success')
+                        onSuccess?.()
+                    } catch (verifyError) {
+                        console.error('Verification failed:', verifyError)
+                        toast.push(
+                            <Notification title="Verification Pending" type="warning">
+                                Payment was successful but verification failed. It will be updated shortly.
+                            </Notification>
+                        )
+                        onClose()
+                    }
+                },
+                onCancel: () => {
+                    setLoading(false)
+                }
+            });
+
+        } catch (error: any) {
+            console.error('Payment Error:', error)
+            toast.push(
+                <Notification title="Payment Error" type="danger">
+                    {error.message || 'Something went wrong. Please try again.'}
+                </Notification>
+            )
+            setLoading(false)
+        }
     }
     const renderSummaryStep = () => (
         <div className="p-8 sm:p-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 h-full flex flex-col">
@@ -226,7 +296,8 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                     <Button 
                         block 
                         className="bg-white text-[#8B0000] hover:bg-red-50 border-none font-black h-14 rounded-2xl flex items-center justify-center gap-3 text-sm tracking-tight transition-all active:scale-95"
-                        onClick={simulatePaystack}
+                        onClick={handlePaystackCheckout}
+                        loading={loading}
                     >
                         Pay ₦{amount.toLocaleString()} now
                     </Button>

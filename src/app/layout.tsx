@@ -11,6 +11,7 @@ import { Inter } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
 import type { ReactNode } from 'react'
 import '@/assets/styles/app.css'
+import Script from 'next/script'
 
 const inter = Inter({
     subsets: ['latin'],
@@ -65,6 +66,7 @@ export default async function RootLayout({
                     speed={200}
                     shadow="0 0 10px #8B0000,0 0 5px #8B0000"
                 />
+                <Script src="https://js.paystack.co/v2/inline.js" strategy="lazyOnload" />
                 <ReduxProvider>
                     <InitializeStore
                         session={session}

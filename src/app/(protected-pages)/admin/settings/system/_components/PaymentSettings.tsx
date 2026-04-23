@@ -13,8 +13,8 @@ export default function PaymentSettings() {
     const [formData, setFormData] = useState({
         currency: 'NGN',
         payment_enabled: true,
-        flutterwave_public_key: '',
-        flutterwave_secret_key: '',
+        paystack_public_key: '',
+        paystack_secret_key: '',
         bank_name: '',
         account_number: '',
         account_name: '',
@@ -25,8 +25,8 @@ export default function PaymentSettings() {
             setFormData({
                 currency: rawSettings.currency || 'NGN',
                 payment_enabled: rawSettings.payment_enabled ?? true,
-                flutterwave_public_key: rawSettings.flutterwave_public_key || '',
-                flutterwave_secret_key: rawSettings.flutterwave_secret_key || '',
+                paystack_public_key: rawSettings.paystack_public_key || '',
+                paystack_secret_key: rawSettings.paystack_secret_key || '',
                 bank_name: rawSettings.bank_name || '',
                 account_number: rawSettings.account_number || '',
                 account_name: rawSettings.account_name || '',
@@ -64,14 +64,14 @@ export default function PaymentSettings() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="p-6 bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm space-y-6">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center border border-emerald-100 dark:border-emerald-900/30 text-emerald-600">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center border border-blue-100 dark:border-blue-900/30 text-blue-600">
                             <CreditCard className="w-6 h-6" />
                         </div>
                         <div>
                             <h3 className="text-lg font-black text-gray-900 dark:text-white">Active Payment Provider</h3>
-                            <p className="text-sm font-bold text-emerald-600 capitalize tracking-tight flex items-center gap-1.5 mt-0.5">
+                            <p className="text-sm font-bold text-blue-600 capitalize tracking-tight flex items-center gap-1.5 mt-0.5">
                                 <ShieldCheck className="w-3.5 h-3.5" />
-                                Secured by Flutterwave
+                                Secured by Paystack
                             </p>
                         </div>
                     </div>
@@ -80,8 +80,8 @@ export default function PaymentSettings() {
                         <div className="space-y-2">
                             <label className="text-sm font-bold capitalize tracking-tight text-gray-400">API Public Key</label>
                             <Input 
-                                value={formData.flutterwave_public_key}
-                                onChange={(e) => setFormData(prev => ({ ...prev, flutterwave_public_key: e.target.value }))}
+                                value={formData.paystack_public_key}
+                                onChange={(e) => setFormData(prev => ({ ...prev, paystack_public_key: e.target.value }))}
                                 placeholder="pk_test_********************************" 
                                 type="password" 
                             />
@@ -89,8 +89,8 @@ export default function PaymentSettings() {
                         <div className="space-y-2">
                             <label className="text-sm font-bold capitalize tracking-tight text-gray-400">API Secret Key</label>
                             <Input 
-                                value={formData.flutterwave_secret_key}
-                                onChange={(e) => setFormData(prev => ({ ...prev, flutterwave_secret_key: e.target.value }))}
+                                value={formData.paystack_secret_key}
+                                onChange={(e) => setFormData(prev => ({ ...prev, paystack_secret_key: e.target.value }))}
                                 placeholder="sk_test_********************************" 
                                 type="password" 
                             />

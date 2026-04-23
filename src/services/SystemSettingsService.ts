@@ -7,9 +7,9 @@ export interface SystemSettings {
     contact_phone: string
     address: string | null
     currency: string
-    payment_enabled: boolean
-    flutterwave_public_key: string | null
-    flutterwave_secret_key: string | null
+    payment_enabled: bool
+    paystack_public_key: string | null
+    paystack_secret_key: string | null
     tax_percentage: number
     invoice_footer_note: string | null
     default_member_status: string

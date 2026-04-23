@@ -11,14 +11,12 @@ import {
     Check
 } from 'lucide-react'
 import { Card, Button, Input, Select, Switcher, Notification, toast } from '@/components/ui'
-import DuesManagement from './DuesManagement'
 import AssociationSettings from './AssociationSettings'
 import PaymentSettings from './PaymentSettings'
 import InvoiceSettings from './InvoiceSettings'
 import SystemPreferences from './SystemPreferences'
 
 const tabs = [
-    { id: 'dues', label: 'Dues Management', icon: Wallet },
     { id: 'association', label: 'Association', icon: Building2 },
     { id: 'payments', label: 'Payments', icon: CreditCard },
     { id: 'invoices', label: 'Invoices', icon: FileText },
@@ -26,12 +24,10 @@ const tabs = [
 ]
 
 export default function SystemSettings() {
-    const [activeTab, setActiveTab] = useState('dues')
+    const [activeTab, setActiveTab] = useState('association')
 
     const renderContent = () => {
         switch (activeTab) {
-            case 'dues':
-                return <DuesManagement />
             case 'association':
                 return <AssociationSettings />
             case 'payments':
@@ -41,7 +37,7 @@ export default function SystemSettings() {
             case 'preferences':
                 return <SystemPreferences />
             default:
-                return <DuesManagement />
+                return <AssociationSettings />
         }
     }
 

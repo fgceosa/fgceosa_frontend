@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react'
 import PaymentsHeader from './PaymentsHeader'
-import PaymentsSummary from './PaymentsSummary'
+import AdminPaymentsSummary from './PaymentsSummary'
 import CollectionProgress from './CollectionProgress'
 import PaymentsTable from './PaymentsTable'
+import DuesManagement from './DuesManagement'
 import { Card, Button, toast, Dialog } from '@/components/ui'
-import { Bell, ShieldCheck, Mail, History, Users } from 'lucide-react'
+import { Bell, ShieldCheck, Mail, History, Users, BarChart3, Wallet } from 'lucide-react'
 import OfflinePaymentModal from './OfflinePaymentModal'
 import InvoiceModal from './InvoiceModal'
 import { apiGetPaymentAnalytics, apiGetOutstandingDues, apiSendPaymentReminder, apiDownloadAnnualReport, type PaymentAnalytics } from '@/services/admin/paymentsService'
@@ -23,6 +24,7 @@ const fallbackAnalytics: PaymentAnalytics = {
 }
 
 export default function AdminPayments() {
+    const [activeTab, setActiveTab] = useState<'overview' | 'dues'>('overview')
     const [isOfflinePaymentOpen, setIsOfflinePaymentOpen] = useState(false)
     const [isInvoiceOpen, setIsInvoiceOpen] = useState(false)
     const [isConfirmRemindOpen, setIsConfirmRemindOpen] = useState(false)
@@ -96,83 +98,117 @@ export default function AdminPayments() {
             {/* Header Section */}
             <PaymentsHeader onRecordPayment={() => setIsOfflinePaymentOpen(true)} />
 
-            {/* Summary Metrics */}
-            <PaymentsSummary analytics={analytics} isLoading={isLoading} />
+            {/* Tab Navigation */}
+            <div className="flex items-center gap-2 p-1.5 bg-gray-100/50 dark:bg-gray-800/50 rounded-[1.5rem] w-fit border border-gray-100 dark:border-gray-800">
+                <button
+                    onClick={() => setActiveTab('overview')}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-[13px] font-black transition-all duration-300 ${
+                        activeTab === 'overview'
+                            ? 'bg-[#8B0000] text-white shadow-lg shadow-[#8B0000]/20'
+                            : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                    }`}
+                >
+                    <BarChart3 className="w-4 h-4" />
+                    Overview & History
+                </button>
+                <button
+                    onClick={() => setActiveTab('dues')}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-[13px] font-black transition-all duration-300 ${
+                        activeTab === 'dues'
+                            ? 'bg-[#8B0000] text-white shadow-lg shadow-[#8B0000]/20'
+                            : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                    }`}
+                >
+                    <Wallet className="w-4 h-4" />
+                    Dues Management
+                </button>
+            </div>
 
-            {/* Goal Progress */}
-            <CollectionProgress analytics={analytics} isLoading={isLoading} />
+            {activeTab === 'overview' ? (
+                <>
+                    {/* Summary Metrics */}
+                    <AdminPaymentsSummary analytics={analytics} isLoading={isLoading} />
 
-            {/* Secondary Actions Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Bulk Actions Card */}
-                <Card className="p-5 bg-gradient-to-br from-[#800000] via-[#8B0000] to-[#500000] rounded-[2rem] border-none shadow-[0_20px_40px_-15px_rgba(139,0,0,0.5)] group relative overflow-hidden">
-                    <div className="absolute -right-10 -top-10 w-40 h-40 bg-white opacity-5 rounded-full blur-3xl group-hover:opacity-10 transition-opacity duration-700"></div>
-                    <div className="relative z-10 space-y-3">
-                        <div className="flex items-center gap-3">
-                            <div className="w-7 h-7 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/5">
-                                <ShieldCheck className="w-3.5 h-3.5 text-white" />
-                            </div>
-                            <h3 className="text-[14px] font-bold text-white/90 capitalize tracking-tight">Bulk operations</h3>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                            <Button 
-                                onClick={() => setIsConfirmRemindOpen(true)}
-                                disabled={isReminding}
-                                className="bg-white/10 hover:bg-white/20 text-white hover:text-white border-white/10 font-bold h-11 rounded-xl flex items-center justify-center px-4 text-[13px] transition-all backdrop-blur-md gap-2 capitalize">
-                                <Mail className="w-4 h-4 text-red-100" />
-                                {isReminding ? 'Sending...' : 'Remind Unpaid'}
-                            </Button>
-                            <Button 
-                                onClick={handleDownloadReport}
-                                disabled={isGeneratingReport}
-                                className="bg-white/10 hover:bg-white/20 text-white hover:text-white border-white/10 font-bold h-11 rounded-xl flex items-center justify-center px-4 text-[13px] transition-all backdrop-blur-md gap-2 capitalize">
-                                <History className="w-4 h-4 text-red-100" />
-                                {isGeneratingReport ? 'Processing...' : 'Annual Report'}
-                            </Button>
-                        </div>
-                    </div>
-                </Card>
+                    {/* Goal Progress */}
+                    <CollectionProgress analytics={analytics} isLoading={isLoading} />
 
-                {/* Quick Access Card */}
-                <Card className="p-5 bg-white dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none">
-                        <h4 className="text-[13px] font-bold text-gray-900 dark:text-white capitalize tracking-tight mb-3">Priority Follow-up</h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                        {isLoading ? (
-                             [1, 2, 3].map(i => <div key={i} className="h-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl animate-pulse" />)
-                        ) : quickOutstanding.length > 0 ? (
-                            quickOutstanding.map((item, i) => (
-                                <div key={i} className="flex items-center justify-between p-2 rounded-xl bg-gray-50/50 dark:bg-gray-700/30 border border-transparent hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm transition-all group/row">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-7 h-7 rounded bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-[10px] font-black text-gray-500 group-hover/row:bg-primary/5 group-hover/row:text-primary transition-colors">
-                                            {item.member[0]}
-                                        </div>
-                                        <span className="text-[12px] font-bold text-gray-900 dark:text-white truncate max-w-[100px] leading-tight">{item.member}</span>
+                    {/* Secondary Actions Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* Bulk Actions Card */}
+                        <Card className="p-5 bg-gradient-to-br from-[#800000] via-[#8B0000] to-[#500000] rounded-[2rem] border-none shadow-[0_20px_40px_-15px_rgba(139,0,0,0.5)] group relative overflow-hidden">
+                            <div className="absolute -right-10 -top-10 w-40 h-40 bg-white opacity-5 rounded-full blur-3xl group-hover:opacity-10 transition-opacity duration-700"></div>
+                            <div className="relative z-10 space-y-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-7 h-7 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/5">
+                                        <ShieldCheck className="w-3.5 h-3.5 text-white" />
                                     </div>
-                                    <span className={`text-[10px] font-bold capitalize px-2.5 py-1 rounded-full text-rose-700 bg-rose-50`}>
-                                        {item.overdue}
-                                    </span>
+                                    <h3 className="text-[14px] font-bold text-white/90 capitalize tracking-tight">Bulk operations</h3>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="col-span-3 text-center py-4 text-emerald-600 font-bold text-xs bg-emerald-50 rounded-2xl">
-                                ✨ All members are up to date!
+                                
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                    <Button 
+                                        onClick={() => setIsConfirmRemindOpen(true)}
+                                        disabled={isReminding}
+                                        className="bg-white/10 hover:bg-white/20 text-white hover:text-white border-white/10 font-bold h-11 rounded-xl flex items-center justify-center px-4 text-[13px] transition-all backdrop-blur-md gap-2 capitalize">
+                                        <Mail className="w-4 h-4 text-red-100" />
+                                        {isReminding ? 'Sending...' : 'Remind Unpaid'}
+                                    </Button>
+                                    <Button 
+                                        onClick={handleDownloadReport}
+                                        disabled={isGeneratingReport}
+                                        className="bg-white/10 hover:bg-white/20 text-white hover:text-white border-white/10 font-bold h-11 rounded-xl flex items-center justify-center px-4 text-[13px] transition-all backdrop-blur-md gap-2 capitalize">
+                                        <History className="w-4 h-4 text-red-100" />
+                                        {isGeneratingReport ? 'Processing...' : 'Annual Report'}
+                                    </Button>
+                                </div>
                             </div>
-                        )}
-                        </div>
-                        <Button variant="plain" block className="text-[11px] font-bold text-primary capitalize tracking-tight mt-2 py-0 h-auto">
-                            View full directory
-                        </Button>
-                </Card>
-            </div>
+                        </Card>
 
-            <div className="space-y-8">
-                <PaymentsTable 
-                    onViewInvoice={(inv) => { setSelectedInvoice(inv); setIsInvoiceOpen(true) }} 
-                    onRecordPayment={(member) => { setSelectedMember(member); setIsOfflinePaymentOpen(true) }}
-                    refreshTrigger={refreshTrigger}
-                />
-            </div>
+                        {/* Quick Access Card */}
+                        <Card className="p-5 bg-white dark:bg-gray-800 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/20 dark:shadow-none">
+                                <h4 className="text-[13px] font-bold text-gray-900 dark:text-white capitalize tracking-tight mb-3">Priority Follow-up</h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                                {isLoading ? (
+                                     [1, 2, 3].map(i => <div key={i} className="h-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl animate-pulse" />)
+                                ) : quickOutstanding.length > 0 ? (
+                                    quickOutstanding.map((item, i) => (
+                                        <div key={i} className="flex items-center justify-between p-2 rounded-xl bg-gray-50/50 dark:bg-gray-700/30 border border-transparent hover:bg-white dark:hover:bg-gray-700 hover:shadow-sm transition-all group/row">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-7 h-7 rounded bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-[10px] font-black text-gray-500 group-hover/row:bg-primary/5 group-hover/row:text-primary transition-colors">
+                                                    {item.member[0]}
+                                                </div>
+                                                <span className="text-[12px] font-bold text-gray-900 dark:text-white truncate max-w-[100px] leading-tight">{item.member}</span>
+                                            </div>
+                                            <span className={`text-[10px] font-bold capitalize px-2.5 py-1 rounded-full text-rose-700 bg-rose-50`}>
+                                                {item.overdue}
+                                            </span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="col-span-3 text-center py-4 text-emerald-600 font-bold text-xs bg-emerald-50 rounded-2xl">
+                                        ✨ All members are up to date!
+                                    </div>
+                                )}
+                                </div>
+                                <Button variant="plain" block className="text-[11px] font-bold text-primary capitalize tracking-tight mt-2 py-0 h-auto">
+                                    View full directory
+                                </Button>
+                        </Card>
+                    </div>
+
+                    <div className="space-y-8">
+                        <PaymentsTable 
+                            onViewInvoice={(inv) => { setSelectedInvoice(inv); setIsInvoiceOpen(true) }} 
+                            onRecordPayment={(member) => { setSelectedMember(member); setIsOfflinePaymentOpen(true) }}
+                            refreshTrigger={refreshTrigger}
+                        />
+                    </div>
+                </>
+            ) : (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <DuesManagement />
+                </div>
+            )}
 
             {/* Confirmation Modal */}
             <Dialog 
