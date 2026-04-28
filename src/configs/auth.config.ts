@@ -199,5 +199,6 @@ export default {
 
             return true
         },
+    },
     trustHost: true,
 } satisfies NextAuthConfig
