@@ -53,6 +53,7 @@ export default {
                 } catch (error) {
                     // Re-throw the error so NextAuth can handle it
                     // This preserves the specific error message from validateCredential
+                    console.error('NextAuth Authorize Error:', error)
                     throw error
                 }
             },
@@ -198,5 +199,5 @@ export default {
 
             return true
         },
-    },
+    trustHost: true,
 } satisfies NextAuthConfig
