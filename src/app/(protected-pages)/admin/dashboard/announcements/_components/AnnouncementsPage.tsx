@@ -39,6 +39,7 @@ import EditAnnouncementModal from './EditAnnouncementModal'
 import AnnouncementEngagementModal from './AnnouncementEngagementModal'
 import DeleteAnnouncementModal from './DeleteAnnouncementModal'
 import StatCard from '@/components/shared/StatCard'
+import Loading from '@/components/shared/Loading'
 import { 
     apiGetAnnouncements, 
     apiCreateAnnouncement, 
@@ -289,30 +290,32 @@ const AnnouncementsPage = () => {
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-2">
                     {/* Status Tabs */}
                     {isAdmin && (
-                        <div className="flex items-center gap-2 p-2 bg-white dark:bg-gray-800 rounded-3xl w-max border border-gray-100 dark:border-gray-700/50 shadow-sm backdrop-blur-md">
-                            {['All', 'Sent', 'Scheduled', 'Draft'].map((tab) => {
-                                const count = announcements.filter(a => tab === 'All' || a.status === tab).length
-                                const isActive = activeTab === tab
-                                
-                                return (
-                                    <button
-                                        key={tab}
-                                        onClick={() => setActiveTab(tab)}
-                                        className={`px-6 py-2.5 rounded-2xl text-[12px] font-black tracking-tight transition-all duration-400 flex items-center gap-2.5 group relative ${
-                                            isActive 
-                                                ? 'bg-[#8B0000] text-white shadow-lg shadow-red-900/10' 
-                                                : 'text-gray-900 hover:text-[#8B0000] dark:hover:text-gray-200'
-                                        }`}
-                                    >
-                                        {tab}
-                                        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black transition-colors ${
-                                            isActive ? 'bg-white/20 text-white' : 'bg-gray-50 dark:bg-gray-700 text-gray-900 group-hover:bg-[#8B0000]/10 group-hover:text-[#8B0000]'
-                                        }`}>
-                                            {count}
-                                        </span>
-                                    </button>
-                                )
-                            })}
+                        <div className="overflow-x-auto pb-2 -mb-2 scrollbar-hide w-full lg:w-auto">
+                            <div className="flex items-center gap-2 p-2 bg-white dark:bg-gray-800 rounded-3xl w-max border border-gray-100 dark:border-gray-700/50 shadow-sm backdrop-blur-md">
+                                {['All', 'Sent', 'Scheduled', 'Draft'].map((tab) => {
+                                    const count = announcements.filter(a => tab === 'All' || a.status === tab).length
+                                    const isActive = activeTab === tab
+                                    
+                                    return (
+                                        <button
+                                            key={tab}
+                                            onClick={() => setActiveTab(tab)}
+                                            className={`px-6 py-2.5 rounded-2xl text-[12px] font-black tracking-tight transition-all duration-400 flex items-center gap-2.5 group relative whitespace-nowrap ${
+                                                isActive 
+                                                    ? 'bg-[#8B0000] text-white shadow-lg shadow-red-900/10' 
+                                                    : 'text-gray-900 hover:text-[#8B0000] dark:hover:text-gray-200'
+                                            }`}
+                                        >
+                                            {tab}
+                                            <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black transition-colors ${
+                                                isActive ? 'bg-white/20 text-white' : 'bg-gray-50 dark:bg-gray-700 text-gray-900 group-hover:bg-[#8B0000]/10 group-hover:text-[#8B0000]'
+                                            }`}>
+                                                {count}
+                                            </span>
+                                        </button>
+                                    )
+                                })}
+                            </div>
                         </div>
                     )}
 
@@ -360,9 +363,8 @@ const AnnouncementsPage = () => {
             {/* 4. ANNOUNCEMENTS LIST */}
             <div className="space-y-4">
                 {isLoading ? (
-                    <div className="flex flex-col items-center justify-center py-24 bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm rounded-[2rem] border border-gray-100 dark:border-gray-700">
-                        <div className="w-12 h-12 border-4 border-[#8B0000]/10 border-t-[#8B0000] rounded-full animate-spin mb-4" />
-                        <p className="text-[12px] font-black text-[#8B0000] uppercase tracking-widest animate-pulse">Syncing Announcements...</p>
+                    <div className="flex flex-col items-center justify-center py-24 bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm rounded-[2rem] border border-gray-100 dark:border-gray-700 min-h-[400px]">
+                        <Loading loading={isLoading} type="association" />
                     </div>
                 ) : filteredAnnouncements.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-[2rem] border border-dashed border-gray-200 dark:border-gray-700">
@@ -561,13 +563,13 @@ const AnnouncementsPage = () => {
                 isOpen={isDetailsOpen}
                 onClose={() => setIsDetailsOpen(false)}
                 closable={true}
-                width={900}
-                className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden"
+                width={800}
+                className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden max-w-[95vw]"
             >
                 {selectedAnnouncement && (
                     <div className="flex flex-col">
                         {/* Header with Brand Gradient */}
-                        <div className="relative h-56 bg-[#8B0000] flex items-end px-12 pb-8 overflow-hidden">
+                        <div className="relative h-48 md:h-56 bg-[#8B0000] flex items-end px-6 md:px-12 pb-6 md:pb-8 overflow-hidden">
                             {selectedAnnouncement.image ? (
                                 <div className="absolute inset-0">
                                     <img src={selectedAnnouncement.image} alt={selectedAnnouncement.title} className="w-full h-full object-cover" />
@@ -581,26 +583,26 @@ const AnnouncementsPage = () => {
                                     <Megaphone className="w-3 h-3 text-white" />
                                     <span className="text-white text-[8px] font-black uppercase tracking-widest">{selectedAnnouncement.category} ANNOUNCEMENT</span>
                                 </div>
-                                <h2 className="text-xl font-black text-white leading-tight">{selectedAnnouncement.title}</h2>
+                                <h2 className="text-lg md:text-xl font-black text-white leading-tight">{selectedAnnouncement.title}</h2>
                             </div>
                         </div>
 
                         {/* Content Body */}
-                        <div className="px-12 py-10 bg-gray-50/30 dark:bg-gray-900/50">
+                        <div className="px-6 md:px-12 py-8 md:py-10 bg-gray-50/30 dark:bg-gray-900/50">
                             <div className="flex items-center gap-2 mb-6">
                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Posted {selectedAnnouncement.date}</span>
                                 <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">•</span>
                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">{selectedAnnouncement.views.toLocaleString()} Views</span>
                             </div>
 
-                            <p className="text-gray-600 dark:text-gray-300 text-base leading-relaxed font-semibold whitespace-pre-wrap">
+                            <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base leading-relaxed font-semibold whitespace-pre-wrap">
                                 {selectedAnnouncement.content === 'Full content goes here...' 
                                     ? selectedAnnouncement.preview + '\n\n' + selectedAnnouncement.content 
                                     : selectedAnnouncement.content}
                             </p>
 
-                            <div className="mt-10 p-5 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm flex items-center justify-between">
-                                <div className="flex items-center gap-3">
+                            <div className="mt-10 p-5 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div className="flex items-center gap-3 w-full sm:w-auto">
                                     <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-700 flex items-center justify-center">
                                         <ShieldCheck className="w-5 h-5 text-[#8B0000]" />
                                     </div>
@@ -612,7 +614,7 @@ const AnnouncementsPage = () => {
                                 <Button 
                                     size="sm" 
                                     onClick={() => setIsDetailsOpen(false)}
-                                    className="bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white px-10 font-black text-[11px] h-14 rounded-[1.25rem] uppercase tracking-widest transition-all hover:-translate-y-1 shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)] border-none"
+                                    className="bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white px-10 font-black text-[11px] h-12 md:h-14 rounded-[1.25rem] uppercase tracking-widest transition-all hover:-translate-y-1 shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)] border-none w-full sm:w-auto"
                                 >
                                     Got it
                                 </Button>

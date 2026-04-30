@@ -110,9 +110,9 @@ const CreateAnnouncementModal = ({ isOpen, onClose, onCreate }: CreateAnnounceme
             width={800}
             onClose={handleClose}
             closable={false}
-            className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden"
+            className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden max-w-[95vw]"
         >
-            <div className="p-8 sm:p-10">
+            <div className="p-6 sm:p-10">
                 {/* Header Section */}
                 <div className="mb-10 relative flex items-center justify-between">
                     <div className="flex items-center gap-5">
@@ -153,7 +153,7 @@ const CreateAnnouncementModal = ({ isOpen, onClose, onCreate }: CreateAnnounceme
                             {errors.title && <p className="text-xs font-black text-red-500 pl-1">{errors.title.message}</p>}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                             {/* Category */}
                             <div className="space-y-3">
                                 <label className="text-[13px] font-bold text-gray-900 dark:text-gray-300 capitalize tracking-tight leading-none pl-1">Category</label>
@@ -297,7 +297,7 @@ const CreateAnnouncementModal = ({ isOpen, onClose, onCreate }: CreateAnnounceme
 
                         {/* Scheduled Inputs */}
                         {isScheduled && (
-                            <div className="grid grid-cols-2 gap-8 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 animate-in fade-in slide-in-from-top-2 duration-300">
                                 <div className="space-y-3">
                                     <label className="text-[13px] font-bold text-gray-900 dark:text-gray-300 capitalize tracking-tight leading-none pl-1">Post Date</label>
                                     <Controller
@@ -320,7 +320,7 @@ const CreateAnnouncementModal = ({ isOpen, onClose, onCreate }: CreateAnnounceme
                                         name="scheduledTime"
                                         control={control}
                                         render={({ field }) => (
-                                            <div className="grid grid-cols-3 gap-4">
+                                            <div className="grid grid-cols-3 gap-2 sm:gap-4">
                                                 <Select
                                                     placeholder="Hr"
                                                     options={HOUR_OPTIONS}
@@ -332,7 +332,7 @@ const CreateAnnouncementModal = ({ isOpen, onClose, onCreate }: CreateAnnounceme
                                                     menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
                                                     value={field.value ? HOUR_OPTIONS.find(o => o.value === (field.value!.getHours() % 12 || 12)) : null}
                                                     onChange={(val) => handleTimeChange('hour', val, field.value, field.onChange)}
-                                                    className="font-black text-xs shadow-inner"
+                                                    className="font-black text-[10px] sm:text-xs shadow-inner"
                                                 />
                                                 <Select
                                                     placeholder="Min"
@@ -345,7 +345,7 @@ const CreateAnnouncementModal = ({ isOpen, onClose, onCreate }: CreateAnnounceme
                                                     menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
                                                     value={field.value ? MINUTE_OPTIONS.find(o => o.value === field.value!.getMinutes()) : null}
                                                     onChange={(val) => handleTimeChange('minute', val, field.value, field.onChange)}
-                                                    className="font-black text-xs shadow-inner"
+                                                    className="font-black text-[10px] sm:text-xs shadow-inner"
                                                 />
                                                 <Select
                                                     placeholder="AM/PM"
@@ -358,7 +358,7 @@ const CreateAnnouncementModal = ({ isOpen, onClose, onCreate }: CreateAnnounceme
                                                     menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
                                                     value={field.value ? PERIOD_OPTIONS.find(o => o.value === (field.value!.getHours() >= 12 ? 'PM' : 'AM')) : PERIOD_OPTIONS[0]}
                                                     onChange={(val) => handleTimeChange('period', val, field.value, field.onChange)}
-                                                    className="font-black text-xs shadow-inner"
+                                                    className="font-black text-[10px] sm:text-xs shadow-inner"
                                                 />
                                             </div>
                                         )}

@@ -114,9 +114,9 @@ const EditAnnouncementModal = ({ isOpen, onClose, onUpdate, announcement }: Edit
             width={850}
             onClose={handleClose}
             closable={false}
-            className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden"
+            className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden max-w-[95vw]"
         >
-            <div className="p-8 sm:p-10">
+            <div className="p-6 sm:p-10">
                 {/* Header Section */}
                 <div className="mb-10 relative flex items-center justify-between">
                     <div className="flex items-center gap-5">
@@ -157,7 +157,7 @@ const EditAnnouncementModal = ({ isOpen, onClose, onUpdate, announcement }: Edit
                             {errors.title && <p className="text-xs font-black text-red-500 pl-1">{errors.title.message}</p>}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                             {/* Category */}
                             <div className="space-y-3">
                                 <label className="text-[13px] font-bold text-gray-900 dark:text-gray-300 capitalize tracking-tight leading-none pl-1">Category</label>
