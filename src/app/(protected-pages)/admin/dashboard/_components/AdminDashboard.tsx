@@ -87,7 +87,7 @@ const AdminDashboard = () => {
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20">
             {/* Premium Top Hero Section */}
-            <div className="relative h-36 md:h-44 rounded-3xl overflow-hidden group shadow-[0_20px_40px_-15px_rgba(139,0,0,0.3)] bg-[#8B0000]">
+            <div className="relative h-40 md:h-44 rounded-3xl overflow-hidden group shadow-[0_20px_40px_-15px_rgba(139,0,0,0.3)] bg-[#8B0000]">
                 {/* Background Image */}
                 <div 
                     className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-[3000ms] group-hover:scale-105"
@@ -101,18 +101,18 @@ const AdminDashboard = () => {
                     }} 
                 />
                 
-                <div className="relative z-20 h-full flex flex-col justify-center px-8 md:px-16">
-                    <div className="space-y-2 mt-2">
+                <div className="relative z-20 h-full flex flex-col justify-center px-6 md:px-16">
+                    <div className="space-y-3 mt-2">
                         <div className="inline-flex items-center gap-3 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-sm w-max">
                             <ShieldCheck className="w-4 h-4 text-white" />
                             <span className="text-white text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">ADMIN CONTROL CENTER</span>
                         </div>
                         
                         <div className="space-y-1">
-                            <h1 className="text-2xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-2xl">
+                            <h1 className="text-xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-2xl">
                                 Welcome, <span className="text-red-200">{firstName}</span>
                             </h1>
-                            <p className="text-white/80 text-[11px] md:text-sm font-semibold max-w-lg leading-relaxed drop-shadow-lg opacity-90">
+                            <p className="text-white/80 text-[10px] md:text-sm font-semibold max-w-lg leading-relaxed drop-shadow-lg opacity-90 line-clamp-2 md:line-clamp-none">
                                 Oversee association activity, manage member records, and track financial collections from your central command center.
                             </p>
                         </div>
@@ -179,7 +179,7 @@ const AdminDashboard = () => {
                         
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
-                                <thead>
+                                <thead className="hidden sm:table-header-group">
                                     <tr className="border-b border-gray-50 dark:border-gray-700/50">
                                         <th className="pb-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Member</th>
                                         <th className="pb-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</th>
@@ -189,22 +189,27 @@ const AdminDashboard = () => {
                                 </thead>
                                 <tbody className="divide-y divide-gray-50 dark:divide-gray-700/30">
                                     {(adminStats?.recentTransactions || []).map((payment, i) => (
-                                        <tr key={i} className="group hover:bg-gray-50/80 dark:hover:bg-gray-700/20 transition-colors">
-                                            <td className="py-4.5">
+                                        <tr key={i} className="group hover:bg-gray-50/80 dark:hover:bg-gray-700/20 transition-colors flex flex-col sm:table-row py-4 sm:py-0">
+                                            <td className="sm:py-4.5">
                                                 <div className="flex items-center gap-3.5">
-                                                    <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 flex items-center justify-center font-black text-gray-500 text-[11px] shadow-sm">
+                                                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 flex items-center justify-center font-black text-gray-500 text-[11px] shadow-sm">
                                                         {payment.name[0]}
                                                     </div>
-                                                    <span className="text-[13px] font-bold text-gray-900 dark:text-white">{payment.name}</span>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[13px] font-bold text-gray-900 dark:text-white">{payment.name}</span>
+                                                        <span className="text-[10px] sm:hidden font-medium text-gray-400">
+                                                            {dayjs(payment.date).format('MMM DD')} • ₦{payment.amount.toLocaleString()}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </td>
-                                            <td className="py-4.5 text-[12px] font-medium text-gray-500">
+                                            <td className="hidden sm:table-cell py-4.5 text-[12px] font-medium text-gray-500">
                                                 {dayjs(payment.date).format('MMM DD, YYYY')}
                                             </td>
-                                            <td className="py-4.5 text-[13px] font-black text-gray-900 dark:text-white">
+                                            <td className="hidden sm:table-cell py-4.5 text-[13px] font-black text-gray-900 dark:text-white">
                                                 ₦{payment.amount.toLocaleString()}
                                             </td>
-                                            <td className="py-4.5 text-right">
+                                            <td className="py-2 sm:py-4.5 text-left sm:text-right">
                                                 <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${payment.status === 'completed' ? 'bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-500/10' : 'bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-500/10'}`}>
                                                     {payment.status === 'completed' ? 'Paid' : payment.status}
                                                 </span>

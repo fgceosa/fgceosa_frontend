@@ -32,15 +32,15 @@ export default function PaymentsHeader({ onRecordPayment }: { onRecordPayment?: 
                 </div>
             </div>
 
-            <div className="flex items-center gap-4 w-full lg:w-auto mt-4 lg:mt-0">
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto mt-4 lg:mt-0">
                 <button 
                     onClick={onRecordPayment}
-                    className="h-12 px-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl font-black  text-[10px] capitalize hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-2 shadow-sm"
+                    className="w-full sm:w-auto h-12 px-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 rounded-2xl font-black text-[10px] sm:text-[11px] capitalize hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2 shadow-sm"
                 >
-                    + Record Offline Payment
+                    + Record Offline
                 </button>
                 <div className="h-12 w-[1px] bg-gray-100 dark:bg-gray-800 hidden lg:block mx-2" />
-                <button className="h-12 px-6 bg-[#8B0000] text-white rounded-2xl font-black  text-[10px] capitalize shadow-lg shadow-[#8B0000]/20 dark:shadow-none hover:-translate-y-0.5 transition-all flex items-center gap-2">
+                <button className="w-full sm:w-auto h-12 px-6 bg-[#8B0000] text-white rounded-2xl font-black text-[10px] sm:text-[11px] capitalize shadow-lg shadow-[#8B0000]/20 dark:shadow-none hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
                     <Download className="h-4 w-4" />
                     Export Report
                 </button>

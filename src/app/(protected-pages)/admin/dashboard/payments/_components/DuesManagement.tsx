@@ -109,16 +109,16 @@ export default function DuesManagement() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between mb-2">
-                <div>
-                    <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Dues Management</h2>
-                    <p className="text-[13px] font-medium text-gray-500">Configure global dues and payment expectations for members.</p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-2">
+                <div className="text-center sm:text-left">
+                    <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">Dues Management</h2>
+                    <p className="text-[12px] sm:text-[13px] font-medium text-gray-500">Configure global dues and payment expectations for members.</p>
                 </div>
                 <Button 
                     variant="solid" 
                     size="sm" 
                     onClick={() => setIsAdding(true)}
-                    className="h-12 px-8 bg-[#8B0000] text-white rounded-2xl font-black text-[10px] capitalize shadow-lg shadow-[#8B0000]/20 hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                    className="w-full sm:w-auto h-12 px-8 bg-[#8B0000] text-white rounded-2xl font-black text-[11px] capitalize shadow-lg shadow-[#8B0000]/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
                 >
                     <Plus className="w-4 h-4" />
                     Create New Dues
