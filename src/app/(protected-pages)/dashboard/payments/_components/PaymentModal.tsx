@@ -80,6 +80,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
     }), [settings])
 
     const [activeTransactionRef, setActiveTransactionRef] = useState<string>('')
+    const [paymentUrl, setPaymentUrl] = useState<string>('')
 
     useEffect(() => {
         if (isOpen) {
@@ -138,8 +139,9 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                 throw new Error('Payment configuration missing. Please contact administrator.')
             }
 
-            // Store ref for UI
+            // Store ref and URL for UI fallback
             setActiveTransactionRef(initResponse.transaction_reference)
+            setPaymentUrl(initResponse.payment_url)
 
             // 2. Open Paystack Popup
             if (typeof PaystackPop === 'undefined') {
@@ -173,6 +175,12 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                     setLoading(false)
                 }
             });
+
+            // Fallback: If after 3 seconds the step is still 'paystack' and not 'processing', 
+            // the popup might have been blocked. We'll show a manual link in the UI.
+            setTimeout(() => {
+                setLoading(false)
+            }, 3000)
 
         } catch (error: any) {
             console.error('Payment Error:', error)
@@ -356,14 +364,29 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                 <div className="relative z-10 flex flex-col items-center">
                     <h4 className="text-[10px] font-bold capitalize tracking-tight text-white/60 mb-2">Transaction ID</h4>
                     <span className="font-mono text-sm font-black tracking-tight mb-8">{activeTransactionRef || bankDetails.reference}</span>
-                    <Button 
-                        block 
-                        className="bg-white text-[#8B0000] hover:bg-red-50 border-none font-black h-14 rounded-2xl flex items-center justify-center gap-3 text-sm tracking-tight transition-all active:scale-95"
-                        onClick={handlePaystackCheckout}
-                        loading={loading}
-                    >
-                        Pay ₦{currentTotalAmount.toLocaleString()} now
-                    </Button>
+                    
+                    <div className="w-full space-y-3">
+                        <Button 
+                            block 
+                            className="bg-white text-[#8B0000] hover:bg-red-50 border-none font-black h-14 rounded-2xl flex items-center justify-center gap-3 text-sm tracking-tight transition-all active:scale-95"
+                            onClick={handlePaystackCheckout}
+                            loading={loading}
+                        >
+                            Pay ₦{currentTotalAmount.toLocaleString()} now
+                        </Button>
+
+                        {/* Redirect Fallback if popup fails */}
+                        {paymentUrl && (
+                            <a 
+                                href={paymentUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block text-center text-[10px] font-black text-white/70 hover:text-white underline uppercase tracking-widest mt-2"
+                            >
+                                Payment window didn't open? Click here
+                            </a>
+                        )}
+                    </div>
                 </div>
             </Card>
 
