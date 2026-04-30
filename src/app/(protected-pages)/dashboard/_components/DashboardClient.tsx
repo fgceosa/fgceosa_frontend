@@ -71,7 +71,7 @@ const DashboardClient = () => {
                 unpaidDues={memberSummary?.unpaidDues}
             />
             {/* Premium Top Hero Section */}
-            <div className="relative h-36 md:h-44 rounded-3xl overflow-hidden group shadow-[0_20px_40px_-15px_rgba(139,0,0,0.3)] bg-[#8B0000]">
+            <div className="relative h-44 md:h-44 rounded-3xl overflow-hidden group shadow-[0_20px_40px_-15px_rgba(139,0,0,0.3)] bg-[#8B0000]">
                 {/* Background Image */}
                 <div 
                     className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-[3000ms] group-hover:scale-105"
@@ -85,18 +85,18 @@ const DashboardClient = () => {
                     }} 
                 />
                 
-                <div className="relative z-20 h-full flex flex-col justify-center px-8 md:px-16">
-                    <div className="space-y-2 mt-2">
+                <div className="relative z-20 h-full flex flex-col justify-center px-6 md:px-16">
+                    <div className="space-y-3 mt-2">
                         <div className="inline-flex items-center gap-3 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-sm w-max">
                             <ShieldCheck className="w-4 h-4 text-white" />
-                            <span className="text-white text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">{settings.associationName} ALUMNI PORTAL</span>
+                            <span className="text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em]">{settings.associationName} PORTAL</span>
                         </div>
                         
                         <div className="space-y-1">
-                            <h1 className="text-2xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-2xl">
+                            <h1 className="text-xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-2xl">
                                 Welcome back, <span className="text-red-200">{firstName}</span>
                             </h1>
-                            <p className="text-white/80 text-[11px] md:text-sm font-semibold max-w-lg leading-relaxed drop-shadow-lg opacity-90">
+                            <p className="text-white/80 text-[10px] md:text-sm font-semibold max-w-lg leading-relaxed drop-shadow-lg opacity-90 line-clamp-2 md:line-clamp-none">
                                 This is your personal dashboard. Stay connected with the association, manage your dues, and stay updated.
                             </p>
                         </div>
@@ -200,7 +200,7 @@ const DashboardClient = () => {
                                 
                                 {settings.paymentEnabled ? (
                                     <Button 
-                                        className="w-[70%] sm:w-[60%] mx-auto mt-8 h-14 bg-[#8B0000] text-white hover:text-white hover:bg-[#660000] font-black rounded-[1.25rem] shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)] transition-all hover:-translate-y-1 text-[11px]  capitalize flex items-center justify-center gap-3 group/btn border-none"
+                                        className="w-full sm:w-[60%] mx-auto mt-8 h-14 bg-[#8B0000] text-white hover:text-white hover:bg-[#660000] font-black rounded-[1.25rem] shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)] transition-all hover:-translate-y-1 text-[11px] capitalize flex items-center justify-center gap-3 group/btn border-none"
                                         onClick={() => setIsPaymentModalOpen(true)}
                                     >
                                         Pay Now
@@ -324,58 +324,58 @@ const DashboardClient = () => {
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">Recent Payments</h2>
                     </div>
-                    <div className="overflow-x-auto flex-1">
-                        <table className="w-full text-left">
-                            <thead>
-                                <tr className="border-b border-gray-50 dark:border-gray-700/50">
-                                    <th className="pb-4 text-[9px] font-black text-gray-400 uppercase tracking-widest">Description</th>
-                                    <th className="pb-4 text-[9px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
-                                    <th className="pb-4 text-[9px] font-black text-gray-400 uppercase tracking-widest text-right">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-50 dark:divide-gray-700/30">
-                                {memberSummary?.paymentHistory && memberSummary.paymentHistory.length > 0 ? (
-                                    memberSummary.paymentHistory.map((payment: any, i: number) => (
-                                        <tr key={payment.id || i} className="group hover:bg-gray-50/80 dark:hover:bg-gray-700/20 transition-colors">
-                                            <td className="py-4">
-                                                <div className="flex items-center gap-3.5">
-                                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border ${
-                                                        payment.type === 'donation' ? 'bg-purple-50 text-purple-600 border-purple-100 dark:bg-purple-900/20 dark:border-purple-800' 
-                                                        : payment.type === 'event' ? 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-900/20 dark:border-blue-800' 
-                                                        : 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:border-emerald-800'
-                                                    }`}>
-                                                        <CreditCard className="w-4 h-4" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[12px] font-bold text-gray-900 dark:text-white leading-tight">{payment.title || 'Payment'}</p>
-                                                        <div className="flex items-center gap-2 mt-1">
-                                                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{payment.ref || 'REF-N/A'}</span>
-                                                            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                                                            <span className="text-[10px] font-medium text-gray-500">{payment.date}</span>
+                        <div className="overflow-x-auto flex-1">
+                            <table className="w-full text-left">
+                                <thead className="hidden sm:table-header-group">
+                                    <tr className="border-b border-gray-50 dark:border-gray-700/50">
+                                        <th className="pb-4 text-[9px] font-black text-gray-400 uppercase tracking-widest">Description</th>
+                                        <th className="pb-4 text-[9px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
+                                        <th className="pb-4 text-[9px] font-black text-gray-400 uppercase tracking-widest text-right">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50 dark:divide-gray-700/30">
+                                    {memberSummary?.paymentHistory && memberSummary.paymentHistory.length > 0 ? (
+                                        memberSummary.paymentHistory.map((payment: any, i: number) => (
+                                            <tr key={payment.id || i} className="group hover:bg-gray-50/80 dark:hover:bg-gray-700/20 transition-colors flex flex-col sm:table-row py-3 sm:py-0">
+                                                <td className="sm:py-4">
+                                                    <div className="flex items-center gap-3.5">
+                                                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shadow-sm border ${
+                                                            payment.type === 'donation' ? 'bg-purple-50 text-purple-600 border-purple-100 dark:bg-purple-900/20 dark:border-purple-800' 
+                                                            : payment.type === 'event' ? 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-900/20 dark:border-blue-800' 
+                                                            : 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:border-emerald-800'
+                                                        }`}>
+                                                            <CreditCard className="w-4 h-4" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[12px] font-bold text-gray-900 dark:text-white leading-tight">{payment.title || 'Payment'}</p>
+                                                            <div className="flex items-center gap-2 mt-1">
+                                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{payment.ref || 'REF-N/A'}</span>
+                                                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                                                                <span className="text-[10px] font-medium text-gray-500">{payment.date}</span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td className="py-4">
-                                                <span className="text-[13px] font-black text-gray-900 dark:text-white">₦{payment.amount?.toLocaleString()}</span>
-                                            </td>
-                                            <td className="py-4 text-right">
-                                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${payment.status === 'Paid' ? 'bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-500/10' : 'bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-500/10'}`}>
-                                                    {payment.status}
-                                                </span>
+                                                </td>
+                                                <td className="py-2 sm:py-4">
+                                                    <span className="text-[13px] font-black text-gray-900 dark:text-white">₦{payment.amount?.toLocaleString()}</span>
+                                                </td>
+                                                <td className="sm:py-4 text-left sm:text-right">
+                                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${payment.status === 'Paid' ? 'bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-500/10' : 'bg-amber-50 text-amber-600 ring-1 ring-inset ring-amber-500/10'}`}>
+                                                        {payment.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={3} className="py-10 text-center opacity-40">
+                                                <p className="text-xs font-black uppercase tracking-widest">No Recent Payments</p>
                                             </td>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={3} className="py-10 text-center opacity-40">
-                                            <p className="text-xs font-black uppercase tracking-widest">No Recent Payments</p>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     <Link href="/dashboard/payments" className="block w-full">
                         <Button variant="solid" className="w-full mt-6 h-13 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700 font-black rounded-2xl text-[10px] hover:bg-gray-50 dark:hover:bg-gray-700 shadow-lg hover:-translate-y-1 transition-all capitalize  group flex items-center justify-center gap-2">
                             View Payment Ledger
@@ -485,11 +485,9 @@ const DashboardClient = () => {
                                 </div>
                                 <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight tracking-tight max-w-2xl">{selectedAnnouncement.title}</h2>
                             </div>
-                        </div>
-
-                        {/* Content Body */}
-                        <div className="px-12 py-12 bg-gray-50/30 dark:bg-gray-900/50">
-                            <div className="flex items-center gap-3 mb-8">
+                                                {/* Content Body */}
+                        <div className="px-6 sm:px-12 py-10 bg-gray-50/30 dark:bg-gray-900/50">
+                            <div className="flex flex-wrap items-center gap-3 mb-8">
                                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
                                     <Calendar className="w-3.5 h-3.5 text-[#8B0000]" />
                                     <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Posted {selectedAnnouncement.date}</span>
@@ -499,21 +497,21 @@ const DashboardClient = () => {
                                     <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{(selectedAnnouncement.views || 0).toLocaleString()} Views</span>
                                 </div>
                             </div>
-
+ 
                             <div className="prose prose-red max-w-none">
-                                <p className="text-gray-700 dark:text-gray-300 text-base leading-relaxed font-semibold whitespace-pre-wrap">
+                                <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base leading-relaxed font-semibold whitespace-pre-wrap">
                                     {selectedAnnouncement.content}
                                 </p>
                             </div>
-
+ 
                             <div className="mt-12 p-6 bg-white dark:bg-gray-800/80 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-[0_20px_50px_rgba(0,0,0,0.04)] flex flex-col md:flex-row items-center justify-between gap-6">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-[#8B0000]/5 flex items-center justify-center border border-[#8B0000]/10 shrink-0">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-[#8B0000]/5 flex items-center justify-center border border-[#8B0000]/10 shrink-0">
                                         <ShieldCheck className="w-6 h-6 text-[#8B0000]" />
                                     </div>
                                     <div>
-                                        <p className="text-[11px] font-black text-gray-900 dark:text-white uppercase tracking-widest">Official Secretariat Notice</p>
-                                        <p className="text-[10px] font-bold text-gray-500 italic mt-0.5">FGCEOSA Digital Communications Terminal</p>
+                                        <p className="text-[10px] sm:text-[11px] font-black text-gray-900 dark:text-white uppercase tracking-widest">Official Secretariat Notice</p>
+                                        <p className="text-[9px] sm:text-[10px] font-bold text-gray-500 italic mt-0.5">FGCEOSA Digital Communications Terminal</p>
                                     </div>
                                 </div>
                                 <Button 
@@ -524,7 +522,7 @@ const DashboardClient = () => {
                                     Got it
                                 </Button>
                             </div>
-                        </div>
+                        </div>  </div>
                     </div>
                 )}
             </Dialog>

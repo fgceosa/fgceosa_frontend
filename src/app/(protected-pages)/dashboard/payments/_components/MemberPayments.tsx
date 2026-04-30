@@ -167,7 +167,7 @@ const MemberPayments = () => {
                 
                 <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-[#8B0000] to-red-400"></div>
 
-                <div className="p-3 sm:p-4 pl-8 sm:pl-10 relative z-10 backdrop-blur-[2px]">
+                <div className="p-5 sm:p-6 sm:pl-10 relative z-10 backdrop-blur-[2px]">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 lg:gap-8">
                         <div className="space-y-2 flex-1">
                             <div>
@@ -360,7 +360,7 @@ const MemberPayments = () => {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#8B0000]/20 to-transparent opacity-0 group-hover/table:opacity-100 transition-opacity duration-1000"></div>
                     <div className="overflow-x-auto">
                         <Table>
-                            <THead className="bg-gray-50/50 dark:bg-gray-800/50">
+                            <THead className="hidden lg:table-header-group bg-gray-50/50 dark:bg-gray-800/50">
                                 <Tr>
                                     <Th className="text-[11px] font-bold tracking-tight capitalize py-4 px-8 text-gray-900 border-b border-gray-100 dark:border-gray-700/50">Date</Th>
                                     <Th className="text-[11px] font-bold tracking-tight capitalize py-4 px-8 text-gray-900 border-b border-gray-100 dark:border-gray-700/50">Details</Th>
@@ -371,20 +371,21 @@ const MemberPayments = () => {
                             </THead>
                             <TBody>
                                 {paginatedHistory.length > 0 ? paginatedHistory.map((payment: any, i: number) => (
-                                    <Tr key={payment.id || i} className="group hover:bg-[#8B0000]/[0.02] dark:hover:bg-gray-700/40 transition-all border-b border-gray-50 dark:border-gray-800/50 hover:shadow-sm relative">
-                                        <Td className="py-4 px-8 whitespace-nowrap">
+                                    <Tr key={payment.id || i} className="group hover:bg-[#8B0000]/[0.02] dark:hover:bg-gray-700/40 transition-all border-b border-gray-50 dark:border-gray-800/50 hover:shadow-sm relative flex flex-col lg:table-row">
+                                        <Td className="py-4 px-6 lg:px-8 whitespace-nowrap">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-10 h-10 rounded-[12px] bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center shrink-0 shadow-inner group-hover:bg-[#8B0000]/5 group-hover:border-[#8B0000]/20 transition-colors">
                                                     <span className="text-[12px] font-bold text-gray-900 dark:text-white leading-none">{payment.date.split(' ')[0]}</span>
                                                     <span className="text-[9px] font-bold text-gray-500 capitalize tracking-tight mt-0.5">{payment.date.split(' ')[1]?.replace(',', '')}</span>
                                                 </div>
-                                                <div>
+                                                <div className="flex lg:flex-col items-center lg:items-start gap-2">
                                                     <p className="text-[12px] font-black text-gray-900 dark:text-gray-100">{payment.date.split(',')[1]?.trim() || '2024'}</p>
-                                                    <p className="text-[9px] font-bold text-gray-400 capitalize tracking-tight mt-0.5">Payment Date</p>
+                                                    <span className="lg:hidden text-[9px] font-bold text-gray-400">•</span>
+                                                    <p className="text-[9px] font-bold text-gray-400 capitalize tracking-tight lg:mt-0.5">Payment Date</p>
                                                 </div>
                                             </div>
                                         </Td>
-                                        <td className="py-4 px-8">
+                                        <td className="py-2 lg:py-4 px-6 lg:px-8">
                                             <div>
                                                 <p className="text-[13px] font-bold text-gray-900 dark:text-white group-hover:text-[#8B0000] dark:group-hover:text-red-400 transition-colors capitalize">{payment.title || payment.description || 'Annual Subscription 2024'}</p>
                                                 <p className="text-[10px] font-bold text-gray-400 capitalize tracking-tight mt-1 flex items-center gap-1.5 border border-gray-100 dark:border-gray-700 w-max px-2 py-0.5 rounded-lg shadow-sm bg-white dark:bg-gray-800">
@@ -393,39 +394,45 @@ const MemberPayments = () => {
                                                 </p>
                                             </div>
                                         </td>
-                                        <Td className="py-4 px-8 whitespace-nowrap">
-                                            <div className="flex flex-col">
-                                                <span className="text-[15px] font-bold text-gray-900 dark:text-white font-mono tracking-tight">₦{payment.amount?.toLocaleString()}</span>
-                                                <span className="text-[9px] font-bold text-gray-400 capitalize tracking-tight mt-0.5">By {payment.method || 'Card'}</span>
+                                        <Td className="py-2 lg:py-4 px-6 lg:px-8 whitespace-nowrap">
+                                            <div className="flex lg:flex-col justify-between items-center lg:items-start">
+                                                <span className="lg:hidden text-[9px] font-black text-gray-400 uppercase tracking-widest">Amount</span>
+                                                <div className="flex flex-col text-right lg:text-left">
+                                                    <span className="text-[15px] font-bold text-gray-900 dark:text-white font-mono tracking-tight">₦{payment.amount?.toLocaleString()}</span>
+                                                    <span className="text-[9px] font-bold text-gray-400 capitalize tracking-tight mt-0.5">By {payment.method || 'Card'}</span>
+                                                </div>
                                             </div>
                                         </Td>
-                                        <Td className="py-4 px-8 whitespace-nowrap">
-                                            <Tag className={`border shadow-sm px-3.5 py-1.5 rounded-xl text-[10px] font-bold capitalize tracking-tight flex items-center gap-1.5 w-max ${
-                                                payment.status === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800/30 dark:text-emerald-400' : 
-                                                payment.status === 'Failed' ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-900/30 dark:border-red-800/30 dark:text-red-400' :
-                                                'bg-[#8B0000]/10 border-[#8B0000]/20 text-[#8B0000] dark:bg-[#8B0000]/20 dark:border-[#8B0000]/30 dark:text-red-400'
-                                            }`}>
-                                                {payment.status}
-                                            </Tag>
+                                        <Td className="py-2 lg:py-4 px-6 lg:px-8 whitespace-nowrap">
+                                            <div className="flex justify-between items-center lg:block">
+                                                <span className="lg:hidden text-[9px] font-black text-gray-400 uppercase tracking-widest">Status</span>
+                                                <Tag className={`border shadow-sm px-3.5 py-1.5 rounded-xl text-[10px] font-bold capitalize tracking-tight flex items-center gap-1.5 w-max ${
+                                                    payment.status === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800/30 dark:text-emerald-400' : 
+                                                    payment.status === 'Failed' ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-900/30 dark:border-red-800/30 dark:text-red-400' :
+                                                    'bg-[#8B0000]/10 border-[#8B0000]/20 text-[#8B0000] dark:bg-[#8B0000]/20 dark:border-[#8B0000]/30 dark:text-red-400'
+                                                }`}>
+                                                    {payment.status}
+                                                </Tag>
+                                            </div>
                                         </Td>
-                                        <Td className="py-4 px-8 whitespace-nowrap">
+                                        <Td className="py-4 px-6 lg:px-8 whitespace-nowrap">
                                             {payment.status === 'Paid' ? (
-                                                <div className="flex items-center justify-end gap-3 transition-all duration-300">
+                                                <div className="flex items-center justify-end lg:justify-end gap-3 transition-all duration-300">
                                                     <button 
                                                         onClick={() => { setSelectedInvoice(payment); setIsInvoiceModalOpen(true); }}
-                                                        className="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-[#8B0000] dark:text-red-400 text-[9px] font-black capitalize tracking-wider rounded-xl border border-red-100/50 dark:border-red-800/20 hover:bg-[#8B0000] hover:text-white transition-all shadow-sm"
+                                                        className="flex-1 lg:flex-none px-3 py-2 bg-red-50 dark:bg-red-900/20 text-[#8B0000] dark:text-red-400 text-[9px] font-black capitalize tracking-wider rounded-xl border border-red-100/50 dark:border-red-800/20 hover:bg-[#8B0000] hover:text-white transition-all shadow-sm"
                                                     >
-                                                        View Details
+                                                        Details
                                                     </button>
                                                     <button 
-                                                        className="h-9 px-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-[#8B0000]/30 hover:bg-[#8B0000]/5 text-gray-500 hover:text-[#8B0000] text-[10px] font-black transition-all shadow-sm active:scale-95 flex items-center gap-2" 
+                                                        className="flex-1 lg:flex-none h-9 px-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-[#8B0000]/30 hover:bg-[#8B0000]/5 text-gray-500 hover:text-[#8B0000] text-[10px] font-black transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2" 
                                                         onClick={() => handleDownloadInvoice(payment)}
                                                     >
                                                         <Download className="w-3.5 h-3.5" />
-                                                        Download
+                                                        Receipt
                                                     </button>
                                                 </div>
-                                            ) : <span className="text-gray-300 dark:text-gray-600 text-[12px] font-black tracking-widest inline-flex items-center justify-end pr-4">-</span>}
+                                            ) : <div className="text-right pr-4"><span className="text-gray-300 dark:text-gray-600 text-[12px] font-black tracking-widest inline-flex items-center">-</span></div>}
                                         </Td>
                                     </Tr>
                                 )) : (

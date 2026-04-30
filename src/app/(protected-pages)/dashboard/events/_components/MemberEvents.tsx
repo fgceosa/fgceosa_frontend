@@ -109,9 +109,9 @@ const MemberEvents = () => {
                         </div>
 
                         {/* Event Details */}
-                        <div className="space-y-5 flex-1 w-full text-center lg:text-left">
+                        <div className="space-y-5 flex-1 w-full text-left">
                             <div className="space-y-2.5">
-                                <div className="flex items-center justify-center lg:justify-start gap-2">
+                                <div className="flex items-center justify-start gap-2">
                                     <span className="bg-[#8B0000]/5 dark:bg-[#8B0000]/10 text-[#8B0000] dark:text-red-400 px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-[0.1em] border border-[#8B0000]/10">
                                         {featuredEvent.category}
                                     </span>
@@ -129,7 +129,7 @@ const MemberEvents = () => {
                                     {featuredEvent.description.substring(0, 140)}...
                                 </p>
                             </div>
-
+ 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div className="flex items-center gap-3 text-gray-700 dark:text-gray-200 font-bold text-xs bg-gray-50/50 dark:bg-gray-800/30 p-3.5 rounded-xl border border-gray-100 dark:border-gray-700/50">
                                     <div className="w-9 h-9 rounded-xl bg-white dark:bg-gray-900 shadow-sm flex items-center justify-center text-[#8B0000] shrink-0">
@@ -150,7 +150,7 @@ const MemberEvents = () => {
                                     </div>
                                 </div>
                             </div>
-
+ 
                             {featuredEvent.is_registered ? (
                                 <div className="w-full sm:w-auto bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-black h-11 px-8 rounded-xl border border-emerald-200 dark:border-emerald-800/50 text-[10px] flex items-center justify-center gap-2">
                                     <CheckCircle2 className="w-4 h-4" />
@@ -158,7 +158,7 @@ const MemberEvents = () => {
                                 </div>
                             ) : (
                                 <Button 
-                                    className="w-full sm:w-auto bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white font-black h-11 px-8 rounded-xl shadow-lg hover:-translate-y-0.5 transition-all capitalize  text-[10px] flex items-center justify-center gap-2 border-none"
+                                    className="w-full sm:w-auto bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white font-black h-11 px-8 rounded-xl shadow-lg hover:-translate-y-0.5 transition-all capitalize text-[10px] flex items-center justify-center gap-2 border-none"
                                     onClick={(e) => { e.stopPropagation(); handleViewDetails(featuredEvent); }}
                                 >
                                     Get Tickets
@@ -309,8 +309,8 @@ const MemberEvents = () => {
                 isOpen={isDetailsOpen}
                 onClose={() => setIsDetailsOpen(false)}
                 closable={true}
-                width={650}
-                className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden"
+                width={800}
+                className="p-0 border-none bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden max-w-[95vw]"
             >
                 {selectedEvent && (
                     <div className="p-8 sm:p-10">
