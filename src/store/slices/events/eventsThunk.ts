@@ -15,9 +15,9 @@ export const getEvents = createAsyncThunk(
 
 export const registerForEvent = createAsyncThunk(
     'events/registerForEvent',
-    async ({ eventId, notes }: { eventId: string; notes?: string }, { rejectWithValue }) => {
+    async ({ eventId, notes, attendeesCount }: { eventId: string; notes?: string, attendeesCount?: number }, { rejectWithValue }) => {
         try {
-            const response = await apiRegisterForEvent(eventId, { notes })
+            const response = await apiRegisterForEvent(eventId, { notes, attendees_count: attendeesCount })
             return response
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.detail || 'Registration failed')

@@ -8,7 +8,7 @@ const FGCEOSALoading = () => {
                 <ShieldCheck className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-[#8B0000] opacity-50" />
             </div>
             <p className="mt-8 text-[11px] font-black text-[#8B0000] uppercase tracking-[0.3em] animate-pulse">
-                Pro Unitate
+                FGCEOSA
             </p>
         </div>
     )

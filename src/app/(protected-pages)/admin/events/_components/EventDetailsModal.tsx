@@ -13,7 +13,8 @@ import {
     CalendarDays,
     Pencil,
     Video,
-    ExternalLink
+    ExternalLink,
+    Tag
 } from 'lucide-react'
 import { Dialog, Button } from '@/components/ui'
 
@@ -85,7 +86,7 @@ const EventDetailsModal = ({ isOpen, onClose, event }: EventDetailsModalProps) =
                     <div className="space-y-4">
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center border border-red-100/50">
-                                <TagIcon className="w-4 h-4 text-[#8B0000]" />
+                                <Tag className="w-4 h-4 text-[#8B0000]" />
                             </div>
                             <span className="text-[12px] font-bold text-[#8B0000] capitalize tracking-wide">{event.category}</span>
                         </div>

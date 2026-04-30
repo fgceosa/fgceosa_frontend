@@ -39,32 +39,20 @@ export default function DeleteUserDialog({
                     
                     <div className="space-y-2 mb-10">
                         <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                            {mustForce ? 'Override Deletion' : 'Decommission Member'}
+                            {mustForce ? 'Force Delete Member' : 'Delete Member'}
                         </h2>
-                        <p className="text-[11px] font-black text-gray-400 tracking-[0.2em] uppercase">Security Level Authority Required</p>
+                        <p className="text-[11px] font-bold text-gray-400 tracking-tight">Delete confirmation required</p>
                     </div>
 
-                    <div className="bg-gray-50/50 dark:bg-gray-800/20 rounded-[2rem] p-6 mb-10 border border-gray-100 dark:border-gray-800 flex items-center gap-5 shadow-inner w-full">
-                        <div className="w-14 h-14 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-600 shrink-0 overflow-hidden">
-                            {user.avatar ? (
-                                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-                            ) : (
-                                <User className="w-7 h-7 text-gray-400" />
-                            )}
-                        </div>
-                        <div className="text-left overflow-hidden">
-                            <h4 className="font-black text-gray-900 dark:text-white text-sm uppercase tracking-tight truncate">
-                                {user.name}
-                            </h4>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest truncate mt-1">
-                                {user.email}
-                            </p>
-                        </div>
+                    <div className="bg-gray-50/50 dark:bg-gray-800/20 rounded-[2rem] p-6 mb-10 border border-gray-100 dark:border-gray-800 flex flex-col items-center shadow-inner w-full">
+                        <h4 className="font-black text-gray-900 dark:text-white text-lg tracking-tight">
+                            {user.name}
+                        </h4>
                     </div>
 
                     {mustForce && dependencyError && (
                         <div className="bg-amber-50/50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-800 rounded-2xl p-5 mb-10 shadow-inner">
-                            <p className="text-[11px] text-amber-700 dark:text-amber-400 font-black uppercase tracking-widest leading-relaxed">
+                            <p className="text-[11px] text-amber-700 dark:text-amber-400 font-bold tracking-tight leading-relaxed">
                                 System Critical: {dependencyError}
                             </p>
                         </div>
@@ -73,8 +61,8 @@ export default function DeleteUserDialog({
                     {!mustForce && (
                         <div className="bg-red-50/30 dark:bg-red-900/10 border border-red-100 dark:border-red-800 rounded-2xl p-5 flex gap-4 items-start mb-10 shadow-inner">
                             <AlertTriangle className="w-5 h-5 text-[#8B0000] shrink-0 mt-0.5" />
-                            <p className="text-[10px] text-red-700 dark:text-red-400 font-black uppercase tracking-widest leading-relaxed text-left">
-                                Final Warning: This action permanently revokes ecosystem resources and member data access.
+                            <p className="text-[11px] text-red-700 dark:text-red-400 font-bold tracking-tight leading-relaxed text-left">
+                                Warning: This action cannot be undone. All data associated with this member will be permanently removed.
                             </p>
                         </div>
                     )}
@@ -83,16 +71,16 @@ export default function DeleteUserDialog({
                         <button
                             onClick={onClose}
                             disabled={isDeleting}
-                            className="flex-1 h-14 rounded-2xl border-none text-[11px] font-black text-gray-400 dark:text-gray-500 capitalize tracking-[0.2em] hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-all font-mono"
+                            className="flex-1 h-14 rounded-2xl border-none text-[13px] font-bold text-gray-400 dark:text-gray-500 capitalize tracking-tight hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-all"
                         >
-                            Abort
+                            Cancel
                         </button>
                         <button
                             onClick={() => onConfirm(mustForce)}
                             disabled={isDeleting}
-                            className={`flex-[2] h-14 ${mustForce ? 'bg-amber-600 shadow-[0_12px_24px_-10px_rgba(217,119,6,0.5)]' : 'bg-[#8B0000] shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)]'} text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center border-none`}
+                            className={`flex-[2] h-14 ${mustForce ? 'bg-amber-600 shadow-[0_12px_24px_-10px_rgba(217,119,6,0.5)]' : 'bg-[#8B0000] shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)]'} text-white rounded-2xl font-bold tracking-tight text-[13px] transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center border-none`}
                         >
-                            {isDeleting ? 'Erasing...' : (mustForce ? 'Force Purge' : 'Commit Deletion')}
+                            {isDeleting ? 'Deleting...' : (mustForce ? 'Force Delete' : 'Delete Member')}
                         </button>
                     </div>
                 </div>

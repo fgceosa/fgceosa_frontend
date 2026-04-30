@@ -29,11 +29,15 @@ const EventRegistrationModal = ({
     const dispatch = useAppDispatch()
     const { registering } = useAppSelector((state) => state.events)
     const [step, setStep] = useState<'form' | 'success'>('form')
+    const [attendeesCount, setAttendeesCount] = useState(1)
 
     if (!event) return null
 
     const handleRegister = async () => {
-        const result = await dispatch(registerForEvent({ eventId: event.id }))
+        const result = await dispatch(registerForEvent({ 
+            eventId: event.id,
+            attendeesCount: attendeesCount
+        }))
         if (registerForEvent.fulfilled.match(result)) {
             setStep('success')
             toast.push(
@@ -117,11 +121,14 @@ const EventRegistrationModal = ({
                             <Select
                                 placeholder="Select number of attendees"
                                 menuPlacement="top"
+                                value={{ value: attendeesCount.toString(), label: attendeesCount === 1 ? '1 (Just me)' : `${attendeesCount} People` }}
+                                onChange={(option: any) => setAttendeesCount(parseInt(option.value))}
                                 options={[
                                     { value: '1', label: '1 (Just me)' },
                                     { value: '2', label: '2 People' },
                                     { value: '3', label: '3 People' },
-                                    { value: '4', label: '4+ People' },
+                                    { value: '4', label: '4 People' },
+                                    { value: '5', label: '5 People' },
                                 ]}
                             />
                         </div>

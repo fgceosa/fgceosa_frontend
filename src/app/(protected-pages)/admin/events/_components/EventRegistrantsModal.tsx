@@ -66,12 +66,13 @@ const EventRegistrantsModal = ({
     })
 
     const handleExport = () => {
-        const headers = ['Name', 'Email', 'Phone', 'Registration Date', 'Notes']
+        const headers = ['Name', 'Email', 'Phone', 'Registration Date', 'Persons Going', 'Notes']
         const rows = registrants.map((reg) => [
             reg.user?.name || 'N/A',
             reg.user?.email || 'N/A',
             reg.user?.phone || 'N/A',
             new Date(reg.registration_date).toLocaleDateString(),
+            reg.attendees_count || 1,
             reg.notes || '',
         ])
 
@@ -217,6 +218,10 @@ const EventRegistrantsModal = ({
                                                         {reg.user.phone}
                                                     </div>
                                                 )}
+                                                <div className="flex items-center gap-2 text-[11px] font-black text-emerald-600 dark:text-emerald-400 tracking-tight bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-lg border border-emerald-100 dark:border-emerald-800/30">
+                                                    <Users className="w-3.5 h-3.5" />
+                                                    {reg.attendees_count || 1} { (reg.attendees_count || 1) === 1 ? 'Person' : 'Persons'} Going
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

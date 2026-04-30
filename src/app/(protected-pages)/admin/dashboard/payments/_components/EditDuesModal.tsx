@@ -94,6 +94,7 @@ export default function EditDuesModal({ isOpen, onClose, onConfirm, data }: Edit
                             <div className="relative">
                                 <DatePicker 
                                     placeholder="Pick a date"
+                                    minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                                     value={editDue.dueDate ? new Date(editDue.dueDate) : null}
                                     onChange={(date) => setEditDue({ ...editDue, dueDate: date ? dayjs(date).format('YYYY-MM-DD') : '' })}
                                     inputClassName="bg-gray-50/50 dark:bg-gray-800/10 border-gray-100 dark:border-gray-800 h-14 pl-5 rounded-2xl font-black shadow-inner"

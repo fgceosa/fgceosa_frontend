@@ -175,11 +175,26 @@ const DashboardClient = () => {
                             <div className="relative z-10 flex-1 flex flex-col justify-between mt-4">
                                 <div>
                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Total Outstanding Balance</p>
-                                    <p className="text-xl font-black text-gray-900 dark:text-white tracking-tight">₦{memberSummary.outstandingAmount?.toLocaleString()}</p>
+                                    <p className="text-xl font-black text-gray-900 dark:text-white tracking-tight mb-4">₦{memberSummary.outstandingAmount?.toLocaleString()}</p>
                                     
-                                    <div className="inline-flex items-center gap-2 mt-3 text-[11px] font-semibold text-red-500 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-xl border border-red-100/50 dark:border-red-800/30">
+                                    {/* Compact Dues Breakdown */}
+                                    {memberSummary.unpaidDues && memberSummary.unpaidDues.length > 0 && (
+                                        <div className="space-y-2 mb-4">
+                                            {memberSummary.unpaidDues.map((due: any) => (
+                                                <div key={due.id} className="flex items-center justify-between p-3 bg-gray-50/50 dark:bg-gray-700/20 rounded-xl border border-gray-100 dark:border-gray-700">
+                                                    <div className="min-w-0">
+                                                        <p className="text-[11px] font-black text-gray-900 dark:text-white truncate">{due.title}</p>
+                                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tight">Due: {due.dueDate}</p>
+                                                    </div>
+                                                    <span className="text-[11px] font-black text-[#8B0000] ml-3 shrink-0">₦{due.amount.toLocaleString()}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    <div className="inline-flex items-center gap-2 text-[11px] font-semibold text-red-500 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-xl border border-red-100/50 dark:border-red-800/30">
                                         <Clock className="w-3.5 h-3.5" /> 
-                                        Due: {memberSummary.outstandingDueDate}
+                                        Final Deadline: {memberSummary.outstandingDueDate}
                                     </div>
                                 </div>
                                 

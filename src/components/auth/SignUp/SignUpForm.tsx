@@ -276,10 +276,7 @@ const validationSchema = z
         email: z
             .string({ required_error: 'Email address is required' })
             .email('Please enter a valid email address'),
-        alternativeEmail: z.union([
-            z.string().email('Please enter a valid email address'),
-            z.literal(''),
-        ]).default(''),
+        alternativeEmail: z.string().email('Please enter a valid email address').optional().or(z.literal('')),
         fgceSet: z
             .string({ required_error: 'FGCE Set is required' })
             .min(1, 'FGCE Set is required'),
@@ -458,7 +455,7 @@ const SignUpForm = (props: SignUpFormProps) => {
                         />
                     </FormItem>
                     <FormItem
-                        label="Alternative Email"
+                        label="Alternative Email (Optional)"
                         labelClass={labelClass}
                         invalid={Boolean(errors.alternativeEmail)}
                         errorMessage={errors.alternativeEmail?.message}

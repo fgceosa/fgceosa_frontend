@@ -226,6 +226,7 @@ const CreateEventModal = ({ isOpen, onClose, onCreate }: CreateEventModalProps) 
                                             <DatePicker 
                                                 {...field}
                                                 placeholder="Select Schedule"
+                                                minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                                                 value={field.value ? new Date(field.value) : null}
                                                 className="h-14 bg-gray-50/50 dark:bg-gray-800/10 border-gray-100 dark:border-gray-800 pl-16 rounded-2xl font-black text-xs shadow-inner"
                                             />

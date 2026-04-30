@@ -109,7 +109,7 @@ const MemberPayments = () => {
 
     const paginatedHistory = paymentHistory.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
-    const hasPendingPayments = paymentHistory.some((p: any) => p.status === 'Pending' || p.status === 'Under Review' || p.status === 'Pending Verification')
+    const hasPendingPayments = paymentHistory.some((p: any) => p.method === 'bank_transfer' && (p.status === 'Pending' || p.status === 'Under Review' || p.status === 'Pending Verification'))
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10 pt-4">
@@ -230,6 +230,37 @@ const MemberPayments = () => {
                     </div>
                 </div>
             </Card>
+
+            {/* Dues Breakdown Section */}
+            {memberSummary?.unpaidDues && memberSummary.unpaidDues.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    {memberSummary.unpaidDues.map((due: any) => (
+                        <Card key={due.id} className="p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm relative group overflow-hidden hover:shadow-md transition-all duration-300">
+                             <div className="absolute top-0 right-0 w-24 h-24 bg-[#8B0000] opacity-[0.02] rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:opacity-[0.05] transition-opacity duration-500"></div>
+                             <div className="flex justify-between items-start mb-4">
+                                <div className="p-2.5 bg-[#8B0000]/5 rounded-xl border border-[#8B0000]/10">
+                                    <Landmark className="w-4 h-4 text-[#8B0000]" />
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">Amount Due</p>
+                                    <p className="text-lg font-black text-gray-900 dark:text-white font-mono">₦{due.amount.toLocaleString()}</p>
+                                </div>
+                             </div>
+                             <div className="space-y-1">
+                                <h3 className="text-[13px] font-black text-gray-900 dark:text-white group-hover:text-[#8B0000] transition-colors">{due.title}</h3>
+                                <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">{due.description || 'Standard association dues'}</p>
+                             </div>
+                             <div className="mt-6 pt-4 border-t border-gray-50 dark:border-gray-800/50 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <CalendarIcon className="w-3 h-3 text-[#8B0000]" />
+                                    <span className="text-[10px] font-bold text-gray-400">Deadline: {due.dueDate}</span>
+                                </div>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-[#8B0000] opacity-0 group-hover:opacity-100 transition-opacity">Outstanding</span>
+                             </div>
+                        </Card>
+                    ))}
+                </div>
+            )}
 
             {/* 3. Payment Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">

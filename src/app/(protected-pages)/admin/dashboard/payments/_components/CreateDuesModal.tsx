@@ -88,6 +88,7 @@ export default function CreateDuesModal({ isOpen, onClose, onConfirm }: CreateDu
                             <div className="relative">
                                 <DatePicker 
                                     placeholder="Pick a date"
+                                    minDate={new Date(new Date().setHours(0, 0, 0, 0))}
                                     value={newDue.dueDate ? new Date(newDue.dueDate) : null}
                                     onChange={(date) => setNewDue({ ...newDue, dueDate: date ? dayjs(date).format('YYYY-MM-DD') : '' })}
                                     inputClassName="bg-gray-50/50 dark:bg-gray-800/10 border-gray-100 dark:border-gray-800 h-14 pl-5 rounded-2xl font-black shadow-inner"

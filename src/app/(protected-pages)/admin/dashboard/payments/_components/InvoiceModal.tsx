@@ -20,7 +20,20 @@ export default function InvoiceModal({ isOpen, onClose, data }: { isOpen: boolea
         toast.success(`Invoice successfully dispatched to ${data?.email}`)
     }
 
+    const handleCopyRef = () => {
+        navigator.clipboard.writeText(data.ref)
+        toast.success('Transaction ID copied to clipboard')
+    }
+
     if (!data) return null
+    
+    const formattedDate = data.date ? new Date(data.date).toLocaleString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    }) : 'N/A'
+    
+    const shortRef = data.ref && data.ref.length > 25 ? `${data.ref.substring(0, 20)}...` : data.ref
+    
+    const displayAmount = String(data.paid).startsWith('₦') ? data.paid : `₦${data.paid}`
     return (
         <Dialog
             isOpen={isOpen}
@@ -58,11 +71,16 @@ export default function InvoiceModal({ isOpen, onClose, data }: { isOpen: boolea
                     <div className="grid grid-cols-1 gap-6">
                         <div className="space-y-2">
                             <p className="text-[12px] font-bold text-gray-400 capitalize tracking-tight pl-1">Payment date</p>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white capitalize">{data.date}</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white capitalize">{formattedDate}</p>
                         </div>
                         <div className="space-y-2">
                             <p className="text-[12px] font-bold text-gray-400 capitalize tracking-tight pl-1">Transaction ID</p>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white font-mono tracking-tighter capitalize">{data.ref}</p>
+                            <div className="flex items-center gap-2">
+                                <p className="text-sm font-bold text-gray-900 dark:text-white font-mono tracking-tighter capitalize" title={data.ref}>{shortRef}</p>
+                                <button onClick={handleCopyRef} className="p-1.5 bg-gray-50 dark:bg-gray-800 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Copy ID">
+                                    <Copy className="w-3.5 h-3.5 text-gray-500" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -80,11 +98,11 @@ export default function InvoiceModal({ isOpen, onClose, data }: { isOpen: boolea
                                     <p className="text-[11px] font-bold text-gray-400 mt-1 capitalize tracking-tight">Via {data.method} channel</p>
                                 </div>
                             </div>
-                            <span className="text-2xl font-bold text-gray-900 dark:text-white capitalize tracking-tighter">₦{data.paid}</span>
+                            <span className="text-2xl font-bold text-gray-900 dark:text-white capitalize tracking-tighter">{displayAmount}</span>
                         </div>
                         <div className="pt-6 mt-6 border-t border-gray-200/50 dark:border-gray-700 flex justify-between items-center">
                             <span className="text-[12px] font-bold text-gray-400 capitalize tracking-tight">Total amount paid</span>
-                            <span className="text-3xl font-bold text-[#8B0000] dark:text-red-400 capitalize tracking-tighter shadow-sm">₦{data.paid}</span>
+                            <span className="text-3xl font-bold text-[#8B0000] dark:text-red-400 capitalize tracking-tighter shadow-sm">{displayAmount}</span>
                         </div>
                     </div>
                 </div>

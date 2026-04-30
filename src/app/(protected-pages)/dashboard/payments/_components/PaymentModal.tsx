@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Dialog, Button, Input, Card, Alert, Badge, Tag } from '@/components/ui'
+import { Dialog, Button, Input, Card, Alert, Badge, Tag, Checkbox } from '@/components/ui'
 import { 
     FiCheckCircle, 
     FiCopy, 
@@ -44,6 +44,33 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
     const [isCopied, setIsCopied] = useState(false)
     const [selectedMethod, setSelectedMethod] = useState<'paystack' | 'bank'>('paystack')
     const [loading, setLoading] = useState(false)
+    const [selectedDues, setSelectedDues] = useState<string[]>([])
+
+    useEffect(() => {
+        if (isOpen && unpaidDues.length > 0) {
+            setSelectedDues(unpaidDues.map(d => d.id))
+        }
+    }, [isOpen, unpaidDues])
+
+    const currentTotalAmount = unpaidDues.length > 0 
+        ? unpaidDues.filter(d => selectedDues.includes(d.id)).reduce((sum, d) => sum + d.amount, 0)
+        : amount
+
+    const toggleDue = (id: string) => {
+        setSelectedDues(prev => 
+            prev.includes(id) 
+                ? prev.filter(item => item !== id)
+                : [...prev, id]
+        )
+    }
+
+    const toggleAll = () => {
+        if (selectedDues.length === unpaidDues.length) {
+            setSelectedDues([])
+        } else {
+            setSelectedDues(unpaidDues.map(d => d.id))
+        }
+    }
 
     const bankDetails = {
         bankName: settings.bank_name || 'Providus Bank',
@@ -90,10 +117,11 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
         setLoading(true)
         try {
             // 1. Initialize payment on backend
+            const selectedItems = unpaidDues.filter(d => selectedDues.includes(d.id))
             const initResponse = await apiInitializePayment({
-                amount: amount,
-                description: unpaidDues.length > 0 
-                    ? `Dues: ${unpaidDues.map(d => d.title).join(', ')}`
+                amount: currentTotalAmount,
+                description: selectedItems.length > 0 
+                    ? `Dues: ${selectedItems.map(d => d.title).join(', ')}`
                     : 'Annual Dues Payment',
                 callback_url: window.location.href
             })
@@ -110,7 +138,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
             paystack.newTransaction({
                 key: settings.paystack_public_key || process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
                 email: user.email,
-                amount: amount * 100, // Paystack expects kobo
+                amount: currentTotalAmount * 100, // Paystack expects kobo
                 ref: initResponse.transaction_reference,
                 onSuccess: async (transaction: any) => {
                     setStep('processing')
@@ -158,12 +186,34 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
 
             <div className="p-6 rounded-[1.5rem] bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 space-y-4">
                 {unpaidDues.length > 0 ? (
-                    unpaidDues.map((due) => (
-                        <div key={due.id} className="flex justify-between items-center">
-                            <span className="text-gray-500 font-bold text-[12px] capitalize tracking-tight">{due.title}</span>
-                            <span className="font-black text-gray-900 dark:text-white text-[13px]">₦{due.amount.toLocaleString()}.00</span>
+                    <>
+                        <div className="flex justify-between items-center pb-2 border-b border-gray-200 dark:border-gray-700 mb-2">
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Dues to Pay</span>
+                            <button 
+                                onClick={toggleAll}
+                                className="text-[10px] font-black text-[#8B0000] uppercase tracking-widest hover:underline"
+                            >
+                                {selectedDues.length === unpaidDues.length ? 'Unselect All' : 'Select All'}
+                            </button>
                         </div>
-                    ))
+                        {unpaidDues.map((due) => (
+                            <div key={due.id} className="flex justify-between items-center group cursor-pointer" onClick={() => toggleDue(due.id)}>
+                                <div className="flex items-center gap-3">
+                                    <Checkbox 
+                                        checked={selectedDues.includes(due.id)} 
+                                        onChange={() => toggleDue(due.id)}
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                    <span className={`font-bold text-[12px] capitalize tracking-tight transition-colors ${selectedDues.includes(due.id) ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                                        {due.title}
+                                    </span>
+                                </div>
+                                <span className={`font-black text-[13px] transition-colors ${selectedDues.includes(due.id) ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                                    ₦{due.amount.toLocaleString()}.00
+                                </span>
+                            </div>
+                        ))}
+                    </>
                 ) : (
                     <div className="flex justify-between items-center">
                         <span className="text-gray-500 font-bold text-[12px] capitalize tracking-tight">Outstanding Balance</span>
@@ -173,7 +223,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                 <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex justify-between items-center">
                         <span className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-widest">Total amount</span>
-                        <span className="text-lg font-black text-[#8B0000]">₦{amount.toLocaleString()}.00</span>
+                        <span className="text-lg font-black text-[#8B0000]">₦{currentTotalAmount.toLocaleString()}.00</span>
                     </div>
                 </div>
             </div>
@@ -190,7 +240,8 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
             <div className="mt-auto pt-6">
                 <Button 
                     block 
-                    className="bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white font-black h-14 rounded-2xl shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3 capitalize text-[14px] border-none"
+                    disabled={currentTotalAmount <= 0}
+                    className="bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white font-black h-14 rounded-2xl shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3 capitalize text-[14px] border-none disabled:opacity-50 disabled:hover:translate-y-0"
                     onClick={() => setStep('method')}
                 >
                     Continue to Payment
@@ -283,7 +334,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                 <div>
                     <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Secure Checkout</h2>
                     <p className="text-[12px] text-gray-500 font-bold max-w-xs mx-auto leading-relaxed mt-2 opacity-70">
-                        Proceed to Paystack to complete your transaction of <span className="text-[#8B0000]">₦{amount.toLocaleString()}.00</span>
+                        Proceed to Paystack to complete your transaction of <span className="text-[#8B0000]">₦{currentTotalAmount.toLocaleString()}.00</span>
                     </p>
                 </div>
             </div>
@@ -299,7 +350,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                         onClick={handlePaystackCheckout}
                         loading={loading}
                     >
-                        Pay ₦{amount.toLocaleString()} now
+                        Pay ₦{currentTotalAmount.toLocaleString()} now
                     </Button>
                 </div>
             </Card>
@@ -340,7 +391,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                         </div>
                         <div className="space-y-1">
                             <h4 className="text-[10px] font-bold text-gray-400 capitalize tracking-tight">Amount</h4>
-                            <p className="text-sm font-black text-[#8B0000]">₦{amount.toLocaleString()}.00</p>
+                            <p className="text-sm font-black text-[#8B0000]">₦{currentTotalAmount.toLocaleString()}.00</p>
                         </div>
                     </div>
                     <div className="space-y-1 cursor-pointer group" onClick={() => handleCopy(bankDetails.reference)}>
@@ -412,7 +463,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
             </Card>
             <div className="flex gap-4 w-full pt-4">
                 <Button block variant="plain" className="flex-1 rounded-2xl h-14 font-black text-[11px] capitalize  text-emerald-700 bg-emerald-50 hover:bg-emerald-100" onClick={onViewInvoice}>View Invoice</Button>
-                <Button block className="flex-1 bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white rounded-2xl h-14 font-black text-[11px] capitalize  shadow-xl border-none transition-all" onClick={onClose}>Go to dashboard</Button>
+                <Button block className="flex-1 bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white rounded-2xl h-14 font-black text-[11px] capitalize  shadow-xl border-none transition-all" onClick={() => { onClose(); window.location.reload(); }}>Go to dashboard</Button>
             </div>
         </div>
     )

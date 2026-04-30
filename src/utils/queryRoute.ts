@@ -3,7 +3,8 @@ import { protectedRoutes, publicRoutes } from '@/configs/routes.config'
 
 const routes = { ...publicRoutes, ...protectedRoutes }
 
-export const matchRoute = (path: string): Route | null => {
+export const matchRoute = (path: string | null | undefined): Route | null => {
+    if (!path) return null;
     const normalizedPath = path.endsWith('/') ? path.slice(0, -1) : path
 
     if (routes[normalizedPath]) {

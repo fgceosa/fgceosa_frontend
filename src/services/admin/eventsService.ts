@@ -30,7 +30,7 @@ export async function apiDeleteEvent(id: string): Promise<any> {
     })
 }
 
-export async function apiRegisterForEvent(eventId: string, data?: { notes?: string }): Promise<any> {
+export async function apiRegisterForEvent(eventId: string, data?: { notes?: string, attendees_count?: number }): Promise<any> {
     return ApiService.fetchDataWithAxios({
         url: `events/${eventId}/register`,
         method: 'post',
