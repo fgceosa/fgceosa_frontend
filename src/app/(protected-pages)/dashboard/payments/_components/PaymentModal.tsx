@@ -72,12 +72,14 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
         }
     }
 
-    const bankDetails = {
+    const bankDetails = React.useMemo(() => ({
         bankName: settings.bank_name || 'Providus Bank',
         accountName: settings.account_name || 'FGCEOSA Secretariat',
         accountNumber: settings.account_number || '1092837465',
         reference: `PAY-MEM-${Math.floor(1000 + Math.random() * 9000)}`,
-    }
+    }), [settings])
+
+    const [activeTransactionRef, setActiveTransactionRef] = useState<string>('')
 
     useEffect(() => {
         if (isOpen) {
@@ -130,13 +132,23 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                 throw new Error('Could not initialize payment')
             }
 
+            const paystackKey = (settings.paystack_public_key && settings.paystack_public_key.trim()) || process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
+            
+            if (!paystackKey) {
+                throw new Error('Payment configuration missing. Please contact administrator.')
+            }
+
+            // Store ref for UI
+            setActiveTransactionRef(initResponse.transaction_reference)
+
             // 2. Open Paystack Popup
             if (typeof PaystackPop === 'undefined') {
                 throw new Error('Paystack library not loaded. Please refresh the page.')
             }
+
             const paystack = new PaystackPop();
             paystack.newTransaction({
-                key: settings.paystack_public_key || process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
+                key: paystackKey,
                 email: user.email,
                 amount: currentTotalAmount * 100, // Paystack expects kobo
                 ref: initResponse.transaction_reference,
@@ -343,7 +355,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50"></div>
                 <div className="relative z-10 flex flex-col items-center">
                     <h4 className="text-[10px] font-bold capitalize tracking-tight text-white/60 mb-2">Transaction ID</h4>
-                    <span className="font-mono text-sm font-black tracking-tight mb-8">{bankDetails.reference}</span>
+                    <span className="font-mono text-sm font-black tracking-tight mb-8">{activeTransactionRef || bankDetails.reference}</span>
                     <Button 
                         block 
                         className="bg-white text-[#8B0000] hover:bg-red-50 border-none font-black h-14 rounded-2xl flex items-center justify-center gap-3 text-sm tracking-tight transition-all active:scale-95"
