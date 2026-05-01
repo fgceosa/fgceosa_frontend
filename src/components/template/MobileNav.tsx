@@ -18,6 +18,7 @@ import Avatar from '@/components/ui/Avatar'
 import forceLogout from '@/utils/auth/forceLogout'
 import { useAppDispatch, useAppSelector } from '@/store'
 import { selectUserProfile } from '@/store/slices/userSettings/userSettingsSelectors'
+import { getAvatarUrl } from '@/utils/imageUrl'
 
 const VerticalMenuContent = lazy(
     () => import('@/components/template/VerticalMenuContent'),
@@ -142,7 +143,7 @@ const MobileNav = () => {
                                             <Avatar 
                                                 size={64} 
                                                 className="bg-gradient-to-br from-white/30 to-white/10 text-white shadow-xl ring-3 ring-white/10 mb-3 font-black text-lg"
-                                                src={userProfile?.avatar ? `${userProfile.avatar}${userProfile.avatar.includes('?') ? '&' : '?'}v=${new Date(userProfile.updatedAt || Date.now()).getTime()}` : undefined}
+                                                src={getAvatarUrl(userProfile?.avatar) ? `${getAvatarUrl(userProfile?.avatar)}${getAvatarUrl(userProfile?.avatar)?.includes('?') ? '&' : '?'}v=${new Date(userProfile?.updatedAt || Date.now()).getTime()}` : undefined}
                                             >
                                                 {userInitials}
                                             </Avatar>

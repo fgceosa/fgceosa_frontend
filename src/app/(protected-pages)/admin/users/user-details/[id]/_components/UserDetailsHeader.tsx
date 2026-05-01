@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { Button, toast, Notification } from '@/components/ui'
+import { getAvatarUrl } from '@/utils/imageUrl'
 import { config } from '@/configs/env'
 import {
     ChevronLeft,
@@ -21,16 +22,6 @@ import Popconfirm from '@/components/shared/Popconfirm'
 
 interface UserDetailsHeaderProps {
     data: UserMember
-}
-
-const getAvatarUrl = (avatarPath: string | null | undefined): string => {
-    if (!avatarPath) return ''
-    if (avatarPath.startsWith('http') || avatarPath.startsWith('https')) {
-        return avatarPath
-    }
-    const baseUrl = config.apiUrl.replace(/\/api\/v1\/?$/, '')
-    const safePath = avatarPath.startsWith('/') ? avatarPath : `/${avatarPath}`
-    return `${baseUrl}${safePath}`
 }
 
 const UserDetailsHeader = ({ data }: UserDetailsHeaderProps) => {
@@ -98,7 +89,10 @@ const UserDetailsHeader = ({ data }: UserDetailsHeaderProps) => {
                         <div className="relative shrink-0">
                             {data.avatar ? (
                                 <img
-                                    src={getAvatarUrl(data.avatar)}
+                                    src={(() => {
+                                        const raw = getAvatarUrl(data.avatar)
+                                        return raw ? `${raw}${raw.includes('?') ? '&' : '?'}v=${new Date(data.updatedAt || Date.now()).getTime()}` : ''
+                                    })()}
                                     alt="Profile"
                                     className="w-16 md:w-20 h-16 md:h-20 bg-gray-100 rounded-[22px] md:rounded-[26px] object-cover shadow-xl ring-4 ring-primary/10 dark:ring-primary/20"
                                 />

@@ -77,7 +77,13 @@ const Avatar = (props: AvatarProps) => {
         className,
     )
 
-    if (src) {
+    const [imgError, setImgError] = useState(false)
+
+    useEffect(() => {
+        setImgError(false)
+    }, [src])
+
+    if (src && !imgError) {
         children = (
             <img
                 className={`avatar-img avatar-${shape}`}
@@ -85,6 +91,7 @@ const Avatar = (props: AvatarProps) => {
                 srcSet={srcSet}
                 alt={alt}
                 loading="lazy"
+                onError={() => setImgError(true)}
             />
         )
     } else if (icon) {

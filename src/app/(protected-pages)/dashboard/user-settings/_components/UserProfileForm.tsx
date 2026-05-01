@@ -39,7 +39,7 @@ import {
 } from '@/store/slices/userSettings'
 import { validateProfileForm, validateAvatarFile } from '../utils/validation'
 import type { UpdateProfileRequest, ProfileValidationErrors } from '../types'
-import { config } from '@/configs/env'
+import { getAvatarUrl } from '@/utils/imageUrl'
 import DeleteAvatarModal from './DeleteAvatarModal'
 
 const genderOptions = [
@@ -265,15 +265,8 @@ export default function UserProfileForm() {
                             className="ring-4 ring-white dark:ring-gray-900 shadow-2xl transition-transform duration-500 group-hover:scale-105" 
                             icon={<HiOutlineUser className="text-4xl" />} 
                             src={(() => {
-                                if (!userProfile?.avatar) return ''
-                                if (userProfile.avatar.startsWith('http://') || userProfile.avatar.startsWith('https://')) {
-                                    // If it's already a full URL, just add cache buster if it's our backend
-                                    const isOurBackend = userProfile.avatar.includes(config.apiUrl.replace(/\/api\/v1$/, ''))
-                                    return isOurBackend ? `${userProfile.avatar}${userProfile.avatar.includes('?') ? '&' : '?'}v=${new Date(userProfile.updatedAt || Date.now()).getTime()}` : userProfile.avatar
-                                }
-                                // Fallback for any relative paths
-                                const baseUrl = (config.apiUrl || 'http://localhost:8000').replace(/\/$/, '').replace(/\/api\/v1$/, '')
-                                return `${baseUrl}${userProfile.avatar.startsWith('/') ? '' : '/'}${userProfile.avatar}?v=${new Date(userProfile.updatedAt || Date.now()).getTime()}`
+                                const raw = getAvatarUrl(userProfile?.avatar)
+                                return raw ? `${raw}${raw.includes('?') ? '&' : '?'}v=${new Date(userProfile?.updatedAt || Date.now()).getTime()}` : ''
                             })()}
                         >
                             {userInitials}

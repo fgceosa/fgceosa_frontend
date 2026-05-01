@@ -17,6 +17,7 @@ import Link from 'next/link'
 import { useUserAuthorities, useHasPermission } from '@/utils/hooks/useAuthorization'
 import { getRoleBasedRedirectUrl, UserRole } from '@/utils/roleBasedRouting'
 import { selectUserProfile } from '@/store/slices/userSettings/userSettingsSelectors'
+import { getAvatarUrl } from '@/utils/imageUrl'
 
 import {
     SIDE_NAV_WIDTH,
@@ -220,7 +221,7 @@ const SideNav = ({
                             <Avatar 
                                 size={64} 
                                 className="bg-gradient-to-br from-white/30 to-white/10 text-white shadow-xl ring-3 ring-white/10 mb-3 transition-transform group-hover/profile:scale-105 duration-500 font-black text-lg"
-                                src={userProfile?.avatar ? `${userProfile.avatar}${userProfile.avatar.includes('?') ? '&' : '?'}v=${new Date(userProfile.updatedAt || Date.now()).getTime()}` : undefined}
+                                src={getAvatarUrl(userProfile?.avatar) ? `${getAvatarUrl(userProfile?.avatar)}${getAvatarUrl(userProfile?.avatar)?.includes('?') ? '&' : '?'}v=${new Date(userProfile?.updatedAt || Date.now()).getTime()}` : undefined}
                             >
                                 {userInitials}
                             </Avatar>

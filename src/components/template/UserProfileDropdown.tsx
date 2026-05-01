@@ -11,6 +11,7 @@ import checkAuthState from '@/utils/debug/checkAuthState'
 import { useAppDispatch, useAppSelector } from '@/store/hook'
 import { fetchUserProfile, selectUserProfile } from '@/store/slices/userSettings'
 import { config } from '@/configs/env'
+import { getAvatarUrl } from '@/utils/imageUrl'
 import {
     PiUserDuotone,
     PiSignOutDuotone,
@@ -26,15 +27,7 @@ type DropdownList = {
     icon: JSX.Element
 }
 
-// Helper to get full avatar URL
-const getAvatarUrl = (avatarPath: string | null | undefined): string | null => {
-    if (!avatarPath) return null
-    if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')) {
-        return avatarPath
-    }
-    const baseUrl = (config.apiUrl || 'http://localhost:8000').replace(/\/$/, '').replace(/\/api\/v1$/, '')
-    return `${baseUrl}${avatarPath.startsWith('/') ? '' : '/'}${avatarPath}`
-}
+// Utility imported from @/utils/imageUrl
 
 const _UserDropdown = () => {
     const dispatch = useAppDispatch()
@@ -61,7 +54,8 @@ const _UserDropdown = () => {
     }
 
     // Use profile data from Redux instead of session
-    const userImage = getAvatarUrl(userProfile?.avatar)
+    const rawAvatarUrl = getAvatarUrl(userProfile?.avatar)
+    const userImage = rawAvatarUrl ? `${rawAvatarUrl}${rawAvatarUrl.includes('?') ? '&' : '?'}v=${new Date(userProfile?.updatedAt || Date.now()).getTime()}` : null
 
     const profileEmail = userProfile?.email
     const sessionEmail = (session?.user as any)?.email
