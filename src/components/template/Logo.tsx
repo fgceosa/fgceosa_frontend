@@ -34,7 +34,7 @@ const Logo = (props: LogoProps) => {
         <div className={classNames('logo flex items-center justify-center', className)} style={style}>
             <Image
                 className={classNames('object-contain', imgClass)}
-                src={`${LOGO_SRC_PATH}fgceosa-logo.png`}
+                src={`${LOGO_SRC_PATH}fgceosa_logo.jpeg`}
                 alt={`${settings.associationName} logo`}
                 width={width}
                 height={height}

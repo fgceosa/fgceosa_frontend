@@ -140,19 +140,16 @@ const SideNav = ({
             <div className="relative z-20 bg-white border-b border-gray-100 dark:border-gray-800 transition-all duration-300">
                 <Link
                     href={getRoleBasedRedirectUrl({ authority: combinedAuthorities as UserRole[] })}
-                    className={classNames(
-                        "flex flex-col items-center justify-center transition-all duration-300",
-                        sideNavCollapse ? "pt-4 pb-4" : "pt-8 pb-6"
-                    )}
+                    className="flex flex-col items-center justify-center transition-all duration-300"
                     style={{
-                        padding: sideNavCollapse ? '10px 16px' : '24px 24px'
+                        padding: sideNavCollapse ? '4px 10px' : '4px 12px'
                     }}
                 >
                     <Logo
                         type={sideNavCollapse ? 'streamline' : 'full'}
                         mode="dark"
-                        logoWidth={sideNavCollapse ? 36 : 160}
-                        logoHeight={sideNavCollapse ? 36 : 70}
+                        logoWidth={sideNavCollapse ? 24 : 70}
+                        logoHeight={sideNavCollapse ? 24 : 24}
                         className="transition-transform duration-500 hover:scale-105"
                     />
                 </Link>

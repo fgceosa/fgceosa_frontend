@@ -30,7 +30,7 @@ export default function InvoiceModal({ isOpen, onClose, data }: { isOpen: boolea
             })
         }
 
-        const logoBase64 = await loadImage('/img/logo/fgceosa-logo.png')
+        const logoBase64 = await loadImage('/img/logo/fgceosa_logo.jpeg')
         
         doc.setFillColor(brandMaroon)
         doc.rect(0, 0, 210, 50, 'F')

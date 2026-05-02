@@ -39,7 +39,7 @@ export const generateInvoicePDF = async (data: InvoiceData, settings: SystemSett
         })
     }
 
-    const logoBase64 = await loadImage('/img/logo/fgceosa-logo.png')
+    const logoBase64 = await loadImage('/img/logo/fgceosa_logo.jpeg')
     
     // Header Bar
     doc.setFillColor(brandMaroon)

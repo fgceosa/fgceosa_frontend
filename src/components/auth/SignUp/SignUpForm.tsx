@@ -49,11 +49,20 @@ const genderOptions = [
     { value: 'female', label: 'Female' },
 ]
 
+const fgceSetOptions = Array.from(
+    { length: 2025 - 1977 + 1 },
+    (_, i) => 1977 + i
+)
+    .filter((year) => year !== 1987)
+    .map((year) => ({ value: String(year), label: `Set ${year}` }))
+
 const fgceHouseOptions = [
-    { value: 'nnamdi_azikiwe', label: 'Nnamdi Azikiwe' },
-    { value: 'obafemi_awolowo', label: 'Obafemi Awolowo' },
-    { value: 'ahmadu_bello', label: 'Ahmadu Bello' },
-    { value: 'tafawa_balewa', label: 'Tafawa Balewa' },
+    { value: 'honesty', label: 'Honesty' },
+    { value: 'independence', label: 'Independence' },
+    { value: 'liberty', label: 'Liberty' },
+    { value: 'national', label: 'National' },
+    { value: 'peace', label: 'Peace' },
+    { value: 'unity', label: 'Unity' },
 ]
 
 const countryOptions = [
@@ -593,12 +602,11 @@ const SignUpForm = (props: SignUpFormProps) => {
                             name="fgceSet"
                             control={control}
                             render={({ field }) => (
-                                <Input
-                                    type="text"
-                                    placeholder="e.g. Set 2005"
-                                    autoComplete="off"
-                                    className={inputClass}
-                                    {...field}
+                                <Select
+                                    placeholder="Select set year"
+                                    options={fgceSetOptions}
+                                    value={fgceSetOptions.find((o) => o.value === field.value) || null}
+                                    onChange={(option) => field.onChange(option?.value || '')}
                                 />
                             )}
                         />
