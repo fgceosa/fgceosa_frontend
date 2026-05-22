@@ -46,6 +46,7 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
     // Rejection state
     const [isRejectModalOpen, setIsRejectModalOpen] = useState(false)
     const [selectedPayment, setSelectedPayment] = useState<{ id: string; memberName: string } | null>(null)
+    const [approvingId, setApprovingId] = useState<string | null>(null)
 
     const fetchPendingCount = async () => {
         try {
@@ -114,6 +115,7 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
     }
 
     const handleApprove = async (paymentId: string) => {
+        setApprovingId(paymentId)
         try {
             await apiApprovePayment(paymentId)
             toast.success('Payment approved and receipt sent successfully')
@@ -121,6 +123,8 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
             fetchData()
         } catch (error) {
             toast.error('Failed to approve payment')
+        } finally {
+            setApprovingId(null)
         }
     }
 
@@ -436,10 +440,18 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
                                             <td className="px-6 lg:px-8 py-4 lg:py-5 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button 
-                                                        className="flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2 text-[11px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl border border-emerald-100 transition-all" 
+                                                        className="flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2 text-[11px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl border border-emerald-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed" 
                                                         onClick={() => handleApprove(item.id)}
+                                                        disabled={approvingId === item.id}
                                                     >
-                                                        Approve
+                                                        {approvingId === item.id ? (
+                                                            <>
+                                                                <Spinner size={12} className="text-emerald-600" />
+                                                                Approving...
+                                                            </>
+                                                        ) : (
+                                                            'Approve'
+                                                        )}
                                                     </button>
                                                     <button 
                                                         className="flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2 text-[11px] font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl border border-rose-100 transition-all" 

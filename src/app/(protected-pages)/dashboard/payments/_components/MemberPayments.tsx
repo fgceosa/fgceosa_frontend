@@ -45,7 +45,7 @@ const MemberPayments = () => {
 
     const { user } = useAppSelector((state) => state.auth.session.session) || {}
     const outstandingAmount = memberSummary?.outstandingAmount || 0
-    const status = memberSummary?.duesStatus === 'overdue' ? 'Unpaid' : 'Paid'
+    const status = memberSummary?.duesStatus === 'overdue' ? 'Unpaid' : memberSummary?.duesStatus === 'pending' ? 'Pending' : 'Paid'
     const dueDate = memberSummary?.outstandingDueDate || 'N/A'
     const duesTitle = memberSummary?.outstandingTitle || 'Annual Dues'
     const paymentHistory = memberSummary?.paymentHistory || []
@@ -198,8 +198,8 @@ const MemberPayments = () => {
                         <div className="space-y-2 flex-1">
                             <div>
                                 <h2 className="text-[10px] font-bold text-[#8B0000] dark:text-red-400 capitalize tracking-tight mb-1 flex items-center gap-2 drop-shadow-sm">
-                                    {status === 'Paid' ? <CheckCircle2 className="w-4 h-4" /> : outstandingAmount === 0 ? <AlertCircle className="w-4 h-4" /> : <Landmark className="w-4 h-4" />}
-                                    {status === 'Paid' ? 'Payment Complete' : outstandingAmount === 0 ? 'No Dues Found' : 'Unpaid Dues'}
+                                    {status === 'Paid' ? <CheckCircle2 className="w-4 h-4" /> : status === 'Pending' ? <Clock className="w-4 h-4" /> : outstandingAmount === 0 ? <AlertCircle className="w-4 h-4" /> : <Landmark className="w-4 h-4" />}
+                                    {status === 'Paid' ? 'Payment Complete' : status === 'Pending' ? 'Payment Under Review' : outstandingAmount === 0 ? 'No Dues Found' : 'Unpaid Dues'}
                                 </h2>
                                 <p className="text-xl sm:text-2xl font-black tracking-tighter text-gray-900 dark:text-white font-mono drop-shadow-sm">
                                     ₦{outstandingAmount.toLocaleString()}
@@ -207,8 +207,8 @@ const MemberPayments = () => {
                             </div>
 
                             <div className="flex items-center gap-3 pt-1">
-                                <Tag className={`${status === 'Paid' || (outstandingAmount === 0 && status !== 'Overdue') ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/30' : 'bg-[#8B0000]/10 text-[#8B0000] dark:bg-[#8B0000]/20 dark:text-red-400 border-[#8B0000]/20 dark:border-[#8B0000]/30'} px-4 py-1.5 rounded-xl text-[10px] font-bold capitalize tracking-tight flex items-center gap-2 border shadow-sm`}>
-                                    {outstandingAmount === 0 && status !== 'Paid' ? 'Up to Date' : status}
+                                <Tag className={`${status === 'Paid' || (outstandingAmount === 0 && status !== 'Unpaid' && status !== 'Pending') ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/30' : status === 'Pending' ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-100 dark:border-amber-800/30' : 'bg-[#8B0000]/10 text-[#8B0000] dark:bg-[#8B0000]/20 dark:text-red-400 border-[#8B0000]/20 dark:border-[#8B0000]/30'} px-4 py-1.5 rounded-xl text-[10px] font-bold capitalize tracking-tight flex items-center gap-2 border shadow-sm`}>
+                                    {status === 'Pending' ? 'Pending Verification' : outstandingAmount === 0 && status !== 'Paid' ? 'Up to Date' : status}
                                 </Tag>
                                 <div className="flex items-center gap-2 text-[10px] font-bold text-[#8B0000]/80 dark:text-red-300 font-mono bg-[#8B0000]/5 dark:bg-[#8B0000]/10 px-3 py-1 rounded-xl border border-[#8B0000]/10">
                                     <CalendarIcon className="w-3 h-3" /> Due Date: {dueDate}
@@ -220,14 +220,14 @@ const MemberPayments = () => {
                             {status === 'Paid' || outstandingAmount === 0 ? (
                                 <Button 
                                     variant="plain" 
-                                    className="w-full lg:w-auto border-2 border-emerald-100 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 font-bold rounded-2xl px-8 h-12 text-[13px] capitalize flex items-center justify-center gap-3 transition-all hover:-translate-y-0.5 group/btn shadow-sm"
+                                    className={`w-full lg:w-auto border-2 ${status === 'Pending' ? 'border-amber-100 dark:border-amber-900/50 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30' : 'border-emerald-100 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30'} font-bold rounded-2xl px-8 h-12 text-[13px] capitalize flex items-center justify-center gap-3 transition-all hover:-translate-y-0.5 group/btn shadow-sm`}
                                     onClick={() => {
                                         setSelectedInvoice(paymentHistory[0])
                                         setIsInvoiceModalOpen(true)
                                     }}
                                 >
                                     <FileText className="w-4 h-4" />
-                                    {outstandingAmount === 0 && status !== 'Paid' ? 'View Last Payment' : 'View Last Invoice'}
+                                    {outstandingAmount === 0 && status !== 'Paid' ? (status === 'Pending' ? 'View Under Review Payment' : 'View Last Payment') : 'View Last Invoice'}
                                 </Button>
                             ) : (
                                 <>
@@ -307,10 +307,10 @@ const MemberPayments = () => {
                 />
                 <StatCard 
                     title="Payment Status"
-                    value={memberSummary?.duesStatus === 'overdue' ? 'Overdue' : 'Paid'}
+                    value={memberSummary?.duesStatus === 'overdue' ? 'Overdue' : memberSummary?.duesStatus === 'pending' ? 'Pending' : 'Paid'}
                     icon={Clock}
-                    color={memberSummary?.duesStatus === 'overdue' ? 'amber' : 'emerald'}
-                    subtext={memberSummary?.duesStatus === 'overdue' ? 'Action Required' : 'Up to Date'}
+                    color={memberSummary?.duesStatus === 'overdue' ? 'rose' : memberSummary?.duesStatus === 'pending' ? 'amber' : 'emerald'}
+                    subtext={memberSummary?.duesStatus === 'overdue' ? 'Action Required' : memberSummary?.duesStatus === 'pending' ? 'Under Review' : 'Up to Date'}
                 />
                 <StatCard 
                     title="Verification"
