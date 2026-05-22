@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Card, Input, Select, Button, DatePicker } from '@/components/ui'
 import { VscSearch } from 'react-icons/vsc'
 import { Filter, Download, Eye, History, Bell, AlertCircle, CreditCard, Send, Calendar, Building, Banknote, FileText } from 'lucide-react'
@@ -32,7 +33,9 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
     refreshTrigger?: number
 }) {
     const { settings } = useSystemSettings()
-    const [activeTab, setActiveTab] = useState<'history' | 'outstanding' | 'pending'>('history')
+    const searchParams = useSearchParams()
+    const tabParam = searchParams.get('tab') as 'history' | 'outstanding' | 'pending'
+    const [activeTab, setActiveTab] = useState<'history' | 'outstanding' | 'pending'>(tabParam && ['history', 'outstanding', 'pending'].includes(tabParam) ? tabParam : 'history')
     const [transactions, setTransactions] = useState<PaymentTransaction[]>([])
     const [outstanding, setOutstanding] = useState<OutstandingDue[]>([])
     const [pendingProofs, setPendingProofs] = useState<any[]>([])
@@ -60,6 +63,12 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
     useEffect(() => {
         fetchData()
     }, [activeTab, searchTerm, dateRange, refreshTrigger])
+
+    useEffect(() => {
+        if (tabParam && ['history', 'outstanding', 'pending'].includes(tabParam)) {
+            setActiveTab(tabParam)
+        }
+    }, [tabParam])
 
     const fetchData = async () => {
         setIsLoading(true)

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Dialog, Button, Input, Card, Alert, Badge, Tag, Checkbox } from '@/components/ui'
+import { Dialog, Button, Input, Card, Alert, Badge, Tag, Checkbox, Upload } from '@/components/ui'
 import { 
     FiCheckCircle, 
     FiCopy, 
@@ -13,7 +13,7 @@ import {
     FiCheck,
     FiInfo
 } from 'react-icons/fi'
-import { Landmark, ShieldCheck, CheckCircle2 } from 'lucide-react'
+import { Landmark, ShieldCheck, CheckCircle2, ImageIcon } from 'lucide-react'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
 import useSystemSettings from '@/utils/hooks/useSystemSettings'
@@ -37,6 +37,7 @@ interface PaymentModalProps {
 }
 
 type PaymentStep = 'summary' | 'method' | 'paystack' | 'bank' | 'processing' | 'success'
+type PaymentStep = 'summary' | 'method' | 'paystack' | 'bank' | 'processing' | 'success' | 'upload_proof'
 
 const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onViewInvoice }: PaymentModalProps) => {
     const { settings } = useSystemSettings()
@@ -46,6 +47,16 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
     const [selectedMethod, setSelectedMethod] = useState<'paystack' | 'bank'>('paystack')
     const [loading, setLoading] = useState(false)
     const [selectedDues, setSelectedDues] = useState<string[]>([])
+    const [receiptFile, setReceiptFile] = useState<File | null>(null)
+
+    const fileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = error => reject(error);
+        });
+    };
 
     useEffect(() => {
         if (isOpen && unpaidDues.length > 0) {
@@ -454,9 +465,79 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                     block 
                     className="bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white rounded-2xl h-14 font-bold capitalize text-[14px] border-none shadow-lg"
                     loading={loading}
+                    onClick={() => setStep('upload_proof')}
+                >
+                    I have transferred
+                </Button>
+            </div>
+        </div>
+    )
+
+    const fileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.readAsDataURL(file)
+            reader.onload = () => resolve(reader.result as string)
+            reader.onerror = (error) => reject(error)
+        })
+    }
+
+    const renderUploadProofStep = () => (
+        <div className="p-8 sm:p-10 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div>
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">Upload Receipt</h2>
+                <p className="text-[13px] font-medium text-gray-500 mt-2">Please upload your transfer receipt to complete the process.</p>
+            </div>
+
+            <div>
+                <Upload 
+                    draggable 
+                    className="bg-gray-50 dark:bg-gray-800/50 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl p-8 py-10 text-center hover:bg-gray-100 transition-colors cursor-pointer group"
+                    beforeUpload={((files: File[]) => { if (files.length > 0) setReceiptFile(files[0]); return '' }) as any}
+                    showList={false}
+                >
+                    <div className="flex flex-col items-center justify-center pointer-events-none">
+                        <div className="w-12 h-12 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                            <ImageIcon className="w-5 h-5 text-gray-400" />
+                        </div>
+                        {receiptFile ? (
+                            <>
+                                <p className="text-[13px] font-black text-emerald-600 mb-1.5">{receiptFile.name}</p>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                                    {(receiptFile.size / 1024).toFixed(1)} KB — Click to change
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <p className="text-[13px] font-black text-gray-900 dark:text-white mb-1.5"><span className="text-[#8B0000]">Click to upload</span> or drag and drop</p>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">SVG, PNG, JPG or PDF (max. 5MB)</p>
+                            </>
+                        )}
+                    </div>
+                </Upload>
+            </div>
+
+            <div className="flex gap-4">
+                <Button variant="plain" block className="rounded-2xl h-14 font-bold capitalize text-[14px]" onClick={() => setStep('bank')}>Back</Button>
+                <Button 
+                    variant="solid" 
+                    block 
+                    className="bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white rounded-2xl h-14 font-bold capitalize text-[14px] border-none shadow-lg"
+                    loading={loading}
                     onClick={async () => {
                         setLoading(true)
                         try {
+                            let receiptBase64: string | undefined = undefined
+                            if (receiptFile) {
+                                try {
+                                    receiptBase64 = await fileToBase64(receiptFile)
+                                } catch (e) {
+                                    toast.push(<Notification title="File Error" type="warning">Failed to read the receipt file. Please try another file.</Notification>)
+                                    setLoading(false)
+                                    return
+                                }
+                            }
+
                             const selectedItems = unpaidDues.filter(d => selectedDues.includes(d.id))
                             const purposeStr = selectedItems.length > 0 
                                 ? `Dues: ${selectedItems.map(d => d.title).join(', ')}`
@@ -466,6 +547,8 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                                 purpose: purposeStr,
                                 amount: currentTotalAmount,
                                 payment_date: new Date().toISOString().split('T')[0],
+                                receipt_base64: receiptBase64,
+                                receipt_filename: receiptFile ? receiptFile.name : undefined,
                             })
                             
                             toast.push(
@@ -474,7 +557,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                                 </Notification>
                             )
                             onSuccess?.()
-                            onClose()
+                            setStep('success')
                         } catch (err: any) {
                             console.error('Submit proof error:', err)
                             toast.push(
@@ -487,7 +570,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                         }
                     }}
                 >
-                    I have transferred
+                    Submit Proof
                 </Button>
             </div>
         </div>
@@ -550,6 +633,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                     {step === 'method' && renderMethodStep()}
                     {step === 'paystack' && renderPaystackStep()}
                     {step === 'bank' && renderBankStep()}
+                    {step === 'upload_proof' && renderUploadProofStep()}
                     {step === 'processing' && renderProcessingStep()}
                     {step === 'success' && renderSuccessStep()}
                 </div>

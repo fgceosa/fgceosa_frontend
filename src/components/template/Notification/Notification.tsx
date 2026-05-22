@@ -169,7 +169,13 @@ const _Notification = ({ className }: { className?: string }) => {
                                     'group relative flex px-5 py-4 cursor-pointer transition-all duration-200',
                                     item.isRead ? 'bg-white dark:bg-gray-900' : 'bg-primary-50/30 dark:bg-primary-500/5'
                                 )}
-                                onClick={() => onMarkAsRead(item.id, item.isRead)}
+                                onClick={() => {
+                                    onMarkAsRead(item.id, item.isRead)
+                                    if (item.metadata?.type === 'payment_proof') {
+                                        router.push('/admin/dashboard/payments?tab=pending')
+                                        notificationDropdownRef.current?.close()
+                                    }
+                                }}
                             >
                                 <div className="flex-shrink-0">
                                     <NotificationAvatar type={item.type} />
