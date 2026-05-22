@@ -111,6 +111,7 @@ const MemberPayments = () => {
 
     const hasPendingPayments = paymentHistory.some((p: any) => p.method === 'bank_transfer' && (p.status === 'Pending' || p.status === 'Under Review' || p.status === 'Pending Verification' || p.status === 'Pending_verification' || p.status === 'pending_verification'))
     const rejectedPayment = paymentHistory.find((p: any) => p.status === 'Rejected' || p.status === 'rejected')
+    const allUnpaidDuesUnderReview = memberSummary?.unpaidDues && memberSummary.unpaidDues.length > 0 && memberSummary.unpaidDues.every((due: any) => due.is_under_review)
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10 pt-4">
@@ -234,10 +235,11 @@ const MemberPayments = () => {
                                     {settings.paymentEnabled ? (
                                         <Button 
                                             variant="solid" 
-                                            className="w-full lg:w-auto bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white font-bold rounded-2xl px-10 h-12 text-[14px] capitalize tracking-tight flex items-center justify-center gap-3 shadow-[0_10px_20px_-10px_rgba(139,0,0,0.5)] hover:-translate-y-0.5 transition-all group/btn border-none"
+                                            className="w-full lg:w-auto bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white font-bold rounded-2xl px-10 h-12 text-[14px] capitalize tracking-tight flex items-center justify-center gap-3 shadow-[0_10px_20px_-10px_rgba(139,0,0,0.5)] hover:-translate-y-0.5 transition-all group/btn border-none disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                                             onClick={() => setIsPaymentModalOpen(true)}
+                                            disabled={allUnpaidDuesUnderReview}
                                         >
-                                            Pay Now
+                                            {allUnpaidDuesUnderReview ? 'Payment Under Review' : 'Pay Now'}
                                             <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                                         </Button>
                                     ) : (
@@ -281,7 +283,11 @@ const MemberPayments = () => {
                                     <CalendarIcon className="w-3 h-3 text-[#8B0000]" />
                                     <span className="text-[10px] font-bold text-gray-400">Deadline: {due.dueDate}</span>
                                 </div>
-                                <span className="text-[9px] font-black uppercase tracking-widest text-[#8B0000] opacity-0 group-hover:opacity-100 transition-opacity">Outstanding</span>
+                                {due.is_under_review ? (
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">Under Review</span>
+                                ) : (
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-[#8B0000] opacity-0 group-hover:opacity-100 transition-opacity">Outstanding</span>
+                                )}
                              </div>
                         </Card>
                     ))}

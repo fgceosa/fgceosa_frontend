@@ -2,11 +2,12 @@ import React from 'react'
 import { Dialog, Input, Select, Button, toast, DatePicker } from '@/components/ui'
 import { Wallet, Calendar, DollarSign, X, Check, ArrowRight } from 'lucide-react'
 import dayjs from 'dayjs'
+import Spinner from '@/components/ui/Spinner'
 
 interface CreateDuesModalProps {
     isOpen: boolean
     onClose: () => void
-    onConfirm: (due: any) => void
+    onConfirm: (due: any) => Promise<void>
 }
 
 export default function CreateDuesModal({ isOpen, onClose, onConfirm }: CreateDuesModalProps) {
@@ -18,13 +19,20 @@ export default function CreateDuesModal({ isOpen, onClose, onConfirm }: CreateDu
         isActive: true
     })
 
-    const handleConfirm = () => {
+    const [isLoading, setIsLoading] = React.useState(false)
+
+    const handleConfirm = async () => {
         if (!newDue.title || !newDue.amount || !newDue.dueDate) {
             toast.error('Please fill in all required fields')
             return
         }
-        onConfirm(newDue)
-        setNewDue({ title: '', amount: '', dueDate: '', description: '', isActive: true })
+        setIsLoading(true)
+        try {
+            await onConfirm(newDue)
+            setNewDue({ title: '', amount: '', dueDate: '', description: '', isActive: true })
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -142,10 +150,20 @@ export default function CreateDuesModal({ isOpen, onClose, onConfirm }: CreateDu
                         <button 
                             type="button"
                             onClick={handleConfirm}
-                            className="flex-[2] bg-[#8B0000] text-white font-black capitalize tracking-widest text-[11px] rounded-2xl shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)] transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3 border-none"
+                            disabled={isLoading}
+                            className="flex-[2] bg-[#8B0000] text-white font-black capitalize tracking-widest text-[11px] rounded-2xl shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)] transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3 border-none disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            <Check className="w-5 h-5" />
-                            <span>Confirm & Activate Dues</span>
+                            {isLoading ? (
+                                <>
+                                    <Spinner size={16} className="text-white" />
+                                    <span>Creating Dues...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Check className="w-5 h-5" />
+                                    <span>Confirm & Activate Dues</span>
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>

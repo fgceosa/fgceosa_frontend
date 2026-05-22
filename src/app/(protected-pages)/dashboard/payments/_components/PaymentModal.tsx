@@ -31,7 +31,7 @@ interface PaymentModalProps {
     isOpen: boolean
     onClose: () => void
     amount: number
-    unpaidDues?: Array<{ id: string, title: string, amount: number }>
+    unpaidDues?: Array<{ id: string, title: string, amount: number, is_under_review?: boolean }>
     onSuccess?: () => void
     onViewInvoice?: () => void
 }
@@ -60,7 +60,7 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
 
     useEffect(() => {
         if (isOpen && unpaidDues.length > 0) {
-            setSelectedDues(unpaidDues.map(d => d.id))
+            setSelectedDues(unpaidDues.filter(d => !d.is_under_review).map(d => d.id))
         }
     }, [isOpen, unpaidDues])
 
@@ -77,10 +77,11 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
     }
 
     const toggleAll = () => {
-        if (selectedDues.length === unpaidDues.length) {
+        const selectableDues = unpaidDues.filter(d => !d.is_under_review)
+        if (selectedDues.length === selectableDues.length) {
             setSelectedDues([])
         } else {
-            setSelectedDues(unpaidDues.map(d => d.id))
+            setSelectedDues(selectableDues.map(d => d.id))
         }
     }
 
@@ -229,15 +230,19 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                             </button>
                         </div>
                         {unpaidDues.map((due) => (
-                            <div key={due.id} className="flex justify-between items-center group cursor-pointer" onClick={() => toggleDue(due.id)}>
+                            <div key={due.id} className={`flex justify-between items-center group ${due.is_under_review ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`} onClick={() => !due.is_under_review && toggleDue(due.id)}>
                                 <div className="flex items-center gap-3">
                                     <Checkbox 
                                         checked={selectedDues.includes(due.id)} 
-                                        onChange={() => toggleDue(due.id)}
+                                        onChange={() => !due.is_under_review && toggleDue(due.id)}
                                         onClick={(e) => e.stopPropagation()}
+                                        disabled={due.is_under_review}
                                     />
                                     <span className={`font-bold text-[12px] capitalize tracking-tight transition-colors ${selectedDues.includes(due.id) ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
                                         {due.title}
+                                        {due.is_under_review && (
+                                            <span className="ml-2 text-[9px] font-black uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">Under Review</span>
+                                        )}
                                     </span>
                                 </div>
                                 <span className={`font-black text-[13px] transition-colors ${selectedDues.includes(due.id) ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
