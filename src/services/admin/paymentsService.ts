@@ -86,7 +86,8 @@ export async function apiSubmitPaymentProof(data: {
     purpose: string
     amount: number
     payment_date: string
-    receipt_url?: string
+    receipt_base64?: string
+    receipt_filename?: string
 }) {
     return ApiService.fetchDataWithAxios<any>({
         url: 'payments/submit-proof',
@@ -94,6 +95,30 @@ export async function apiSubmitPaymentProof(data: {
         data
     })
 }
+
+export async function apiGetPendingProofs(params?: any) {
+    return ApiService.fetchDataWithAxios<any>({
+        url: 'payments/pending-proofs',
+        method: 'get',
+        params
+    })
+}
+
+export async function apiApprovePayment(paymentId: string) {
+    return ApiService.fetchDataWithAxios<any>({
+        url: `payments/${paymentId}/approve`,
+        method: 'post'
+    })
+}
+
+export async function apiRejectPayment(paymentId: string, reason: string) {
+    return ApiService.fetchDataWithAxios<any>({
+        url: `payments/${paymentId}/reject`,
+        method: 'post',
+        data: { reason }
+    })
+}
+
 export async function apiDownloadAnnualReport(year?: number) {
     const params = year ? { year } : {}
     return ApiService.fetchDataWithAxios<any>({

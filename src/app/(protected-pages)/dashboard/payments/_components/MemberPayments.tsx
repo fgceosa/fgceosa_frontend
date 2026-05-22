@@ -109,7 +109,8 @@ const MemberPayments = () => {
 
     const paginatedHistory = paymentHistory.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
-    const hasPendingPayments = paymentHistory.some((p: any) => p.method === 'bank_transfer' && (p.status === 'Pending' || p.status === 'Under Review' || p.status === 'Pending Verification'))
+    const hasPendingPayments = paymentHistory.some((p: any) => p.method === 'bank_transfer' && (p.status === 'Pending' || p.status === 'Under Review' || p.status === 'Pending Verification' || p.status === 'Pending_verification' || p.status === 'pending_verification'))
+    const rejectedPayment = paymentHistory.find((p: any) => p.status === 'Rejected' || p.status === 'rejected')
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-10 pt-4">
@@ -154,6 +155,31 @@ const MemberPayments = () => {
                         <h4 className="text-[14px] font-black text-amber-900 dark:text-amber-200 leading-tight">Payment Under Review</h4>
                         <p className="text-[12px] font-semibold text-amber-700/80 dark:text-amber-400/80 mt-1 max-w-2xl leading-relaxed">
                             Your recent offline payment proof is currently being reviewed by the association's administrators. Your status and history will be updated automatically as soon as verification is complete.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Rejection Alert */}
+            {rejectedPayment && (
+                <div className="mx-2 p-5 bg-red-50/50 dark:bg-red-900/10 border border-red-200/50 dark:border-red-800/30 rounded-[1.5rem] flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-700 shadow-sm relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-red-100 dark:bg-red-800/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div className="w-11 h-11 rounded-2xl bg-white dark:bg-gray-800 flex items-center justify-center shadow-lg shadow-red-200/20 shrink-0 border border-red-100 dark:border-red-700/50">
+                        <XCircle className="w-5 h-5 text-red-600" />
+                    </div>
+                    <div className="relative z-10 flex-1">
+                        <h4 className="text-[14px] font-black text-red-900 dark:text-red-200 leading-tight">Payment Proof Declined</h4>
+                        <p className="text-[12px] font-semibold text-red-700/80 dark:text-red-400/80 mt-1 max-w-2xl leading-relaxed">
+                            Your recent offline payment proof of <strong className="font-bold">₦{rejectedPayment.amount?.toLocaleString()}</strong> was declined by the administrator.
+                        </p>
+                        {(rejectedPayment.rejectionReason || rejectedPayment.rejection_reason) && (
+                            <div className="mt-2.5 p-3 bg-red-100/50 dark:bg-red-950/30 border border-red-200/40 dark:border-red-900/40 rounded-xl text-[11px] font-mono text-red-800 dark:text-red-300">
+                                <span className="font-bold uppercase tracking-wider text-[9px] block mb-1">Reason for Rejection:</span>
+                                {rejectedPayment.rejectionReason || rejectedPayment.rejection_reason}
+                            </div>
+                        )}
+                        <p className="text-[10px] font-semibold text-red-500/80 mt-2">
+                            Please check the details and upload a valid receipt using the "Upload Proof" button below, or make a direct payment online.
                         </p>
                     </div>
                 </div>
@@ -408,7 +434,8 @@ const MemberPayments = () => {
                                                 <span className="lg:hidden text-[9px] font-black text-gray-400 uppercase tracking-widest">Status</span>
                                                 <Tag className={`border shadow-sm px-3.5 py-1.5 rounded-xl text-[10px] font-bold capitalize tracking-tight flex items-center gap-1.5 w-max ${
                                                     payment.status === 'Paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800/30 dark:text-emerald-400' : 
-                                                    payment.status === 'Failed' ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-900/30 dark:border-red-800/30 dark:text-red-400' :
+                                                    payment.status === 'Failed' || payment.status === 'Rejected' || payment.status === 'rejected' ? 'bg-red-50 text-red-700 border-red-100 dark:bg-red-900/30 dark:border-red-800/30 dark:text-red-400' :
+                                                    payment.status === 'Under Review' || payment.status === 'Pending Verification' || payment.status === 'Pending_verification' ? 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/30 dark:border-amber-800/30 dark:text-amber-400' :
                                                     'bg-[#8B0000]/10 border-[#8B0000]/20 text-[#8B0000] dark:bg-[#8B0000]/20 dark:border-[#8B0000]/30 dark:text-red-400'
                                                 }`}>
                                                     {payment.status}

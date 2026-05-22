@@ -43,6 +43,15 @@ export default function PaymentProofModal({ isOpen, onClose }: { isOpen: boolean
         }
     }, [isOpen])
 
+    const fileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.readAsDataURL(file)
+            reader.onload = () => resolve(reader.result as string)
+            reader.onerror = (error) => reject(error)
+        })
+    }
+
     const handleSubmit = async () => {
         if (!purpose) {
             toast.push(<Notification title="Validation" type="warning">Please select a payment purpose.</Notification>)
@@ -59,11 +68,23 @@ export default function PaymentProofModal({ isOpen, onClose }: { isOpen: boolean
 
         setSubmitting(true)
         try {
+            let receiptBase64: string | undefined = undefined
+            if (receiptFile) {
+                try {
+                    receiptBase64 = await fileToBase64(receiptFile)
+                } catch (e) {
+                    toast.push(<Notification title="File Error" type="warning">Failed to read the receipt file. Please try another file.</Notification>)
+                    setSubmitting(false)
+                    return
+                }
+            }
+
             await apiSubmitPaymentProof({
                 purpose,
                 amount: Number(amount),
                 payment_date: paymentDate.toISOString().split('T')[0],
-                receipt_url: receiptFile ? receiptFile.name : undefined,
+                receipt_base64: receiptBase64,
+                receipt_filename: receiptFile ? receiptFile.name : undefined,
             })
             setStep('success')
             toast.push(<Notification title="Success" type="success">Payment proof submitted successfully!</Notification>)

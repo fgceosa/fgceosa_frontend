@@ -39,7 +39,8 @@ export async function apiSubmitPaymentProof(data: {
     purpose: string
     amount: number
     payment_date: string
-    receipt_url?: string
+    receipt_base64?: string
+    receipt_filename?: string
 }) {
     return ApiService.fetchDataWithAxios<PaymentVerificationResponse>({
         url: 'payments/submit-proof',

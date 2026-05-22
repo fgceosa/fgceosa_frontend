@@ -14,8 +14,17 @@ const statusColors = {
     Overdue: 'bg-rose-50 text-rose-600 ring-rose-500/10',
 }
 
-import { apiGetPaymentTransactions, apiGetOutstandingDues, apiSendPaymentReminder, type PaymentTransaction, type OutstandingDue } from '@/services/admin/paymentsService'
+import { 
+    apiGetPaymentTransactions, 
+    apiGetOutstandingDues, 
+    apiSendPaymentReminder, 
+    apiGetPendingProofs,
+    apiApprovePayment,
+    type PaymentTransaction, 
+    type OutstandingDue 
+} from '@/services/admin/paymentsService'
 import Spinner from '@/components/ui/Spinner'
+import RejectReasonModal from './RejectReasonModal'
 
 export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshTrigger }: { 
     onViewInvoice?: (invoice: any) => void
@@ -23,12 +32,30 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
     refreshTrigger?: number
 }) {
     const { settings } = useSystemSettings()
-    const [activeTab, setActiveTab] = useState<'history' | 'outstanding'>('history')
+    const [activeTab, setActiveTab] = useState<'history' | 'outstanding' | 'pending'>('history')
     const [transactions, setTransactions] = useState<PaymentTransaction[]>([])
     const [outstanding, setOutstanding] = useState<OutstandingDue[]>([])
+    const [pendingProofs, setPendingProofs] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null])
+
+    // Rejection state
+    const [isRejectModalOpen, setIsRejectModalOpen] = useState(false)
+    const [selectedPayment, setSelectedPayment] = useState<{ id: string; memberName: string } | null>(null)
+
+    const fetchPendingCount = async () => {
+        try {
+            const res = await apiGetPendingProofs()
+            setPendingProofs(res.data || [])
+        } catch (error) {
+            console.error("Failed to load pending proofs count:", error)
+        }
+    }
+
+    useEffect(() => {
+        fetchPendingCount()
+    }, [refreshTrigger])
 
     useEffect(() => {
         fetchData()
@@ -46,16 +73,18 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
             if (activeTab === 'history') {
                 const data = await apiGetPaymentTransactions(params)
                 setTransactions(data)
-            } else {
+            } else if (activeTab === 'outstanding') {
                 const data = await apiGetOutstandingDues(params)
                 setOutstanding(data)
+            } else if (activeTab === 'pending') {
+                const res = await apiGetPendingProofs()
+                setPendingProofs(res.data || [])
             }
         } catch (error) {
             console.error(`Failed to load ${activeTab} data:`, error)
-            // Silently fail or use dummy data if needed, for now we just keep the empty state
-            // and show a console error to avoid annoying toasts
             if (activeTab === 'history') setTransactions([])
-            else setOutstanding([])
+            else if (activeTab === 'outstanding') setOutstanding([])
+            else setPendingProofs([])
         } finally {
             setIsLoading(false)
         }
@@ -74,6 +103,41 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
         await generateInvoicePDF(item, { associationName: settings.associationName })
         toast.success('Professional PDF receipt downloaded')
     }
+
+    const handleApprove = async (paymentId: string) => {
+        try {
+            await apiApprovePayment(paymentId)
+            toast.success('Payment approved and receipt sent successfully')
+            fetchPendingCount()
+            fetchData()
+        } catch (error) {
+            toast.error('Failed to approve payment')
+        }
+    }
+
+    const handleRejectClick = (item: any) => {
+        const name = item.user 
+            ? `${item.user.firstName || ''} ${item.user.lastName || ''}`.trim() || item.user.name || item.user.email 
+            : 'Unknown Member'
+        setSelectedPayment({
+            id: item.id,
+            memberName: name
+        })
+        setIsRejectModalOpen(true)
+    }
+
+    const handleRejectSuccess = () => {
+        fetchPendingCount()
+        fetchData()
+    }
+
+    const getActiveList = () => {
+        if (activeTab === 'history') return transactions
+        if (activeTab === 'outstanding') return outstanding
+        return pendingProofs
+    }
+
+    const activeList = getActiveList()
 
     return (
         <div className="space-y-6">
@@ -104,6 +168,23 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
                         <AlertCircle className="w-3.5 h-3.5" />
                         Outstanding Dues
                     </button>
+                    <button
+                        onClick={() => setActiveTab('pending')}
+                        className={classNames(
+                            "flex items-center gap-2 px-6 py-2.5 text-[12px] sm:text-[14px] font-bold capitalize tracking-tight transition-all duration-300 rounded-xl whitespace-nowrap",
+                            activeTab === 'pending'
+                                ? "bg-white dark:bg-gray-700 text-primary shadow-sm"
+                                : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                        )}
+                    >
+                        <FileText className="w-3.5 h-3.5" />
+                        Pending Review
+                        {pendingProofs.length > 0 && (
+                            <span className="ml-1.5 px-2 py-0.5 text-[10px] font-black bg-amber-500 text-white rounded-full">
+                                {pendingProofs.length}
+                            </span>
+                        )}
+                    </button>
                 </div>
             </div>
 
@@ -112,10 +193,10 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
                 <div className="p-6 sm:p-8 border-b border-gray-100 dark:border-gray-800 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
                     <div className="text-center sm:text-left">
                         <h3 className="text-xl font-black text-gray-900 dark:text-white">
-                            {activeTab === 'history' ? 'Recent Transactions' : 'Outstanding Dues'}
+                            {activeTab === 'history' ? 'Recent Transactions' : activeTab === 'outstanding' ? 'Outstanding Dues' : 'Pending Review'}
                         </h3>
                         <p className="text-[12px] font-bold text-gray-400 mt-1 capitalize tracking-tight">
-                            {activeTab === 'history' ? 'Complete history of all payments' : 'Members with overdue payments'}
+                            {activeTab === 'history' ? 'Complete history of all payments' : activeTab === 'outstanding' ? 'Members with overdue payments' : 'Verify manual transfer receipt submissions'}
                         </p>
                     </div>
                     
@@ -162,10 +243,17 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
                                         <th className="px-8 py-5 text-[12px] font-bold text-gray-900 dark:text-gray-100 capitalize tracking-tight">Method</th>
                                         <th className="px-8 py-5 text-[12px] font-bold text-gray-900 dark:text-gray-100 capitalize tracking-tight text-right">Actions</th>
                                     </>
-                                ) : (
+                                ) : activeTab === 'outstanding' ? (
                                     <>
                                         <th className="px-8 py-5 text-[12px] font-bold text-gray-900 dark:text-gray-100 capitalize tracking-tight">Due type</th>
                                         <th className="px-8 py-5 text-[12px] font-bold text-gray-900 dark:text-gray-100 capitalize tracking-tight text-center">Amount</th>
+                                        <th className="px-8 py-5 text-[12px] font-bold text-gray-900 dark:text-gray-100 capitalize tracking-tight text-right">Actions</th>
+                                    </>
+                                ) : (
+                                    <>
+                                        <th className="px-8 py-5 text-[12px] font-bold text-gray-900 dark:text-gray-100 capitalize tracking-tight">Purpose</th>
+                                        <th className="px-8 py-5 text-[12px] font-bold text-gray-900 dark:text-gray-100 capitalize tracking-tight text-center">Amount</th>
+                                        <th className="px-8 py-5 text-[12px] font-bold text-gray-900 dark:text-gray-100 capitalize tracking-tight">Receipt Proof</th>
                                         <th className="px-8 py-5 text-[12px] font-bold text-gray-900 dark:text-gray-100 capitalize tracking-tight text-right">Actions</th>
                                     </>
                                 )}
@@ -179,27 +267,40 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
                                         <p className="text-gray-400 mt-4 font-bold text-xs uppercase tracking-widest">Loading Records...</p>
                                     </td>
                                 </tr>
-                            ) : (activeTab === 'history' ? transactions : outstanding).length === 0 ? (
+                            ) : activeList.length === 0 ? (
                                 <tr>
                                     <td colSpan={7} className="py-20 text-center">
-                                        <div className="flex justify-center mb-4"><div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center"><Calendar className="w-8 h-8 text-gray-300" /></div></div>
+                                        <div className="flex justify-center mb-4">
+                                            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center">
+                                                <Calendar className="w-8 h-8 text-gray-300" />
+                                            </div>
+                                        </div>
                                         <p className="text-gray-900 dark:text-white font-black text-lg">No records found</p>
                                         <p className="text-gray-400 text-sm font-medium mt-1">Try adjusting your filters or search term</p>
                                     </td>
                                 </tr>
-                             ) : (activeTab === 'history' ? transactions : outstanding).map((item: any) => (
+                             ) : activeList.map((item: any) => (
                                 <tr key={item.id} className="group hover:bg-gray-50/80 dark:hover:hover:bg-gray-800/40 transition-colors flex flex-col lg:table-row py-4 lg:py-0 border-b border-gray-100 lg:border-none">
                                     <td className="px-6 lg:px-8 py-2 lg:py-5">
                                         <div className="flex items-center gap-3.5">
                                             <div className="w-10 h-10 rounded-2xl bg-primary/5 border border-primary/10 flex items-center justify-center font-black text-primary text-[11px]">
-                                                {item.member[0]}
+                                                {activeTab === 'pending'
+                                                    ? (item.user ? (item.user.firstName || item.user.name || 'M')[0].toUpperCase() : 'M')
+                                                    : item.member[0]}
                                             </div>
                                             <div>
-                                                <p className="text-[14px] font-bold text-gray-900 dark:text-white leading-tight">{item.member}</p>
-                                                <p className="text-[11px] font-medium text-gray-400 mt-0.5">{item.email}</p>
+                                                <p className="text-[14px] font-bold text-gray-900 dark:text-white leading-tight">
+                                                    {activeTab === 'pending'
+                                                        ? (item.user ? `${item.user.firstName || ''} ${item.user.lastName || ''}`.trim() || item.user.name || item.user.email : 'Unknown Member')
+                                                        : item.member}
+                                                </p>
+                                                <p className="text-[11px] font-medium text-gray-400 mt-0.5">
+                                                    {activeTab === 'pending' ? (item.user?.email || 'N/A') : item.email}
+                                                </p>
                                             </div>
                                         </div>
                                     </td>
+                                    
                                     {activeTab === 'history' ? (
                                         <>
                                             <td className="px-6 lg:px-8 py-2 lg:py-5">
@@ -214,7 +315,7 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
                                             <td className="px-6 lg:px-8 py-2 lg:py-5 lg:text-center">
                                                 <div className="flex justify-between items-center lg:justify-center">
                                                     <span className="lg:hidden text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</span>
-                                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold capitalize tracking-tight ring-1 ring-inset ${statusColors[item.status as keyof typeof statusColors]}`}>
+                                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold capitalize tracking-tight ring-1 ring-inset ${statusColors[item.status as keyof typeof statusColors] || 'bg-gray-50 text-gray-600 ring-gray-500/10'}`}>
                                                         {item.status}
                                                     </span>
                                                 </div>
@@ -230,8 +331,32 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
                                                     </div>
                                                 </div>
                                             </td>
+                                            <td className="px-6 lg:px-8 py-4 lg:py-5 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    {item.invoiceId && (
+                                                        <button 
+                                                            onClick={() => handleDownload(item)}
+                                                            className="p-2.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all" 
+                                                            title="Download PDF"
+                                                        >
+                                                            <Download className="w-4.5 h-4.5" />
+                                                        </button>
+                                                    )}
+                                                    <button 
+                                                        className="flex items-center gap-2 px-5 py-2.5 text-[11px] font-bold text-primary bg-primary/5 hover:bg-primary/10 rounded-xl transition-all border border-primary/10 group/view" 
+                                                        onClick={() => {
+                                                            if (item.invoiceId && onViewInvoice) {
+                                                                onViewInvoice(item)
+                                                            }
+                                                        }}
+                                                    >
+                                                        <Eye className="w-3.5 h-3.5" />
+                                                        <span>Details</span>
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </>
-                                    ) : (
+                                    ) : activeTab === 'outstanding' ? (
                                         <>
                                             <td className="px-6 lg:px-8 py-2 lg:py-5">
                                                 <div className="flex justify-between items-center lg:block">
@@ -245,12 +370,8 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
                                                     <span className="font-black text-gray-900 dark:text-white">{item.amount}</span>
                                                 </div>
                                             </td>
-                                        </>
-                                    )}
-                                    <td className="px-6 lg:px-8 py-4 lg:py-5 text-right">
-                                        <div className="flex items-center justify-end gap-2">
-                                            {activeTab === 'outstanding' ? (
-                                                <>
+                                            <td className="px-6 lg:px-8 py-4 lg:py-5 text-right">
+                                                <div className="flex items-center justify-end gap-2">
                                                     <button 
                                                         className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-[11px] font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-xl transition-all border border-amber-100 group/remind" 
                                                         onClick={() => handleSendReminder(item)}
@@ -265,35 +386,64 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
                                                         <CreditCard className="w-3.5 h-3.5" />
                                                         <span>Record</span>
                                                     </button>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    {item.invoiceId && (
-                                                        <button 
-                                                            onClick={() => handleDownload(item)}
-                                                            className="p-2.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all" 
-                                                            title="Download PDF"
+                                                </div>
+                                            </td>
+                                        </>
+                                    ) : (
+                                        // Pending Review Row
+                                        <>
+                                            <td className="px-6 lg:px-8 py-2 lg:py-5">
+                                                <div className="flex lg:flex-col justify-between items-center lg:items-start gap-2">
+                                                    <div className="space-y-1">
+                                                        <p className="text-[12px] lg:text-[13px] font-black text-gray-900 dark:text-white capitalize">{item.description || 'Manual Bank Transfer'}</p>
+                                                        <p className="text-[10px] lg:text-[11px] font-bold text-gray-400">Submitted {dayjs(item.created_at).format('MMM D, YYYY')}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 lg:px-8 py-2 lg:py-5 lg:text-center">
+                                                <div className="flex justify-between items-center lg:justify-center">
+                                                    <span className="lg:hidden text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</span>
+                                                    <span className="font-black text-gray-900 dark:text-white">₦{Number(item.amount).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 lg:px-8 py-2 lg:py-5">
+                                                <div className="flex justify-between items-center lg:items-center">
+                                                    <span className="lg:hidden text-[10px] font-black text-gray-400 uppercase tracking-widest">Receipt</span>
+                                                    {item.receipt_url ? (
+                                                        <a
+                                                            href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${item.receipt_url.startsWith('/') ? '' : '/'}${item.receipt_url}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold text-primary bg-primary/5 hover:bg-primary/10 border border-primary/10 transition-all cursor-pointer"
                                                         >
-                                                            <Download className="w-4.5 h-4.5" />
-                                                        </button>
+                                                            <FileText className="w-3.5 h-3.5" />
+                                                            View Receipt
+                                                        </a>
+                                                    ) : (
+                                                        <span className="text-gray-400 text-xs">No Receipt</span>
                                                     )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 lg:px-8 py-4 lg:py-5 text-right">
+                                                <div className="flex items-center justify-end gap-2">
                                                     <button 
-                                                        className="flex items-center gap-2 px-5 py-2.5 text-[11px] font-bold text-primary bg-primary/5 hover:bg-primary/10 rounded-xl transition-all border border-primary/10 group/view" 
-                                                        onClick={() => {
-                                                            if (activeTab === 'history' && item.invoiceId && onViewInvoice) {
-                                                                onViewInvoice(item)
-                                                            }
-                                                        }}
+                                                        className="flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2 text-[11px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl border border-emerald-100 transition-all" 
+                                                        onClick={() => handleApprove(item.id)}
                                                     >
-                                                        <Eye className="w-3.5 h-3.5" />
-                                                        <span>Details</span>
+                                                        Approve
                                                     </button>
-                                                </>
-                                            )}
-                                        </div>
-                                    </td>
+                                                    <button 
+                                                        className="flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2 text-[11px] font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl border border-rose-100 transition-all" 
+                                                        onClick={() => handleRejectClick(item)}
+                                                    >
+                                                        Reject
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </>
+                                    )}
                                 </tr>
-                            ))}
+                             ))}
                         </tbody>
                     </table>
                 </div>
@@ -301,14 +451,23 @@ export default function PaymentsTable({ onViewInvoice, onRecordPayment, refreshT
                 {/* Pagination Section */}
                 <div className="p-8 border-t border-gray-100 dark:border-gray-800 bg-gray-50/20 dark:bg-gray-900/10 flex items-center justify-between">
                     <p className="text-[12px] font-bold text-gray-400 capitalize tracking-tight">
-                        Showing {(activeTab === 'history' ? transactions : outstanding).length} transactions
+                        Showing {activeList.length} {activeTab === 'pending' ? 'pending proofs' : 'transactions'}
                     </p>
                     <div className="flex gap-2">
-                    <Button variant="plain" size="sm" className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 font-black shadow-sm h-10 text-[10px] capitalize ">Previous</Button>
-                    <Button variant="plain" size="sm" className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 font-black shadow-sm h-10 text-[10px] capitalize ">Next</Button>
+                        <Button variant="plain" size="sm" className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 font-black shadow-sm h-10 text-[10px] capitalize ">Previous</Button>
+                        <Button variant="plain" size="sm" className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl px-4 font-black shadow-sm h-10 text-[10px] capitalize ">Next</Button>
                     </div>
                 </div>
             </Card>
+
+            <RejectReasonModal
+                isOpen={isRejectModalOpen}
+                onClose={() => setIsRejectModalOpen(false)}
+                paymentId={selectedPayment?.id || null}
+                memberName={selectedPayment?.memberName || ''}
+                onSuccess={handleRejectSuccess}
+            />
         </div>
     )
 }
+

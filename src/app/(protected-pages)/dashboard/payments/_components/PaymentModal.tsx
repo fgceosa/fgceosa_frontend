@@ -20,7 +20,8 @@ import useSystemSettings from '@/utils/hooks/useSystemSettings'
 
 import { 
     apiInitializePayment, 
-    apiVerifyPayment 
+    apiVerifyPayment,
+    apiSubmitPaymentProof
 } from '@/services/PaymentService'
 import { useAppSelector } from '@/store/hook'
 
@@ -452,13 +453,38 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
                     variant="solid" 
                     block 
                     className="bg-[#8B0000] hover:bg-[#700000] text-white hover:text-white rounded-2xl h-14 font-bold capitalize text-[14px] border-none shadow-lg"
-                    onClick={() => {
-                        toast.push(
-                            <Notification title="Confirmed" type="info">
-                                We will verify your transfer shortly.
-                            </Notification>
-                        )
-                        onClose()
+                    loading={loading}
+                    onClick={async () => {
+                        setLoading(true)
+                        try {
+                            const selectedItems = unpaidDues.filter(d => selectedDues.includes(d.id))
+                            const purposeStr = selectedItems.length > 0 
+                                ? `Dues: ${selectedItems.map(d => d.title).join(', ')}`
+                                : 'Annual Dues Payment'
+
+                            await apiSubmitPaymentProof({
+                                purpose: purposeStr,
+                                amount: currentTotalAmount,
+                                payment_date: new Date().toISOString().split('T')[0],
+                            })
+                            
+                            toast.push(
+                                <Notification title="Submitted for Review" type="success">
+                                    Your transfer has been recorded. An admin will verify it shortly.
+                                </Notification>
+                            )
+                            onSuccess?.()
+                            onClose()
+                        } catch (err: any) {
+                            console.error('Submit proof error:', err)
+                            toast.push(
+                                <Notification title="Submission Failed" type="danger">
+                                    {err?.response?.data?.detail || 'Failed to submit proof. Please try again.'}
+                                </Notification>
+                            )
+                        } finally {
+                            setLoading(false)
+                        }
                     }}
                 >
                     I have transferred
