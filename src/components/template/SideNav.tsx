@@ -229,7 +229,7 @@ const SideNav = ({
                                     {firstName}
                                 </h4>
                                 <p className="text-white/70 font-medium text-xs">
-                                    Class of 2007
+                                    {userProfile?.fgceSet ? `Class of ${userProfile.fgceSet}` : 'Alumni'}
                                 </p>
                             </div>
 

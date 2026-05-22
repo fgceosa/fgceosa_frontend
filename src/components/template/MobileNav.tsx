@@ -152,7 +152,7 @@ const MobileNav = () => {
                                                     {firstName}
                                                 </h4>
                                                 <p className="text-white/70 font-medium text-xs">
-                                                    Class of 2007
+                                                    {userProfile?.fgceSet ? `Class of ${userProfile.fgceSet}` : 'Alumni'}
                                                 </p>
                                             </div>
                                             <div className="px-4 py-1.5 bg-burgundy/80 rounded-xl border border-white/10 text-white text-[9px] font-black uppercase tracking-widest shadow-md">
