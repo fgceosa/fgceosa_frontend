@@ -473,15 +473,6 @@ const PaymentModal = ({ isOpen, onClose, amount, unpaidDues = [], onSuccess, onV
         </div>
     )
 
-    const fileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onload = () => resolve(reader.result as string)
-            reader.onerror = (error) => reject(error)
-        })
-    }
-
     const renderUploadProofStep = () => (
         <div className="p-8 sm:p-10 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
