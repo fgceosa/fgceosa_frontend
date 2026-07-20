@@ -41,7 +41,6 @@ const navigationIcon: NavigationIcons = {
     sharedCredits: <FaRegCreditCard />,
     billing: <GiTakeMyMoney />,
     workspace: <Building2 />,
-    copilotHub: < Bot />,
     shield: <Shield />,
     security: <Shield />,
     audit: <FileText />,

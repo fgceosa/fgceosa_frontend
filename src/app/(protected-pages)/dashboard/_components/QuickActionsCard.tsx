@@ -54,16 +54,6 @@ export default function QuickActionsCard(props: QuickActionsCardProps) {
 
     const actions = [
         {
-            title: 'Use Copilot',
-            description: 'AI-assisted development',
-            icon: <Bot className="w-8 h-8" />,
-            onClick: () => router.push('/dashboard/copilot-hub'),
-            bg: "bg-gradient-to-br from-[#0055BA] to-blue-700 shadow-xl shadow-blue-900/20",
-            iconBg: "bg-white/20 text-white",
-            textPrimary: "text-white",
-            textSecondary: "text-blue-100"
-        },
-        {
             title: 'Create Project',
             description: 'Start a new workspace',
             icon: <Plus className="w-8 h-8" />,

@@ -43,7 +43,7 @@ export const SignUp = ({ onSignUp, signInUrl = '/sign-in', defaultValues, isInvi
                 <div className="flex items-center justify-center gap-2 mt-5 px-5 py-2.5 bg-[#8B0000]/5 border border-[#8B0000]/10 rounded-full mx-auto w-fit">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#8B0000] animate-pulse shrink-0" />
                     <p className="text-[11px] font-bold text-[#8B0000] dark:text-red-400 tracking-wide text-center">
-                        Membership is open to all alumni of FGCE
+                        Membership is open to all alumni of FGC Enugu.
                     </p>
                 </div>
             </div>

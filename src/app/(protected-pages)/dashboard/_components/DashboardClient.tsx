@@ -40,6 +40,10 @@ const DashboardClient = () => {
 
     const userName = (user as any)?.userName || (user as any)?.name || 'Member'
     const firstName = userName.split(' ')[0]
+    
+    const paymentHistory = memberSummary?.paymentHistory || []
+    const hasPendingPayments = paymentHistory.some((p: any) => p.method === 'bank_transfer' && (p.status === 'Pending' || p.status === 'Under Review' || p.status === 'Pending Verification' || p.status === 'Pending_verification' || p.status === 'pending_verification'))
+    const rejectedPayment = paymentHistory.find((p: any) => p.status === 'Rejected' || p.status === 'rejected')
 
     useEffect(() => {
         dispatch(getMemberSummary())
@@ -86,23 +90,76 @@ const DashboardClient = () => {
                 />
                 
                 <div className="relative z-20 h-full flex flex-col justify-center px-6 md:px-16">
-                    <div className="space-y-3 mt-2">
-                        <div className="inline-flex items-center gap-3 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-sm w-max">
-                            <ShieldCheck className="w-4 h-4 text-white" />
-                            <span className="text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em]">{settings.associationName} PORTAL</span>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-2">
+                        <div className="space-y-3">
+                            <div className="inline-flex items-center gap-3 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-sm w-max">
+                                <ShieldCheck className="w-4 h-4 text-white" />
+                                <span className="text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em]">{settings.associationName} PORTAL</span>
+                            </div>
+                            
+                            <div className="space-y-1">
+                                <h1 className="text-xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-2xl">
+                                    Welcome back, <span className="text-red-200">{firstName}</span>
+                                </h1>
+                                <p className="text-white/80 text-[10px] md:text-sm font-semibold max-w-lg leading-relaxed drop-shadow-lg opacity-90 line-clamp-2 md:line-clamp-none pb-2">
+                                    This is your personal dashboard. Stay connected with the association, manage your dues, and stay updated.
+                                </p>
+                            </div>
                         </div>
-                        
-                        <div className="space-y-1">
-                            <h1 className="text-xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-2xl">
-                                Welcome back, <span className="text-red-200">{firstName}</span>
-                            </h1>
-                            <p className="text-white/80 text-[10px] md:text-sm font-semibold max-w-lg leading-relaxed drop-shadow-lg opacity-90 line-clamp-2 md:line-clamp-none">
-                                This is your personal dashboard. Stay connected with the association, manage your dues, and stay updated.
-                            </p>
+
+                        <div className="shrink-0">
+                            <Button 
+                                className="bg-white hover:bg-gray-100 text-[#8B0000] border-none font-black rounded-[1rem] h-10 md:h-11 px-6 text-[11px] md:text-[12px] flex items-center justify-center gap-2 transition-all shadow-[0_10px_20px_rgba(0,0,0,0.2)] hover:-translate-y-0.5"
+                                onClick={() => window.open('#', '_blank')}
+                            >
+                                <Activity className="w-4 h-4" />
+                                Vote in Association Election
+                            </Button>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Verification Alert */}
+            {hasPendingPayments && (
+                <div className="mx-2 p-5 bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-800/30 rounded-[1.5rem] flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-700 shadow-sm relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-100 dark:bg-amber-800/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div className="w-11 h-11 rounded-2xl bg-white dark:bg-gray-800 flex items-center justify-center shadow-lg shadow-amber-200/20 shrink-0 border border-amber-100 dark:border-amber-700/50">
+                        <Clock className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <div className="relative z-10">
+                        <h4 className="text-[14px] font-black text-amber-900 dark:text-amber-200 leading-tight">Payment Under Review</h4>
+                        <p className="text-[12px] font-semibold text-amber-700/80 dark:text-amber-400/80 mt-1 max-w-2xl leading-relaxed">
+                            Your recent offline payment proof is currently being reviewed by the association's administrators. Your status and history will be updated automatically as soon as verification is complete.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Rejection Alert */}
+            {rejectedPayment && (
+                <div className="mx-2 p-5 bg-red-50/50 dark:bg-red-900/10 border border-red-200/50 dark:border-red-800/30 rounded-[1.5rem] flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-700 shadow-sm relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-red-100 dark:bg-red-800/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    <div className="w-11 h-11 rounded-2xl bg-white dark:bg-gray-800 flex items-center justify-center shadow-lg shadow-red-200/20 shrink-0 border border-red-100 dark:border-red-700/50">
+                        <AlertCircle className="w-5 h-5 text-red-600" />
+                    </div>
+                    <div className="relative z-10 flex-1">
+                        <h4 className="text-[14px] font-black text-red-900 dark:text-red-200 leading-tight">Payment Proof Declined</h4>
+                        <p className="text-[12px] font-semibold text-red-700/80 dark:text-red-400/80 mt-1 max-w-2xl leading-relaxed">
+                            Your recent offline payment proof of <strong className="font-bold">₦{rejectedPayment.amount?.toLocaleString()}</strong> was declined by the administrator.
+                        </p>
+                        {(rejectedPayment.rejectionReason || rejectedPayment.rejection_reason) && (
+                            <div className="mt-2.5 p-3 bg-red-100/50 dark:bg-red-950/30 border border-red-200/40 dark:border-red-900/40 rounded-xl text-[11px] font-mono text-red-800 dark:text-red-300">
+                                <span className="font-bold uppercase tracking-wider text-[9px] block mb-1">Reason for Rejection:</span>
+                                {rejectedPayment.rejectionReason || rejectedPayment.rejection_reason}
+                            </div>
+                        )}
+                        <p className="text-[10px] font-semibold text-red-500/80 mt-2">
+                            Please check the details and upload a valid receipt using the payments page.
+                        </p>
+                    </div>
+                </div>
+            )}
 
             {error && (
                 <Alert showIcon type="danger" closable onClose={() => dispatch(clearDashboardError())}>

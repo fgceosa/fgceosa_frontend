@@ -22,17 +22,7 @@ const defaultPermissionGroups: PermissionGroup[] = [
             { id: 'p6.1', name: 'Impersonate User', description: 'Securely access platform as another user', enabled: false, isSensitive: true },
         ]
     },
-    {
-        id: 'pg-copilots',
-        category: 'Copilots',
-        permissions: [
-            { id: 'p11', name: 'Manage Copilots', description: 'Full control over AI copilot infrastructure', enabled: false },
-            { id: 'p11.1', name: 'Create Copilot', description: 'Deploy new AI copilots to the platform', enabled: false },
-            { id: 'p11.2', name: 'Delete Copilot', description: 'Remove copilots from the ecosystem', enabled: false, isSensitive: true },
-            { id: 'p12', name: 'Copilot Analytics', description: 'View performance data for all copilots', enabled: false },
-            { id: 'p12.1', name: 'Manage Knowledge Base', description: 'Upload and manage knowledge base documents', enabled: false },
-        ]
-    },
+
     {
         id: 'pg-credits',
         category: 'Credits',
