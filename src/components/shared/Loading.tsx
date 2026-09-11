@@ -12,7 +12,7 @@ interface BaseLoadingProps extends CommonProps {
 }
 
 interface LoadingProps extends BaseLoadingProps {
-    type?: 'default' | 'cover' | 'association' | 'qorebit'
+    type?: 'default' | 'cover' | 'association' | 'fgceosa' | 'qorebit'
 }
 
 const DefaultLoading = (props: BaseLoadingProps) => {
@@ -96,6 +96,7 @@ const Loading = ({
                 />
             )
         case 'association':
+        case 'fgceosa':
         case 'qorebit':
             return loading ? <FGCEOSALoading /> : <>{rest.children}</>
         default:

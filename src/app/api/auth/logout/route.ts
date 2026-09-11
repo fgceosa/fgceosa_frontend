@@ -8,7 +8,7 @@ import appConfig from '@/configs/app.config'
 export async function GET(request: NextRequest) {
     // Derive the base URL from the incoming request so that:
     //   - localhost dev  → http://localhost:3000/sign-in
-    //   - production     → https://app.qorebit.ai/sign-in
+    //   - production     → https://app.allfgceosa.com/sign-in
     // Avoids using NEXT_PUBLIC_APP_URL which is hardcoded to the production domain.
     const requestOrigin = `${request.nextUrl.protocol}//${request.nextUrl.host}`
     const redirectUrl = new URL(`${appConfig.unAuthenticatedEntryPath}?logout=true&ts=${Date.now()}`, requestOrigin)
@@ -16,9 +16,9 @@ export async function GET(request: NextRequest) {
 
     // List of cookies to kill instantly
     const cookiesToClear = [
-        'qorebit.session-token', '__Secure-qorebit.session-token',
-        'qorebit.csrf-token', '__Host-qorebit.csrf-token',
-        'qorebit.callback-url', 'next-auth.session-token',
+        'fgceosa.session-token', '__Secure-fgceosa.session-token',
+        'fgceosa.csrf-token', '__Host-fgceosa.csrf-token',
+        'fgceosa.callback-url', 'next-auth.session-token',
         '__Secure-next-auth.session-token', 'authjs.session-token',
         '__Secure-authjs.session-token'
     ]

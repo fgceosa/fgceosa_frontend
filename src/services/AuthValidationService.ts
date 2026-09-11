@@ -67,7 +67,7 @@ export const validateUserCredentials = async (values: SignInCredential) => {
                     ? tokenData.user.authority
                     : ['member'], // Use RBAC roles from backend, fallback to 'member'
                 permissions: tokenData.user.permissions || [], // Include granular permissions
-                tagNumber: tokenData.user.tag_number || tokenData.user.tagNumber, // Include Qorebit tag
+                tagNumber: tokenData.user.tag_number || tokenData.user.tagNumber, // Include member tag number
                 accessToken: tokenData.access_token, // Store the JWT token
                 expiresIn: tokenData.expires_in, // Optional: expiry seconds
                 tokenType: tokenData.token_type, // Optional: token type

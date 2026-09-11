@@ -294,7 +294,7 @@ export const projectData = {
         {
             id: '4',
             type: 'Team Invite',
-            user: 'max.alexander@qorebit.com',
+            user: 'max.alexander@allfgceosa.com',
             time: '3 hours ago',
             status: 'Invited',
             success: true,

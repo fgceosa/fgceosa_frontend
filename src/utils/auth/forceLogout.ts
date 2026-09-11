@@ -14,7 +14,7 @@ const forceLogout = () => {
     // 2. Wipe non-httpOnly cookies as a fast first pass
     const host = window.location.hostname
     const domains = [host, `.${host}`, '']
-    const names = ['qorebit.session-token', 'next-auth.session-token', 'authjs.session-token']
+    const names = ['fgceosa.session-token', 'next-auth.session-token', 'authjs.session-token']
     names.forEach(name => {
       domains.forEach(d => {
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; ${d ? `domain=${d};` : ''} secure; samesite=lax`
