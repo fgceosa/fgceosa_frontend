@@ -145,7 +145,7 @@ export default function CreateDuesModal({ isOpen, onClose, onConfirm }: CreateDu
                             onClick={onClose}
                             className="flex-1 h-14 rounded-2xl border-none text-[11px] font-black text-gray-400 dark:text-gray-500 capitalize tracking-widest hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-all"
                         >
-                            Cancel Operation
+                            Cancel
                         </button>
                         <button 
                             type="button"
