@@ -291,3 +291,23 @@ export async function apiVerifyUserEmail(userId: string) {
         method: 'post',
     })
 }
+
+/**
+ * Approve a pending user registration
+ */
+export async function apiApproveUser(userId: string) {
+    return ApiService.fetchDataWithAxios<{ success: boolean; message: string }>({
+        url: `/users/${userId}/approve`,
+        method: 'post',
+    })
+}
+
+/**
+ * Reject a pending user registration
+ */
+export async function apiRejectUser(userId: string) {
+    return ApiService.fetchDataWithAxios<{ success: boolean; message: string }>({
+        url: `/users/${userId}/reject`,
+        method: 'post',
+    })
+}

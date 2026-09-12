@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Eye, Mail, Ban, CheckCircle, Trash2, Globe, Key, MoreVertical, UserCog, ShieldCheck } from 'lucide-react'
+import { Eye, Mail, Ban, CheckCircle, Trash2, Globe, Key, MoreVertical, UserCog, ShieldCheck, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { apiApproveUser, apiRejectUser } from '@/services/admin/users/userService'
 import { useRouter } from 'next/navigation'
 import { useAppDispatch } from '@/store/hook'
 import { toast, Notification, Checkbox, Dropdown, Button } from '@/components/ui'
@@ -25,6 +26,8 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
     const [isInviting, setIsInviting] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
     const [isVerifying, setIsVerifying] = useState(false)
+    const [isApproving, setIsApproving] = useState(false)
+    const [isRejecting, setIsRejecting] = useState(false)
 
     const isPlatformAdmin = useHasAuthority(['super_admin', 'admin'])
     const isPlatformSuperAdmin = useHasAuthority(['super_admin'])
@@ -35,6 +38,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
     const isProtected = user.role === 'Admin' || user.email === 'admin@qorebit.com'
     const isActive = user.status === 'active'
     const isPending = user.status === 'pending'
+    const isPendingApproval = user.status === 'pending_approval'
 
     const handleActionSuccess = (msg: string) => {
         toast.push(
@@ -44,6 +48,30 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
         )
         dispatch(fetchUsers())
         dispatch(fetchUsersAnalytics())
+    }
+
+    const handleApprove = async () => {
+        setIsApproving(true)
+        try {
+            await apiApproveUser(user.id)
+            handleActionSuccess('Registration approved successfully')
+        } catch (error: any) {
+            toast.push(<Notification type="danger" title="Error">{error.message || 'Failed to approve'}</Notification>)
+        } finally {
+            setIsApproving(false)
+        }
+    }
+
+    const handleReject = async () => {
+        setIsRejecting(true)
+        try {
+            await apiRejectUser(user.id)
+            handleActionSuccess('Registration rejected successfully')
+        } catch (error: any) {
+            toast.push(<Notification type="danger" title="Error">{error.message || 'Failed to reject'}</Notification>)
+        } finally {
+            setIsRejecting(false)
+        }
     }
 
     const handleResendInvite = async () => {
@@ -173,7 +201,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
                     <div className="flex flex-wrap gap-2">
                         <span className={`inline-flex py-1 px-2.5 rounded-lg text-[10px] uppercase font-black tracking-wide border ${user.status === 'active'
                                 ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-800 text-emerald-600'
-                                : user.status === 'pending'
+                                : (user.status === 'pending' || user.status === 'pending_approval')
                                     ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-800 text-amber-600'
                                     : 'bg-rose-50 dark:bg-rose-900/10 border-rose-100 dark:border-rose-800 text-rose-600'
                             }`}>
@@ -198,6 +226,28 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
 
                 {/* Actions Menu */}
                 <td className="px-8 py-5 text-center" onClick={(e) => e.stopPropagation()}>
+                    {isPendingApproval ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <Button 
+                                size="sm" 
+                                variant="solid" 
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] h-7 px-2"
+                                onClick={handleApprove}
+                                loading={isApproving}
+                            >
+                                Approve
+                            </Button>
+                            <Button 
+                                size="sm" 
+                                variant="plain" 
+                                className="text-rose-600 hover:bg-rose-50 text-[10px] h-7 px-2 border border-rose-200"
+                                onClick={handleReject}
+                                loading={isRejecting}
+                            >
+                                Reject
+                            </Button>
+                        </div>
+                    ) : (
                     <Dropdown
                         renderTitle={
                             <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -212,6 +262,24 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
                                 <Eye size={14} /> View Profile
                             </span>
                         </Dropdown.Item>
+
+                        {/* Approve Registration */}
+                        {isPendingApproval && (
+                            <Dropdown.Item onClick={handleApprove} disabled={isApproving}>
+                                <span className="flex items-center gap-2 text-emerald-600 font-black text-[11px] tracking-wider">
+                                    <ThumbsUp size={14} /> Approve Registration
+                                </span>
+                            </Dropdown.Item>
+                        )}
+                        
+                        {/* Reject Registration */}
+                        {isPendingApproval && (
+                            <Dropdown.Item onClick={handleReject} disabled={isRejecting}>
+                                <span className="flex items-center gap-2 text-rose-600 font-black text-[11px] tracking-wider">
+                                    <ThumbsDown size={14} /> Reject Registration
+                                </span>
+                            </Dropdown.Item>
+                        )}
 
 
                         {/* Update Identity Role */}
@@ -240,7 +308,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
                         )}
 
                         {/* Activate/Deactivate */}
-                        {!isPending && (
+                        {!isPending && !isPendingApproval && (
                             <Dropdown.Item onClick={handleToggleStatus} className={isActive ? "text-rose-500 hover:text-rose-600" : "text-emerald-500 hover:text-emerald-600"}>
                                 <span className="flex items-center gap-2">
                                     {isActive ? <Ban size={14} /> : <CheckCircle size={14} />}
@@ -261,6 +329,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
                             </>
                         )}
                     </Dropdown>
+                    )}
                 </td>
             </tr>
 
