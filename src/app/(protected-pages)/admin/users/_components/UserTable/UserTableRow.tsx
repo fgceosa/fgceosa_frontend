@@ -63,12 +63,15 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
     }
 
     const handleReject = async () => {
+        if (!window.confirm("Are you sure you want to deny this registration? The user will be notified via email.")) {
+            return;
+        }
         setIsRejecting(true)
         try {
             await apiRejectUser(user.id)
-            handleActionSuccess('Registration rejected successfully')
+            handleActionSuccess('Registration denied successfully')
         } catch (error: any) {
-            toast.push(<Notification type="danger" title="Error">{error.message || 'Failed to reject'}</Notification>)
+            toast.push(<Notification type="danger" title="Error">{error.message || 'Failed to deny'}</Notification>)
         } finally {
             setIsRejecting(false)
         }
@@ -240,24 +243,21 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
                                     Approve
                                 </span>
                             </Button>
-                            <Popconfirm
-                                title="Are you sure you want to reject this registration? The user will be notified via email."
-                                onConfirm={handleReject}
-                                okColorClass="bg-rose-600 hover:bg-rose-700"
-                                confirmText="Reject Registration"
+                            <Button 
+                                size="sm" 
+                                variant="solid" 
+                                className="bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 hover:border-rose-300 text-xs font-bold h-8 px-3 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0"
+                                loading={isRejecting}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleReject();
+                                }}
                             >
-                                <Button 
-                                    size="sm" 
-                                    variant="solid" 
-                                    className="bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 hover:border-rose-300 text-xs font-bold h-8 px-3 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0"
-                                    loading={isRejecting}
-                                >
-                                    <span className="flex items-center gap-1.5">
-                                        {!isRejecting && <Ban className="w-3.5 h-3.5" />}
-                                        Reject
-                                    </span>
-                                </Button>
-                            </Popconfirm>
+                                <span className="flex items-center gap-1.5">
+                                    {!isRejecting && <Ban className="w-3.5 h-3.5" />}
+                                    Deny
+                                </span>
+                            </Button>
                         </div>
                     ) : (
                     <Dropdown
@@ -288,7 +288,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
                         {isPendingApproval && (
                             <Dropdown.Item onClick={handleReject} disabled={isRejecting}>
                                 <span className="flex items-center gap-2 text-rose-600 font-black text-[11px] tracking-wider">
-                                    <ThumbsDown size={14} /> Reject Registration
+                                    <ThumbsDown size={14} /> Deny Registration
                                 </span>
                             </Dropdown.Item>
                         )}
