@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAppDispatch } from '@/store/hook'
 import { toast, Notification, Checkbox, Dropdown, Button } from '@/components/ui'
 import DeleteUserDialog from '../DeleteUserDialog'
+import DenyUserDialog from '../DenyUserDialog'
 
 import Popconfirm from '@/components/shared/Popconfirm'
 import { useHasAuthority } from '@/utils/hooks/useAuthorization'
@@ -28,6 +29,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
     const [isVerifying, setIsVerifying] = useState(false)
     const [isApproving, setIsApproving] = useState(false)
     const [isRejecting, setIsRejecting] = useState(false)
+    const [isDenyOpen, setIsDenyOpen] = useState(false)
 
     const isPlatformAdmin = useHasAuthority(['super_admin', 'admin'])
     const isPlatformSuperAdmin = useHasAuthority(['super_admin'])
@@ -63,13 +65,11 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
     }
 
     const handleReject = async () => {
-        if (!window.confirm("Are you sure you want to deny this registration? The user will be notified via email.")) {
-            return;
-        }
         setIsRejecting(true)
         try {
             await apiRejectUser(user.id)
             handleActionSuccess('Registration denied successfully')
+            setIsDenyOpen(false)
         } catch (error: any) {
             toast.push(<Notification type="danger" title="Error">{error.message || 'Failed to deny'}</Notification>)
         } finally {
@@ -247,14 +247,13 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
                                 size="sm" 
                                 variant="solid" 
                                 className="bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 hover:border-rose-300 text-xs font-bold h-8 px-3 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0"
-                                loading={isRejecting}
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleReject();
+                                    setIsDenyOpen(true);
                                 }}
                             >
                                 <span className="flex items-center gap-1.5">
-                                    {!isRejecting && <Ban className="w-3.5 h-3.5" />}
+                                    <Ban className="w-3.5 h-3.5" />
                                     Deny
                                 </span>
                             </Button>
@@ -286,7 +285,7 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
                         
                         {/* Reject Registration */}
                         {isPendingApproval && (
-                            <Dropdown.Item onClick={handleReject} disabled={isRejecting}>
+                            <Dropdown.Item onClick={() => setIsDenyOpen(true)}>
                                 <span className="flex items-center gap-2 text-rose-600 font-black text-[11px] tracking-wider">
                                     <ThumbsDown size={14} /> Deny Registration
                                 </span>
@@ -357,6 +356,14 @@ export default function UserTableRow({ user, isSelected, onSelect, onAssignRole 
                 isDeleting={isDeleting}
                 mustForce={mustForce}
                 dependencyError={dependencyError}
+            />
+            
+            <DenyUserDialog
+                isOpen={isDenyOpen}
+                onClose={() => setIsDenyOpen(false)}
+                onConfirm={handleReject}
+                user={user}
+                isDenying={isRejecting}
             />
         </>
     )
