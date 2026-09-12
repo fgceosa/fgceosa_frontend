@@ -28,7 +28,7 @@ export default function DenyUserDialog({
         >
             <div className="p-8 sm:p-10">
                 <div className="flex flex-col items-center text-center">
-                    <div className={`w-20 h-20 bg-rose-50 dark:bg-rose-900/10 text-rose-600 border border-rose-100 rounded-[2rem] flex items-center justify-center mb-8 shadow-inner`}>
+                    <div className={`w-20 h-20 bg-red-50 dark:bg-red-900/10 text-[#8B0000] border border-red-100 rounded-[2rem] flex items-center justify-center mb-8 shadow-inner`}>
                         <Ban className="w-10 h-10" />
                     </div>
                     
@@ -45,9 +45,9 @@ export default function DenyUserDialog({
                         </h4>
                     </div>
 
-                    <div className="bg-rose-50/30 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-800 rounded-2xl p-5 flex gap-4 items-start mb-10 shadow-inner">
-                        <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-                        <p className="text-[11px] text-rose-700 dark:text-rose-400 font-bold tracking-tight leading-relaxed text-left">
+                    <div className="bg-red-50/30 dark:bg-red-900/10 border border-red-100 dark:border-red-800 rounded-2xl p-5 flex gap-4 items-start mb-10 shadow-inner">
+                        <AlertTriangle className="w-5 h-5 text-[#8B0000] shrink-0 mt-0.5" />
+                        <p className="text-[11px] text-red-700 dark:text-red-400 font-bold tracking-tight leading-relaxed text-left">
                             Are you sure you want to deny this registration? The user will be notified via email.
                         </p>
                     </div>
@@ -63,7 +63,7 @@ export default function DenyUserDialog({
                         <button
                             onClick={onConfirm}
                             disabled={isDenying}
-                            className={`flex-[2] h-14 bg-rose-600 shadow-[0_12px_24px_-10px_rgba(225,29,72,0.5)] text-white rounded-2xl font-bold tracking-tight text-[13px] transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center border-none`}
+                            className={`flex-[2] h-14 bg-[#8B0000] shadow-[0_12px_24px_-10px_rgba(139,0,0,0.5)] text-white rounded-2xl font-bold tracking-tight text-[13px] transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center border-none`}
                         >
                             {isDenying ? 'Denying...' : 'Deny Registration'}
                         </button>
