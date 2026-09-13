@@ -43,8 +43,7 @@ export default function UsersHeader() {
                 <Button 
                     variant="solid" 
                     onClick={() => setIsImportOpen(true)}
-                    style={{ backgroundColor: '#8B0000' }}
-                    className="h-14 px-8 text-white hover:opacity-90 font-black text-[11px] rounded-2xl shadow-xl shadow-[#8B0000]/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 group w-full lg:w-auto border-none"
+                    className="h-14 px-8 bg-white text-[#8B0000] border border-red-100 hover:bg-red-50 hover:border-red-200 font-black text-[11px] rounded-2xl shadow-lg shadow-gray-200/50 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 group w-full lg:w-auto"
                 >
                     <FileSpreadsheet className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                     <span>Import Members</span>
