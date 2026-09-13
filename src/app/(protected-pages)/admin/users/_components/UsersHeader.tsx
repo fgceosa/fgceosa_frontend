@@ -42,10 +42,12 @@ export default function UsersHeader() {
                 <div className="h-12 w-[1px] bg-gray-100 dark:bg-gray-800 hidden lg:block mx-2" />
                 <Button 
                     variant="solid" 
-                    className="bg-white hover:bg-red-50 text-[#8B0000] border border-red-200 shadow-sm font-bold h-10 px-4 transition-all"
                     onClick={() => setIsImportOpen(true)}
+                    style={{ backgroundColor: '#8B0000' }}
+                    className="h-14 px-8 text-white hover:opacity-90 font-black text-[11px] rounded-2xl shadow-xl shadow-[#8B0000]/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 group w-full lg:w-auto border-none"
                 >
-                    <FileSpreadsheet className="mr-2 h-4 w-4" /> Import Members
+                    <FileSpreadsheet className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                    <span>Import Members</span>
                 </Button>
                 <InviteUserForm />
             </div>
