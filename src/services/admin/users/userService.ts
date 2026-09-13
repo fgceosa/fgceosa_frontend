@@ -323,8 +323,5 @@ export async function apiBulkImportUsers(file: File) {
         url: '/users/bulk-import',
         method: 'post',
         data: formData as any,
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
     })
 }
