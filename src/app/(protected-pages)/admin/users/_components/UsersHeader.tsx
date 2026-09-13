@@ -2,8 +2,13 @@
 
 import { Users } from 'lucide-react'
 import InviteUserForm from './InviteUserForm'
+import BulkImportModal from './BulkImportModal'
+import { Button } from '@/components/ui'
+import { FileSpreadsheet } from 'lucide-react'
+import { useState } from 'react'
 
 export default function UsersHeader() {
+    const [isImportOpen, setIsImportOpen] = useState(false)
     return (
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 pb-4 animate-in fade-in slide-in-from-top-6 duration-1000 ease-out">
             <div className="space-y-4 lg:space-y-2">
@@ -35,8 +40,16 @@ export default function UsersHeader() {
 
             <div className="flex items-center gap-4 w-full lg:w-auto mt-4 lg:mt-0">
                 <div className="h-12 w-[1px] bg-gray-100 dark:bg-gray-800 hidden lg:block mx-2" />
+                <Button 
+                    variant="solid" 
+                    className="bg-white hover:bg-red-50 text-[#8B0000] border border-red-200 shadow-sm font-bold h-10 px-4 transition-all"
+                    onClick={() => setIsImportOpen(true)}
+                >
+                    <FileSpreadsheet className="mr-2 h-4 w-4" /> Import Members
+                </Button>
                 <InviteUserForm />
             </div>
+            <BulkImportModal isOpen={isImportOpen} onClose={() => setIsImportOpen(false)} />
         </div>
     )
 }
