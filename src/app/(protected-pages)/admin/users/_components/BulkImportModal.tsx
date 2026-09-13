@@ -118,6 +118,14 @@ export default function BulkImportModal({ isOpen, onClose }: { isOpen: boolean, 
                                     <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest mt-1">Skipped</p>
                                 </div>
                             </div>
+                            
+                            {result.success > 0 && (
+                                <div className="mt-6 bg-green-50/80 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-xl p-4 w-full">
+                                    <p className="text-[11px] font-black text-green-800 dark:text-green-400 text-center tracking-[0.1em] uppercase leading-relaxed">
+                                        ✓ Welcome emails & temporary passwords have been automatically dispatched to all imported members.
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
                         {result.errors.length > 0 && (
