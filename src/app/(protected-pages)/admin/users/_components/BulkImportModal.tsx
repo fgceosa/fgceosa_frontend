@@ -25,11 +25,11 @@ export default function BulkImportModal({ isOpen, onClose }: { isOpen: boolean, 
         e.preventDefault()
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             const droppedFile = e.dataTransfer.files[0]
-            if (droppedFile.name.endsWith('.csv')) {
+            if ((droppedFile.name.endsWith('.csv') || droppedFile.name.endsWith('.xlsx') || droppedFile.name.endsWith('.xls'))) {
                 setFile(droppedFile)
                 setResult(null)
             } else {
-                toast.push(<Notification type="danger" title="Error">Only CSV files are supported</Notification>)
+                toast.push(<Notification type="danger" title="Error">Only CSV and Excel files are supported</Notification>)
             }
         }
     }
@@ -90,7 +90,7 @@ export default function BulkImportModal({ isOpen, onClose }: { isOpen: boolean, 
                         </div>
                         <div>
                             <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-none">Bulk Import</h2>
-                            <p className="text-[11px] font-black text-gray-400 mt-2 tracking-[0.2em]">Upload CSV Member List</p>
+                            <p className="text-[11px] font-black text-gray-400 mt-2 tracking-[0.2em]">Upload CSV/Excel Member List</p>
                         </div>
                     </div>
                     <button
@@ -148,14 +148,14 @@ export default function BulkImportModal({ isOpen, onClose }: { isOpen: boolean, 
                             onClick={() => fileInputRef.current?.click()}
                             className={`border-2 border-dashed rounded-[2rem] p-12 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 ${file ? 'border-[#8B0000] bg-red-50/50 dark:bg-red-900/10' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/30'}`}
                         >
-                            <input type="file" accept=".csv" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
+                            <input type="file" accept=".csv,.xlsx,.xls" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
                             
                             <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center mb-6 transition-all shadow-inner border ${file ? 'bg-white text-[#8B0000] border-red-100' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border-gray-100 dark:border-gray-700'}`}>
                                 <FileSpreadsheet className="w-10 h-10" />
                             </div>
                             
                             <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight mb-2">
-                                {file ? file.name : "Click or drag CSV here"}
+                                {file ? file.name : "Click or drag CSV / Excel here"}
                             </h3>
                             <p className="text-[11px] font-black text-gray-400 tracking-widest uppercase">
                                 {file ? `${(file.size / 1024).toFixed(1)} KB` : "Supports flexible columns. 'Email' is required."}
