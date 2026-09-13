@@ -311,3 +311,20 @@ export async function apiRejectUser(userId: string) {
         method: 'post',
     })
 }
+
+/**
+ * Bulk import users via CSV
+ */
+export async function apiBulkImportUsers(file: File) {
+    const formData = new FormData()
+    formData.append('file', file)
+    
+    return ApiService.fetchDataWithAxios<any>({
+        url: '/users/bulk-import',
+        method: 'post',
+        data: formData as any,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}
